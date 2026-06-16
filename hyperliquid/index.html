@@ -6,32 +6,32 @@
 <title>HIP-4 Market Database — Collector Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --bg: #0b0e14;
-    --panel: #11161f;
-    --panel-2: #161c28;
-    --line: #1f2734;
-    --line-soft: #19202c;
-    --txt: #e6ecf3;
-    --muted: #8794a7;
-    --faint: #5d6878;
-    --accent: #4ade9b;      /* hyperliquid-ish mint */
-    --accent-dim: #1f3a2f;
-    --up: #4ade9b;
-    --down: #f87171;
-    --yellow: #fbbf24;
-    --blue: #6aa6ff;
-    --radius: 12px;
-    --shadow: 0 1px 0 rgba(255,255,255,.02), 0 8px 24px rgba(0,0,0,.35);
+    --bg: #0d1117;
+    --panel: #161b22;
+    --panel-2: #21262d;
+    --line: #30363d;
+    --line-soft: #30363d;
+    --txt: #e6edf3;
+    --muted: #8b949e;
+    --faint: #8b949e;
+    --accent: #3fb950;      /* GitHub-dark positive green */
+    --accent-dim: rgba(63,185,80,.35);
+    --up: #3fb950;
+    --down: #f85149;
+    --yellow: #58a6ff;
+    --blue: #58a6ff;
+    --radius: 8px;
+    --shadow: none;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   body {
-    background: radial-gradient(1200px 600px at 80% -10%, #12211c 0%, transparent 55%), var(--bg);
+    background: var(--bg);
     color: var(--txt);
-    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    font-family: -apple-system, system-ui, "Helvetica Neue", Arial, sans-serif;
     font-size: 14px;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
@@ -45,10 +45,10 @@
   }
   .brand { display: flex; align-items: center; gap: 13px; }
   .logo {
-    width: 40px; height: 40px; border-radius: 10px;
-    background: linear-gradient(150deg, var(--accent) 0%, #2bb37a 100%);
-    display: grid; place-items: center; color: #07140d; font-weight: 700;
-    font-family: "JetBrains Mono", monospace; box-shadow: 0 4px 16px rgba(74,222,155,.25);
+    width: 40px; height: 40px; border-radius: 8px;
+    background: var(--panel-2); border: 1px solid var(--line);
+    display: grid; place-items: center; color: var(--accent); font-weight: 700;
+    font-family: "JetBrains Mono", monospace;
   }
   h1 { font-size: 18px; margin: 0; letter-spacing: -.2px; }
   .sub { color: var(--muted); font-size: 12.5px; margin-top: 2px; }
@@ -56,8 +56,8 @@
   .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
   .badge {
     font-family: "JetBrains Mono", monospace; font-size: 11px;
-    background: rgba(251,191,36,.1); color: var(--yellow);
-    border: 1px solid rgba(251,191,36,.3); padding: 4px 10px; border-radius: 999px;
+    background: var(--panel-2); color: var(--blue);
+    border: 1px solid var(--line); padding: 4px 10px; border-radius: 999px;
     letter-spacing: .3px;
   }
   .status-pill {
@@ -65,12 +65,12 @@
     color: var(--muted); font-family: "JetBrains Mono", monospace;
   }
   .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
-    box-shadow: 0 0 0 3px rgba(74,222,155,.18); animation: pulse 2.4s ease-in-out infinite; }
+    box-shadow: 0 0 0 3px rgba(63,185,80,.18); animation: pulse 2.4s ease-in-out infinite; }
   @keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: .45 } }
 
   .readonly-note {
-    margin: 18px 0 22px; padding: 11px 15px; border-radius: 10px;
-    background: linear-gradient(90deg, rgba(106,166,255,.07), transparent);
+    margin: 18px 0 22px; padding: 11px 15px; border-radius: 8px;
+    background: var(--panel);
     border: 1px solid var(--line); border-left: 3px solid var(--blue);
     color: var(--muted); font-size: 12.5px;
   }
@@ -130,13 +130,13 @@
   .mono { font-family: "JetBrains Mono", monospace; }
   .type {
     font-family: "JetBrains Mono", monospace; font-size: 10.5px; padding: 2px 7px;
-    border-radius: 5px; border: 1px solid var(--line); color: var(--muted);
+    border-radius: 6px; border: 1px solid transparent; color: var(--muted);
     background: var(--panel-2);
   }
-  .type.priceBinary { color: var(--accent); border-color: var(--accent-dim); background: rgba(74,222,155,.06); }
-  .type.priceBucket { color: var(--blue); border-color: rgba(106,166,255,.25); background: rgba(106,166,255,.06); }
-  .type.categorical { color: var(--yellow); border-color: rgba(251,191,36,.25); background: rgba(251,191,36,.06); }
-  .type.binary { color: #c4a5f5; border-color: rgba(196,165,245,.25); background: rgba(196,165,245,.06); }
+  .type.priceBinary { color: var(--accent); background: var(--panel-2); }
+  .type.priceBucket { color: var(--blue); background: var(--panel-2); }
+  .type.categorical { color: #d29922; background: var(--panel-2); }
+  .type.binary { color: #bc8cff; background: var(--panel-2); }
 
   .yes { font-family: "JetBrains Mono", monospace; font-weight: 600; font-size: 14px; }
   .chg { font-family: "JetBrains Mono", monospace; font-size: 12.5px; font-weight: 500; }
@@ -369,7 +369,7 @@ function sparkline(data, up) {
   });
   const line = pts.map((p, i) => (i === 0 ? "M" : "L") + p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" ");
   const area = line + ` L${pts[pts.length-1][0].toFixed(1)},${H-pad} L${pts[0][0].toFixed(1)},${H-pad} Z`;
-  const col = up > 0 ? "#4ade9b" : up < 0 ? "#f87171" : "#8794a7";
+  const col = up > 0 ? "#3fb950" : up < 0 ? "#f85149" : "#8b949e";
   const id = "g" + Math.random().toString(36).slice(2, 8);
   const last = pts[pts.length - 1];
   return `

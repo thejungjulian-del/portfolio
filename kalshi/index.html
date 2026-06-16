@@ -6,95 +6,101 @@
 <title>Scanner — Kalshi Bot</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Helvetica+Neue&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: #111111; --bg: #ffffff; --muted: #767676; --faint: #a6a6a6;
-    --line: #e6e6e6; --line-strong: #111111; --hover: #fafafa;
-    --pos: #0a7d4f; --posbg: #eaf6ef; --neg: #b42318; --negbg: #fdeceb;
+    --ink: #e6edf3; --bg: #0d1117; --panel: #161b22; --muted: #8b949e; --faint: #6e7681;
+    --line: #30363d; --line-strong: #30363d; --hover: #1c2230; --pill: #21262d;
+    --pos: #3fb950; --posbg: rgba(63,185,80,.15); --neg: #f85149; --negbg: rgba(248,81,73,.15);
+    --accent: #58a6ff;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); }
-  body { font-family: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+  body { font-family: -apple-system, system-ui, "Helvetica Neue", Arial, sans-serif;
          -webkit-font-smoothing: antialiased; font-size: 15px; line-height: 1.5; }
   .wrap { max-width: 980px; margin: 0 auto; padding: 0 32px 96px; }
-  a { color: inherit; }
+  a { color: var(--accent); }
   .label { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
-  .num { font-variant-numeric: tabular-nums; }
+  .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
 
   .demo-badge {
     position: fixed; top: 14px; right: 16px; z-index: 50;
     font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
-    color: var(--muted); background: rgba(255,255,255,.86); backdrop-filter: blur(4px);
-    border: 1px solid var(--line); padding: 6px 10px; border-radius: 2px;
+    color: var(--muted); background: rgba(22,27,34,.86); backdrop-filter: blur(4px);
+    border: 1px solid var(--line); padding: 6px 10px; border-radius: 6px;
   }
 
   .masthead { padding: 56px 0 24px; border-bottom: 1px solid var(--line-strong);
               display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; }
-  .masthead .kicker { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
-  .masthead h1 { margin: 10px 0 0; font-size: 40px; font-weight: 300; letter-spacing: -0.025em; }
+  .masthead .kicker { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); }
+  .masthead h1 { margin: 10px 0 0; font-size: 40px; font-weight: 600; letter-spacing: -0.025em; color: var(--ink); }
   .masthead .sub { margin-top: 8px; color: var(--muted); font-size: 14px; max-width: 560px; }
   .masthead .right { text-align: right; }
   button.refresh { font: inherit; font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
-                   background: var(--ink); color: #fff; border: 1px solid var(--ink); padding: 9px 18px; cursor: pointer; }
-  button.refresh:hover { background: #fff; color: var(--ink); }
+                   background: var(--pill); color: var(--ink); border: 1px solid var(--line); border-radius: 6px;
+                   padding: 9px 18px; cursor: pointer; }
+  button.refresh:hover { background: #2a313c; border-color: var(--accent); color: var(--accent); }
   .mode { margin-top: 10px; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
-  .mode .dry { display: inline-block; border: 1px solid var(--line-strong); padding: 3px 8px; border-radius: 1px;
-               color: var(--ink); font-weight: 700; }
+  .mode .dry { display: inline-block; background: var(--pill); border: 1px solid var(--line); padding: 3px 8px; border-radius: 6px;
+               color: var(--accent); font-weight: 700; }
 
   .stats { display: flex; gap: 48px; padding: 24px 0; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
-  .stat .n { font-size: 28px; font-weight: 300; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+  .stat .n { font-family: var(--mono); font-size: 28px; font-weight: 500; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
   .stat .l { margin-top: 2px; }
 
   .sec { margin: 46px 0 14px; }
-  .sec h2 { margin: 0; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; }
-  .sec .note { font-size: 12px; color: var(--faint); margin-top: 4px; max-width: 640px; }
+  .sec h2 { margin: 0; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: var(--ink); }
+  .sec .note { font-size: 12px; color: var(--muted); margin-top: 4px; max-width: 640px; }
 
-  table { width: 100%; border-collapse: collapse; }
+  table { width: 100%; border-collapse: collapse; background: var(--panel);
+          border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
   thead th { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
-             text-align: left; font-weight: 400; padding: 0 12px 10px; border-bottom: 1px solid var(--line-strong); }
+             text-align: left; font-weight: 400; padding: 12px 12px 10px; border-bottom: 1px solid var(--line); }
   thead th.r, tbody td.r { text-align: right; }
   tbody td { padding: 14px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
   tbody tr:hover { background: var(--hover); }
-  td.market { font-size: 15px; }
+  td.market { font-size: 15px; color: var(--ink); }
   td.market .tk { font-size: 11px; color: var(--faint); letter-spacing: .04em; margin-top: 3px;
-                  font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+                  font-family: var(--mono); }
   .city { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
 
-  .edge { font-variant-numeric: tabular-nums; font-weight: 400; }
-  .pill { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .04em;
-          padding: 3px 9px; border-radius: 2px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .edge { font-family: var(--mono); font-variant-numeric: tabular-nums; font-weight: 400; }
+  .pill { display: inline-block; font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: .04em;
+          padding: 3px 9px; border-radius: 6px; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .pill.pos { color: var(--pos); background: var(--posbg); }
-  .pill.flat { color: var(--muted); background: #f3f3f3; }
-  .side { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; }
-  .side.yes { color: var(--ink); }
-  .side.no  { color: var(--muted); }
+  .pill.flat { color: var(--muted); background: var(--pill); }
+  .side { display: inline-block; font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+          font-weight: 700; padding: 3px 9px; border-radius: 6px; background: var(--pill); }
+  .side.yes { color: var(--pos); }
+  .side.no  { color: var(--neg); }
 
-  .arb-yes { color: var(--ink); } .arb-sum { font-weight: 700; }
+  .arb-yes { color: var(--ink); } .arb-sum { font-weight: 700; color: var(--ink); }
   tr.locked td { background: var(--posbg); }
-  tr.locked:hover td { background: #e1f1e7; }
+  tr.locked:hover td { background: rgba(63,185,80,.22); }
   .arbtag { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700;
-            color: #fff; background: var(--pos); padding: 2px 6px; border-radius: 1px; margin-left: 8px; }
+            color: #0d1117; background: var(--pos); padding: 2px 6px; border-radius: 4px; margin-left: 8px; }
 
   /* scoreboard */
   .board { display: grid; grid-template-columns: 1.1fr 1fr; gap: 28px; margin-top: 8px; }
-  .card { border: 1px solid var(--line-strong); padding: 26px 26px 22px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 26px 26px 22px; }
   .card .head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 12px; }
-  .card .pnl { font-size: 44px; font-weight: 300; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .card .pnl { font-family: var(--mono); font-size: 44px; font-weight: 500; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
   .card .pnl.pos { color: var(--pos); } .card .pnl.neg { color: var(--neg); }
   .row3 { display: flex; gap: 36px; margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); flex-wrap: wrap; }
-  .row3 .b .n { font-size: 22px; font-weight: 300; font-variant-numeric: tabular-nums; }
-  .wl { font-size: 22px; font-weight: 300; font-variant-numeric: tabular-nums; }
+  .row3 .b .n { font-family: var(--mono); font-size: 22px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .wl { font-family: var(--mono); font-size: 22px; font-weight: 500; font-variant-numeric: tabular-nums; }
   .wl .w { color: var(--pos); } .wl .l { color: var(--neg); }
   .strat-rows { margin-top: 4px; }
   .strat { display: grid; grid-template-columns: 1fr auto auto; align-items: baseline; gap: 14px;
            padding: 13px 0; border-bottom: 1px solid var(--line); }
   .strat:last-child { border-bottom: none; }
-  .strat .name { text-transform: capitalize; }
-  .strat .rec { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
-  .strat .wr { font-size: 13px; font-variant-numeric: tabular-nums; }
+  .strat .name { text-transform: capitalize; color: var(--ink); }
+  .strat .rec { font-family: var(--mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .strat .wr { font-family: var(--mono); font-size: 13px; font-variant-numeric: tabular-nums; color: var(--ink); }
   .bar { height: 4px; background: var(--line); margin-top: 8px; border-radius: 2px; overflow: hidden; }
-  .bar > span { display: block; height: 100%; background: var(--ink); }
+  .bar > span { display: block; height: 100%; background: var(--pos); }
 
   .colophon { margin-top: 52px; padding-top: 18px; border-top: 1px solid var(--line);
               color: var(--faint); font-size: 12px; line-height: 1.7; }
