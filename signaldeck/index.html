@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Signal Deck — MES/ES Futures Signal Feed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#0a0d12;
+    --bg2:#0f141b;
+    --panel:#121821;
+    --panel2:#161e29;
+    --line:#1f2937;
+    --line2:#2a3646;
+    --txt:#e6edf3;
+    --muted:#8b97a7;
+    --dim:#5f6b7c;
+    --long:#23d18b;
+    --long-bg:rgba(35,209,139,.10);
+    --short:#ff5d6c;
+    --short-bg:rgba(255,93,108,.10);
+    --flat:#f5c451;
+    --flat-bg:rgba(245,196,81,.10);
+    --accent:#4f9dff;
+    --accent-bg:rgba(79,157,255,.10);
+    --shadow:0 1px 0 rgba(255,255,255,.03), 0 8px 30px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    background:
+      radial-gradient(1100px 600px at 80% -10%, rgba(79,157,255,.06), transparent 60%),
+      radial-gradient(900px 500px at 0% 110%, rgba(35,209,139,.05), transparent 55%),
+      var(--bg);
+    color:var(--txt);
+    font-family:"Inter",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:22px 18px 80px;}
+
+  /* ── Demo badge ───────────────────────────── */
+  .demo-badge{
+    position:fixed;top:12px;right:12px;z-index:50;
+    font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;
+    letter-spacing:.04em;color:#cfe;background:rgba(15,20,27,.85);
+    border:1px solid var(--line2);border-radius:999px;
+    padding:6px 12px;backdrop-filter:blur(8px);
+    box-shadow:var(--shadow);
+  }
+  .demo-badge::before{content:"●";color:var(--flat);margin-right:7px;font-size:9px;vertical-align:1px;}
+
+  /* ── Header ───────────────────────────────── */
+  header{margin-bottom:18px;}
+  .brand{display:flex;align-items:center;gap:12px;}
+  .logo{
+    width:38px;height:38px;border-radius:9px;flex:none;
+    background:linear-gradient(150deg,#1c2a3d,#0e151e);
+    border:1px solid var(--line2);
+    display:grid;place-items:center;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+  }
+  .logo svg{display:block;}
+  .brand h1{font-size:18px;font-weight:800;letter-spacing:-.01em;}
+  .brand .sub{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);letter-spacing:.03em;margin-top:1px;}
+
+  /* ── Top bar / status strip ───────────────── */
+  .topbar{
+    margin-top:16px;
+    background:linear-gradient(180deg,var(--panel),var(--bg2));
+    border:1px solid var(--line);border-radius:14px;
+    box-shadow:var(--shadow);
+    padding:14px 16px;
+    display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;
+  }
+  .stat{display:flex;flex-direction:column;gap:3px;min-width:84px;}
+  .stat .k{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.08em;color:var(--dim);text-transform:uppercase;}
+  .stat .v{font-family:"IBM Plex Mono",monospace;font-size:16px;font-weight:600;color:var(--txt);}
+  .stat .v.green{color:var(--long);}
+  .sep{width:1px;align-self:stretch;background:var(--line);}
+  .session-badge{
+    font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:13px;
+    letter-spacing:.06em;padding:5px 11px;border-radius:7px;
+    color:var(--long);background:var(--long-bg);border:1px solid rgba(35,209,139,.3);
+  }
+  .pulse{
+    margin-left:auto;display:flex;align-items:center;gap:8px;
+    font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);
+  }
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--long);box-shadow:0 0 0 0 rgba(35,209,139,.6);animation:pulse 2s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(35,209,139,.55);}70%{box-shadow:0 0 0 8px rgba(35,209,139,0);}100%{box-shadow:0 0 0 0 rgba(35,209,139,0);}}
+
+  .feedtitle{display:flex;align-items:baseline;gap:10px;margin:26px 4px 12px;}
+  .feedtitle h2{font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:700;}
+  .feedtitle .count{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--dim);}
+
+  /* ── Signal card ──────────────────────────── */
+  .card{
+    background:linear-gradient(180deg,var(--panel),var(--bg2));
+    border:1px solid var(--line);border-radius:14px;
+    box-shadow:var(--shadow);
+    margin-bottom:16px;overflow:hidden;
+  }
+  .card.long{border-left:3px solid var(--long);}
+  .card.short{border-left:3px solid var(--short);}
+  .card.flat{border-left:3px solid var(--flat);}
+
+  .card-head{
+    display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+    padding:13px 16px;border-bottom:1px solid var(--line);
+    background:rgba(255,255,255,.012);
+  }
+  .bias{
+    font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:14px;
+    letter-spacing:.05em;padding:5px 12px;border-radius:7px;display:inline-flex;align-items:center;gap:7px;
+  }
+  .bias svg{display:block;}
+  .bias.long{color:var(--long);background:var(--long-bg);border:1px solid rgba(35,209,139,.32);}
+  .bias.short{color:var(--short);background:var(--short-bg);border:1px solid rgba(255,93,108,.32);}
+  .bias.flat{color:var(--flat);background:var(--flat-bg);border:1px solid rgba(245,196,81,.32);}
+
+  .ticker{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:13px;color:var(--txt);}
+  .ticker .px{color:var(--muted);font-weight:400;}
+  .conf{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);
+    padding:4px 9px;border:1px solid var(--line2);border-radius:6px;
+  }
+  .conf b{color:var(--txt);}
+  .conf.high b{color:var(--long);}
+  .conf.med b{color:var(--flat);}
+  .conf.low b{color:var(--dim);}
+  .ts{
+    margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--dim);text-align:right;
+  }
+  .ts .sess{color:var(--muted);}
+
+  .card-body{padding:15px 16px 17px;}
+
+  /* plan grid */
+  .grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+    gap:1px;background:var(--line);
+    border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:14px;
+  }
+  .cell{background:var(--panel2);padding:10px 12px;}
+  .cell .lab{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:4px;}
+  .cell .val{font-family:"IBM Plex Mono",monospace;font-size:15px;font-weight:600;color:var(--txt);}
+  .cell .meta{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted);margin-top:2px;}
+  .cell .val.stop{color:var(--short);}
+  .cell .val.t1,.cell .val.t2{color:var(--long);}
+  .cell .val.rr{color:var(--accent);}
+
+  /* rationale */
+  .rationale{font-size:13.5px;color:#c6d0dc;line-height:1.62;}
+  .rationale .tag{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--accent);
+    background:var(--accent-bg);padding:1px 6px;border-radius:4px;border:1px solid rgba(79,157,255,.2);
+  }
+  .levels{
+    margin-top:13px;display:flex;flex-wrap:wrap;gap:6px;
+  }
+  .chip{
+    font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--muted);
+    background:rgba(255,255,255,.025);border:1px solid var(--line);border-radius:6px;padding:3px 8px;
+  }
+  .chip b{color:var(--txt);font-weight:600;}
+
+  /* scorecard */
+  .score{margin-top:13px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:6px;}
+  .sc{display:flex;align-items:center;gap:7px;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);
+    background:rgba(255,255,255,.02);border:1px solid var(--line);border-radius:6px;padding:6px 9px;}
+  .pill{font-size:9px;font-weight:700;letter-spacing:.04em;padding:2px 6px;border-radius:4px;flex:none;}
+  .pill.pass{color:var(--long);background:var(--long-bg);}
+  .pill.fail{color:var(--short);background:var(--short-bg);}
+  .pill.neutral{color:var(--flat);background:var(--flat-bg);}
+  .pill.bull{color:var(--long);background:var(--long-bg);}
+  .pill.bear{color:var(--short);background:var(--short-bg);}
+
+  footer{
+    margin-top:34px;text-align:center;font-family:"IBM Plex Mono",monospace;
+    font-size:10.5px;color:var(--dim);line-height:1.8;
+  }
+  footer .disc{color:#4a5566;max-width:640px;margin:8px auto 0;}
+
+  @media (max-width:560px){
+    .ts{margin-left:0;width:100%;text-align:left;}
+    .card-head{gap:8px;}
+    .pulse{display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="demo-badge">Demo · sample data</div>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M2 16l5-6 4 4 5-9 6 11" stroke="#4f9dff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <h1>Signal Deck</h1>
+        <div class="sub">MES / ES · automated futures signal engine → Discord</div>
+      </div>
+    </div>
+
+    <div class="topbar">
+      <div class="stat">
+        <span class="k">Instrument</span>
+        <span class="v">MES</span>
+      </div>
+      <div class="sep"></div>
+      <div class="stat">
+        <span class="k">Session</span>
+        <span class="session-badge">RTH</span>
+      </div>
+      <div class="sep"></div>
+      <div class="stat">
+        <span class="k">Last px</span>
+        <span class="v">5982.50</span>
+      </div>
+      <div class="stat">
+        <span class="k">Day chg</span>
+        <span class="v green">+0.42%</span>
+      </div>
+      <div class="sep"></div>
+      <div class="stat">
+        <span class="k">Next signal</span>
+        <span class="v">~42m</span>
+      </div>
+      <div class="pulse">
+        <span class="dot"></span> engine live · posts to #signal-deck
+      </div>
+    </div>
+  </header>
+
+  <div class="feedtitle">
+    <h2>Signal Feed</h2>
+    <span class="count">— last 5 posts · America/New_York</span>
+  </div>
+
+  <!-- ══════════ CARD 1 — LONG ══════════ -->
+  <article class="card long">
+    <div class="card-head">
+      <span class="bias long">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 8l3.5-3.5L7 7l4-5" stroke="#23d18b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 2h3v3" stroke="#23d18b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        LONG
+      </span>
+      <span class="ticker">MES <span class="px">@ 5982.50</span></span>
+      <span class="conf high">Conviction <b>7/10</b></span>
+      <span class="ts">10:48 AM ET · <span class="sess">RTH</span><br>Jun 15, 2026</span>
+    </div>
+    <div class="card-body">
+      <div class="grid">
+        <div class="cell"><div class="lab">Entry</div><div class="val">5981.00</div><div class="meta">limit · pullback to VWAP</div></div>
+        <div class="cell"><div class="lab">Stop</div><div class="val stop">5973.00</div><div class="meta">8 pts · MES −$40</div></div>
+        <div class="cell"><div class="lab">Target 1</div><div class="val t1">5995.00</div><div class="meta">14 pts · MES +$70</div></div>
+        <div class="cell"><div class="lab">Target 2</div><div class="val t2">6006.00</div><div class="meta">25 pts · MES +$125</div></div>
+        <div class="cell"><div class="lab">R : R</div><div class="val rr">1 : 2.4</div><div class="meta">to T2 blended</div></div>
+      </div>
+      <p class="rationale">
+        Price reclaimed <span class="tag">VWAP 5978</span> after the opening-range pullback and is holding above prior-day high, keeping the intraday trend constructive. The 5-min MACD crossed up two bars ago with an expanding histogram, and CVD is confirming on the push — buyers are stepping in rather than fading. Favoring longs on a controlled dip into VWAP; invalidation is a clean break back below the opening range.
+      </p>
+      <div class="levels">
+        <span class="chip">ON High <b>5984.25</b></span>
+        <span class="chip">ON Low <b>5961.00</b></span>
+        <span class="chip">PDH <b>5976.50</b></span>
+        <span class="chip">PDL <b>5949.25</b></span>
+        <span class="chip">VWAP <b>5978.00</b></span>
+      </div>
+      <div class="score">
+        <div class="sc"><span class="pill pass">PASS</span> MACD momentum</div>
+        <div class="sc"><span class="pill pass">PASS</span> RSI + VWAP</div>
+        <div class="sc"><span class="pill pass">PASS</span> CVD divergence</div>
+        <div class="sc"><span class="pill neutral">NEUTRAL</span> Historical match</div>
+        <div class="sc"><span class="pill bull">BULLISH</span> News / macro</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ══════════ CARD 2 — FLAT / WAIT ══════════ -->
+  <article class="card flat">
+    <div class="card-head">
+      <span class="bias flat">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8" stroke="#f5c451" stroke-width="1.8" stroke-linecap="round"/></svg>
+        FLAT
+      </span>
+      <span class="ticker">MES <span class="px">@ 5974.25</span></span>
+      <span class="conf low">Conviction <b>3/10</b></span>
+      <span class="ts">10:18 AM ET · <span class="sess">RTH</span><br>Jun 15, 2026</span>
+    </div>
+    <div class="card-body">
+      <div class="grid">
+        <div class="cell"><div class="lab">Entry</div><div class="val">— no trade</div><div class="meta">wait for setup</div></div>
+        <div class="cell"><div class="lab">Watch up</div><div class="val t1">5984.25</div><div class="meta">ON High break</div></div>
+        <div class="cell"><div class="lab">Watch dn</div><div class="val stop">5961.00</div><div class="meta">ON Low break</div></div>
+        <div class="cell"><div class="lab">R : R</div><div class="val rr">n/a</div><div class="meta">stand aside</div></div>
+      </div>
+      <p class="rationale">
+        Price is pinned to VWAP inside the overnight range with no directional edge — MACD is flat and RSI is parked in the 48–55 neutral zone. With a scheduled data print on the calendar later this morning, the highest-probability action is to <span class="tag">WAIT</span>. Re-evaluate on a decisive break and hold of either the overnight high or low; until then, chop risk outweighs any thin edge.
+      </p>
+      <div class="levels">
+        <span class="chip">ON High <b>5984.25</b></span>
+        <span class="chip">ON Low <b>5961.00</b></span>
+        <span class="chip">VWAP <b>5974.50</b></span>
+        <span class="chip">Opening Range <b>5969 – 5980</b></span>
+      </div>
+      <div class="score">
+        <div class="sc"><span class="pill neutral">NEUTRAL</span> MACD momentum</div>
+        <div class="sc"><span class="pill neutral">NEUTRAL</span> RSI + VWAP</div>
+        <div class="sc"><span class="pill neutral">NEUTRAL</span> CVD divergence</div>
+        <div class="sc"><span class="pill neutral">NEUTRAL</span> Historical match</div>
+        <div class="sc"><span class="pill neutral">NEUTRAL</span> News / macro</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ══════════ CARD 3 — SHORT ══════════ -->
+  <article class="card short">
+    <div class="card-head">
+      <span class="bias short">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 4l3.5 3.5L7 5l4 5" stroke="#ff5d6c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 10h3V7" stroke="#ff5d6c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        SHORT
+      </span>
+      <span class="ticker">MES <span class="px">@ 5996.75</span></span>
+      <span class="conf med">Conviction <b>6/10</b></span>
+      <span class="ts">09:48 AM ET · <span class="sess">RTH</span><br>Jun 15, 2026</span>
+    </div>
+    <div class="card-body">
+      <div class="grid">
+        <div class="cell"><div class="lab">Entry</div><div class="val">5998.00</div><div class="meta">limit · failed test of 6000</div></div>
+        <div class="cell"><div class="lab">Stop</div><div class="val stop">6006.00</div><div class="meta">8 pts · MES −$40</div></div>
+        <div class="cell"><div class="lab">Target 1</div><div class="val t1">5986.00</div><div class="meta">12 pts · MES +$60</div></div>
+        <div class="cell"><div class="lab">Target 2</div><div class="val t2">5978.00</div><div class="meta">20 pts · MES +$100</div></div>
+        <div class="cell"><div class="lab">R : R</div><div class="val rr">1 : 2.0</div><div class="meta">to T2 blended</div></div>
+      </div>
+      <p class="rationale">
+        Two rejections at the <span class="tag">6000 round number</span> with RSI tagging 71 (overbought) and price stretched well above VWAP set up a mean-reversion fade. CVD is printing a bearish divergence — higher price high, lower delta high — suggesting the rally is being sold into. Short the failed retest with a tight stop above the figure; cover into VWAP where buyers historically defend.
+      </p>
+      <div class="levels">
+        <span class="chip">ON High <b>5997.50</b></span>
+        <span class="chip">PDH <b>5991.00</b></span>
+        <span class="chip">VWAP <b>5979.25</b></span>
+        <span class="chip">Round # <b>6000.00</b></span>
+      </div>
+      <div class="score">
+        <div class="sc"><span class="pill fail">FAIL</span> MACD momentum</div>
+        <div class="sc"><span class="pill pass">PASS</span> RSI + VWAP</div>
+        <div class="sc"><span class="pill pass">PASS</span> CVD divergence</div>
+        <div class="sc"><span class="pill pass">PASS</span> Historical match</div>
+        <div class="sc"><span class="pill neutral">NEUTRAL</span> News / macro</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ══════════ CARD 4 — LONG (PRE) ══════════ -->
+  <article class="card long">
+    <div class="card-head">
+      <span class="bias long">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 8l3.5-3.5L7 7l4-5" stroke="#23d18b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 2h3v3" stroke="#23d18b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        LONG
+      </span>
+      <span class="ticker">MES <span class="px">@ 5968.00</span></span>
+      <span class="conf med">Conviction <b>5/10</b></span>
+      <span class="ts">08:30 AM ET · <span class="sess">PRE</span><br>Jun 15, 2026</span>
+    </div>
+    <div class="card-body">
+      <div class="grid">
+        <div class="cell"><div class="lab">Entry</div><div class="val">5966.50</div><div class="meta">limit · reclaim of ON Low</div></div>
+        <div class="cell"><div class="lab">Stop</div><div class="val stop">5959.00</div><div class="meta">7.5 pts · MES −$37.50</div></div>
+        <div class="cell"><div class="lab">Target 1</div><div class="val t1">5977.00</div><div class="meta">10.5 pts · MES +$52.50</div></div>
+        <div class="cell"><div class="lab">Target 2</div><div class="val t2">5984.00</div><div class="meta">17.5 pts · MES +$87.50</div></div>
+        <div class="cell"><div class="lab">R : R</div><div class="val rr">1 : 1.8</div><div class="meta">to T2 blended</div></div>
+      </div>
+      <p class="rationale">
+        Overnight Globex swept the ON Low and snapped back, a bullish reclaim that often carries into the RTH open. Caution flagged — this is the <span class="tag">PRE session</span>, so spreads are wider and depth is thinner; size down and use limit entries only. Momentum on the 15-min is curling up but unconfirmed, which keeps conviction moderate rather than high.
+      </p>
+      <div class="levels">
+        <span class="chip">ON High <b>5979.00</b></span>
+        <span class="chip">ON Low <b>5960.75</b></span>
+        <span class="chip">PDC <b>5972.25</b></span>
+        <span class="chip">Globex VWAP <b>5969.50</b></span>
+      </div>
+      <div class="score">
+        <div class="sc"><span class="pill pass">PASS</span> MACD momentum</div>
+        <div class="sc"><span class="pill neutral">NEUTRAL</span> RSI + VWAP</div>
+        <div class="sc"><span class="pill pass">PASS</span> CVD divergence</div>
+        <div class="sc"><span class="pill pass">PASS</span> Historical match</div>
+        <div class="sc"><span class="pill neutral">NEUTRAL</span> News / macro</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ══════════ CARD 5 — FLAT (overnight caution) ══════════ -->
+  <article class="card flat">
+    <div class="card-head">
+      <span class="bias flat">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8" stroke="#f5c451" stroke-width="1.8" stroke-linecap="round"/></svg>
+        FLAT
+      </span>
+      <span class="ticker">MES <span class="px">@ 5970.50</span></span>
+      <span class="conf low">Conviction <b>2/10</b></span>
+      <span class="ts">06:00 AM ET · <span class="sess">PRE</span><br>Jun 15, 2026</span>
+    </div>
+    <div class="card-body">
+      <div class="grid">
+        <div class="cell"><div class="lab">Entry</div><div class="val">— no trade</div><div class="meta">event ahead</div></div>
+        <div class="cell"><div class="lab">Watch up</div><div class="val t1">5979.00</div><div class="meta">ON High</div></div>
+        <div class="cell"><div class="lab">Watch dn</div><div class="val stop">5960.75</div><div class="meta">ON Low</div></div>
+        <div class="cell"><div class="lab">R : R</div><div class="val rr">n/a</div><div class="meta">stand aside</div></div>
+      </div>
+      <p class="rationale">
+        A scheduled macro print lands inside the next session window, and holding through a binary release can gap MES 20–50+ points in either direction. The engine returns <span class="tag">WAIT</span> here on principle: no positions through the event. Plan to re-engage once the post-release range establishes and volume confirms a side — patience preserves the small-account edge.
+      </p>
+      <div class="levels">
+        <span class="chip">ON High <b>5979.00</b></span>
+        <span class="chip">ON Low <b>5960.75</b></span>
+        <span class="chip">Globex VWAP <b>5969.50</b></span>
+        <span class="chip">10Y yield <b>watch</b></span>
+      </div>
+      <div class="score">
+        <div class="sc"><span class="pill neutral">NEUTRAL</span> MACD momentum</div>
+        <div class="sc"><span class="pill neutral">NEUTRAL</span> RSI + VWAP</div>
+        <div class="sc"><span class="pill neutral">NEUTRAL</span> CVD divergence</div>
+        <div class="sc"><span class="pill neutral">NEUTRAL</span> Historical match</div>
+        <div class="sc"><span class="pill neutral">NEUTRAL</span> News / macro</div>
+      </div>
+    </div>
+  </article>
+
+  <footer>
+    Signal Deck · LLM-generated futures signals on a market-hours schedule · posts to Discord
+    <div class="disc">
+      Paper-trading education only — not financial advice. All prices, levels, and signals on this
+      page are fabricated SAMPLE data for a front-end demo. Futures are leveraged and carry substantial risk.
+    </div>
+  </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HIP-4 Market Database — Collector Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0b0e14;
+    --panel: #11161f;
+    --panel-2: #161c28;
+    --line: #1f2734;
+    --line-soft: #19202c;
+    --txt: #e6ecf3;
+    --muted: #8794a7;
+    --faint: #5d6878;
+    --accent: #4ade9b;      /* hyperliquid-ish mint */
+    --accent-dim: #1f3a2f;
+    --up: #4ade9b;
+    --down: #f87171;
+    --yellow: #fbbf24;
+    --blue: #6aa6ff;
+    --radius: 12px;
+    --shadow: 0 1px 0 rgba(255,255,255,.02), 0 8px 24px rgba(0,0,0,.35);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: radial-gradient(1200px 600px at 80% -10%, #12211c 0%, transparent 55%), var(--bg);
+    color: var(--txt);
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 22px 64px; }
+
+  /* Header */
+  header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 18px; flex-wrap: wrap; margin-bottom: 8px;
+  }
+  .brand { display: flex; align-items: center; gap: 13px; }
+  .logo {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: linear-gradient(150deg, var(--accent) 0%, #2bb37a 100%);
+    display: grid; place-items: center; color: #07140d; font-weight: 700;
+    font-family: "JetBrains Mono", monospace; box-shadow: 0 4px 16px rgba(74,222,155,.25);
+  }
+  h1 { font-size: 18px; margin: 0; letter-spacing: -.2px; }
+  .sub { color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+  .sub code { font-family: "JetBrains Mono", monospace; color: var(--accent); font-size: 11.5px; }
+  .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+  .badge {
+    font-family: "JetBrains Mono", monospace; font-size: 11px;
+    background: rgba(251,191,36,.1); color: var(--yellow);
+    border: 1px solid rgba(251,191,36,.3); padding: 4px 10px; border-radius: 999px;
+    letter-spacing: .3px;
+  }
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 7px; font-size: 11.5px;
+    color: var(--muted); font-family: "JetBrains Mono", monospace;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+    box-shadow: 0 0 0 3px rgba(74,222,155,.18); animation: pulse 2.4s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: .45 } }
+
+  .readonly-note {
+    margin: 18px 0 22px; padding: 11px 15px; border-radius: 10px;
+    background: linear-gradient(90deg, rgba(106,166,255,.07), transparent);
+    border: 1px solid var(--line); border-left: 3px solid var(--blue);
+    color: var(--muted); font-size: 12.5px;
+  }
+  .readonly-note strong { color: var(--txt); font-weight: 600; }
+
+  /* Stat tiles */
+  .tiles {
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 26px;
+  }
+  .tile {
+    background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 15px 15px 14px; box-shadow: var(--shadow); position: relative; overflow: hidden;
+  }
+  .tile .label {
+    font-size: 10.5px; text-transform: uppercase; letter-spacing: .6px;
+    color: var(--faint); font-weight: 600;
+  }
+  .tile .val {
+    font-family: "JetBrains Mono", monospace; font-size: 24px; font-weight: 600;
+    margin-top: 7px; letter-spacing: -.5px; line-height: 1;
+  }
+  .tile .meta { font-size: 11px; color: var(--muted); margin-top: 6px; }
+  .tile .meta .g { color: var(--up); }
+  .tile.accent .val { color: var(--accent); }
+
+  /* Section heading */
+  .section-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin: 4px 0 14px; gap: 12px; flex-wrap: wrap;
+  }
+  .section-head h2 { font-size: 14px; margin: 0; font-weight: 600; letter-spacing: .1px; }
+  .section-head .hint { color: var(--faint); font-size: 11.5px; }
+
+  /* Table */
+  .table-card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+    overflow: hidden; box-shadow: var(--shadow);
+  }
+  .tscroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 880px; }
+  thead th {
+    text-align: left; font-size: 10.5px; text-transform: uppercase; letter-spacing: .5px;
+    color: var(--faint); font-weight: 600; padding: 12px 14px;
+    border-bottom: 1px solid var(--line); background: var(--panel-2); white-space: nowrap;
+  }
+  th.num, td.num { text-align: right; }
+  tbody td {
+    padding: 13px 14px; border-bottom: 1px solid var(--line-soft);
+    font-size: 13px; vertical-align: middle; white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,.015); }
+  .q { white-space: normal; min-width: 240px; max-width: 320px; }
+  .q .qtext { font-weight: 500; color: var(--txt); }
+  .q .qsub { font-size: 11px; color: var(--faint); margin-top: 2px;
+    font-family: "JetBrains Mono", monospace; }
+  .mono { font-family: "JetBrains Mono", monospace; }
+  .type {
+    font-family: "JetBrains Mono", monospace; font-size: 10.5px; padding: 2px 7px;
+    border-radius: 5px; border: 1px solid var(--line); color: var(--muted);
+    background: var(--panel-2);
+  }
+  .type.priceBinary { color: var(--accent); border-color: var(--accent-dim); background: rgba(74,222,155,.06); }
+  .type.priceBucket { color: var(--blue); border-color: rgba(106,166,255,.25); background: rgba(106,166,255,.06); }
+  .type.categorical { color: var(--yellow); border-color: rgba(251,191,36,.25); background: rgba(251,191,36,.06); }
+  .type.binary { color: #c4a5f5; border-color: rgba(196,165,245,.25); background: rgba(196,165,245,.06); }
+
+  .yes { font-family: "JetBrains Mono", monospace; font-weight: 600; font-size: 14px; }
+  .chg { font-family: "JetBrains Mono", monospace; font-size: 12.5px; font-weight: 500; }
+  .chg.up { color: var(--up); }
+  .chg.down { color: var(--down); }
+  .chg.flat { color: var(--faint); }
+  .spread, .depth, .snaps { font-family: "JetBrains Mono", monospace; font-size: 12.5px; color: var(--muted); }
+
+  /* Sparkline */
+  .spark { display: block; }
+  .spark-cell { width: 116px; }
+
+  /* Footer */
+  footer {
+    margin-top: 30px; color: var(--faint); font-size: 11.5px; line-height: 1.7;
+    border-top: 1px solid var(--line-soft); padding-top: 18px;
+  }
+  footer code { font-family: "JetBrains Mono", monospace; color: var(--muted); }
+  .ftgrid { display: flex; gap: 28px; flex-wrap: wrap; }
+
+  @media (max-width: 900px) {
+    .tiles { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 540px) {
+    .tiles { grid-template-columns: repeat(2, 1fr); }
+    .tile .val { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <div class="logo">H4</div>
+      <div>
+        <h1>HIP-4 Market Database</h1>
+        <div class="sub">Read-only collector · Hyperliquid Outcome Markets · <code>data/hip4.db</code></div>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="badge">Demo · sample data</span>
+      <span class="status-pill"><span class="dot"></span>collecting · every 5 min</span>
+    </div>
+  </header>
+
+  <div class="readonly-note">
+    <strong>Research data-collector, not a trader.</strong>
+    This service snapshots public YES/NO prices and order books from Hyperliquid's HIP-4
+    on-chain prediction markets (fully-collateralized contracts that settle $0 / $1) into a
+    local SQLite database, to characterize <em>what moves these markets</em>. It places no
+    orders and needs no wallet — all reads hit the public <code style="color:var(--accent)">/info</code> endpoint.
+  </div>
+
+  <!-- DB STAT TILES -->
+  <div class="tiles">
+    <div class="tile accent">
+      <div class="label">Markets tracked</div>
+      <div class="val">34</div>
+      <div class="meta">11 live · 23 expired</div>
+    </div>
+    <div class="tile">
+      <div class="label">Snapshots</div>
+      <div class="val">8,420</div>
+      <div class="meta"><span class="g">+11</span> this cycle</div>
+    </div>
+    <div class="tile">
+      <div class="label">Candle rows</div>
+      <div class="val">19,734</div>
+      <div class="meta">1h OHLCV, both sides</div>
+    </div>
+    <div class="tile">
+      <div class="label">Resolved</div>
+      <div class="val">23</div>
+      <div class="meta">favorites won 68%</div>
+    </div>
+    <div class="tile">
+      <div class="label">Last collection</div>
+      <div class="val" style="font-size:17px;">02:35<span style="color:var(--faint);font-size:12px;"> UTC</span></div>
+      <div class="meta">2026-06-15 · cycle ok</div>
+    </div>
+    <div class="tile">
+      <div class="label">Collecting since</div>
+      <div class="val" style="font-size:17px;">May 28</div>
+      <div class="meta">18d · 5,184 cycles</div>
+    </div>
+  </div>
+
+  <!-- TRACKED MARKETS -->
+  <div class="section-head">
+    <h2>Tracked outcome markets <span style="color:var(--faint);font-weight:400;">· live</span></h2>
+    <span class="hint">YES price = implied probability · order-book derived · 24h window</span>
+  </div>
+
+  <div class="table-card">
+    <div class="tscroll">
+    <table>
+      <thead>
+        <tr>
+          <th class="q">Question</th>
+          <th>Type</th>
+          <th class="num">YES</th>
+          <th class="num">24h</th>
+          <th class="num">Spread</th>
+          <th class="num">Depth</th>
+          <th class="spark-cell">YES history (7d)</th>
+          <th class="num">Snaps</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+    </div>
+  </div>
+
+  <footer>
+    <div class="ftgrid">
+      <div>
+        <strong style="color:var(--muted)">Schema</strong><br />
+        <code>markets</code> · <code>questions</code> · <code>snapshots</code> · <code>candles</code> · <code>characteristics</code>
+      </div>
+      <div>
+        <strong style="color:var(--muted)">Source</strong><br />
+        <code>POST /info</code> → <code>outcomeMeta</code> · <code>allMids</code> · <code>candleSnapshot</code>
+      </div>
+      <div>
+        <strong style="color:var(--muted)">Why forward-only</strong><br />
+        the public API drops a market's history once it delists — the DB must accumulate live.
+      </div>
+    </div>
+    <div style="margin-top:16px; color:var(--faint)">
+      Stdlib-only Python (<code>sqlite3</code>, <code>urllib</code>) · read-only by design · sample figures for portfolio demo.
+    </div>
+  </footer>
+
+</div>
+
+<script>
+// ---- Sample data (plausible HIP-4 markets) -------------------------------
+// Each "history" is YES price over the last ~7d (1h-ish thinned points, 0..1).
+const MARKETS = [
+  {
+    q: "Will BTC close above $74,000 on Jun 15?",
+    sub: "priceBinary · BTC · 20260615-0600 · 1d",
+    type: "priceBinary",
+    yes: 0.62, chg: +0.07, spread: 0.012, depth: "$41.2k", snaps: 312,
+    history: [.49,.50,.48,.51,.53,.50,.47,.45,.48,.52,.55,.54,.51,.49,.53,.57,.56,.55,.58,.60,.59,.57,.61,.62]
+  },
+  {
+    q: "Will BTC trade in $72,000–$75,000 this week?",
+    sub: "priceBucket · BTC · thresholds 72000,75000",
+    type: "priceBucket",
+    yes: 0.44, chg: -0.05, spread: 0.018, depth: "$23.8k", snaps: 287,
+    history: [.52,.53,.51,.50,.49,.51,.54,.55,.53,.50,.48,.49,.47,.46,.48,.49,.47,.45,.46,.44,.45,.43,.44,.44]
+  },
+  {
+    q: "Will the Fed change rates at the June meeting?",
+    sub: "binary · standalone · 20260618-1800",
+    type: "binary",
+    yes: 0.18, chg: -0.02, spread: 0.020, depth: "$15.1k", snaps: 264,
+    history: [.27,.26,.25,.24,.26,.23,.22,.21,.23,.22,.20,.21,.19,.20,.18,.19,.20,.19,.18,.17,.19,.18,.18,.18]
+  },
+  {
+    q: "CPI YoY for May: Above 3.3%?",
+    sub: "categorical · CPI · named outcome",
+    type: "categorical",
+    yes: 0.71, chg: +0.04, spread: 0.014, depth: "$28.6k", snaps: 256,
+    history: [.61,.62,.63,.62,.64,.66,.65,.64,.66,.68,.67,.69,.68,.70,.69,.68,.70,.71,.70,.72,.71,.70,.72,.71]
+  },
+  {
+    q: "Will ETH close above $3,800 on Jun 15?",
+    sub: "priceBinary · ETH · 20260615-0600 · 1d",
+    type: "priceBinary",
+    yes: 0.39, chg: +0.11, spread: 0.016, depth: "$19.4k", snaps: 241,
+    history: [.22,.24,.23,.25,.27,.26,.28,.30,.29,.31,.30,.33,.34,.32,.35,.36,.34,.37,.38,.36,.39,.40,.38,.39]
+  },
+  {
+    q: "Will BTC close above $80,000 this month?",
+    sub: "priceBinary · BTC · 20260701-0600 · 1m",
+    type: "priceBinary",
+    yes: 0.27, chg: -0.03, spread: 0.022, depth: "$12.0k", snaps: 233,
+    history: [.33,.32,.34,.31,.30,.32,.29,.30,.28,.29,.27,.28,.26,.27,.29,.28,.26,.27,.28,.26,.27,.28,.27,.27]
+  },
+  {
+    q: "Will SOL outperform ETH this week?",
+    sub: "binary · standalone · 20260620-0600",
+    type: "binary",
+    yes: 0.53, chg: +0.00, spread: 0.026, depth: "$8.7k", snaps: 198,
+    history: [.50,.52,.51,.49,.50,.52,.54,.53,.51,.50,.52,.51,.53,.52,.50,.51,.53,.52,.54,.53,.52,.54,.53,.53]
+  },
+  {
+    q: "Will BTC trade in $75,000–$78,000 this week?",
+    sub: "priceBucket · BTC · thresholds 75000,78000",
+    type: "priceBucket",
+    yes: 0.31, chg: +0.06, spread: 0.020, depth: "$14.9k", snaps: 187,
+    history: [.20,.22,.21,.23,.22,.24,.26,.25,.27,.26,.28,.27,.29,.28,.30,.29,.28,.30,.31,.30,.29,.31,.32,.31]
+  },
+  {
+    q: "Will the Fed cut at least 25bps by July?",
+    sub: "binary · standalone · 20260731-1800",
+    type: "binary",
+    yes: 0.46, chg: -0.08, spread: 0.018, depth: "$17.3k", snaps: 176,
+    history: [.58,.57,.59,.56,.54,.55,.53,.52,.54,.51,.50,.49,.51,.48,.49,.47,.48,.46,.47,.45,.46,.47,.45,.46]
+  },
+  {
+    q: "CPI YoY for May: Below 3.0%?",
+    sub: "categorical · CPI · named outcome",
+    type: "categorical",
+    yes: 0.09, chg: -0.01, spread: 0.024, depth: "$6.2k", snaps: 154,
+    history: [.14,.13,.14,.12,.13,.11,.12,.10,.11,.10,.12,.11,.10,.09,.10,.11,.10,.09,.10,.09,.08,.09,.10,.09]
+  },
+  {
+    q: "Will HYPE close above $42 on Jun 15?",
+    sub: "priceBinary · HYPE · 20260615-0600 · 1d",
+    type: "priceBinary",
+    yes: 0.58, chg: +0.03, spread: 0.028, depth: "$9.5k", snaps: 121,
+    history: [.50,.51,.52,.51,.53,.52,.54,.53,.55,.54,.56,.55,.54,.56,.55,.57,.56,.55,.57,.58,.57,.56,.58,.58]
+  }
+];
+
+// ---- Sparkline builder (inline SVG) --------------------------------------
+function sparkline(data, up) {
+  const W = 104, H = 30, pad = 2;
+  const min = Math.min(...data), max = Math.max(...data);
+  const span = (max - min) || 1;
+  const stepX = (W - pad * 2) / (data.length - 1);
+  const pts = data.map((v, i) => {
+    const x = pad + i * stepX;
+    const y = pad + (1 - (v - min) / span) * (H - pad * 2);
+    return [x, y];
+  });
+  const line = pts.map((p, i) => (i === 0 ? "M" : "L") + p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" ");
+  const area = line + ` L${pts[pts.length-1][0].toFixed(1)},${H-pad} L${pts[0][0].toFixed(1)},${H-pad} Z`;
+  const col = up > 0 ? "#4ade9b" : up < 0 ? "#f87171" : "#8794a7";
+  const id = "g" + Math.random().toString(36).slice(2, 8);
+  const last = pts[pts.length - 1];
+  return `
+  <svg class="spark" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true">
+    <defs>
+      <linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${col}" stop-opacity="0.22"/>
+        <stop offset="100%" stop-color="${col}" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <path d="${area}" fill="url(#${id})"/>
+    <path d="${line}" fill="none" stroke="${col}" stroke-width="1.5"
+          stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="1.8" fill="${col}"/>
+  </svg>`;
+}
+
+// ---- Render --------------------------------------------------------------
+function fmtChg(c) {
+  if (Math.abs(c) < 0.005) return { cls: "flat", txt: "0.0¢" };
+  const cents = (c * 100).toFixed(1);
+  return c > 0
+    ? { cls: "up", txt: "▲ " + cents + "¢" }
+    : { cls: "down", txt: "▼ " + Math.abs(cents).toFixed(1) + "¢" };
+}
+
+const rows = document.getElementById("rows");
+rows.innerHTML = MARKETS.map(m => {
+  const c = fmtChg(m.chg);
+  const yesCol = m.yes >= 0.5 ? "var(--accent)" : "var(--txt)";
+  return `
+    <tr>
+      <td class="q">
+        <div class="qtext">${m.q}</div>
+        <div class="qsub">${m.sub}</div>
+      </td>
+      <td><span class="type ${m.type}">${m.type}</span></td>
+      <td class="num"><span class="yes" style="color:${yesCol}">${(m.yes*100).toFixed(0)}¢</span></td>
+      <td class="num"><span class="chg ${c.cls}">${c.txt}</span></td>
+      <td class="num"><span class="spread">${(m.spread*100).toFixed(1)}¢</span></td>
+      <td class="num"><span class="depth">${m.depth}</span></td>
+      <td class="spark-cell">${sparkline(m.history, m.chg)}</td>
+      <td class="num"><span class="snaps">${m.snaps}</span></td>
+    </tr>`;
+}).join("");
+</script>
+</body>
+</html>

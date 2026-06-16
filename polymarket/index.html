@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Polymarket Dip-Reversion · Edge Research</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --accent:#2563eb;--bg:#0d1117;--card:#161b22;--card2:#11161d;--line:#262d38;
+  --text:#e6edf3;--muted:#8b949e;--pos:#3fb950;--neg:#f85149;--amber:#d29922;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+body{
+  font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg);color:var(--text);margin:0;font-size:14px;line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:26px 22px 60px}
+a{color:var(--accent);text-decoration:none}
+
+/* header */
+.top{display:flex;align-items:center;gap:13px;flex-wrap:wrap;margin-bottom:6px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--pos);box-shadow:0 0 12px var(--pos);flex:none}
+.title{font-size:20px;font-weight:700;letter-spacing:-.2px}
+.tag{font-size:12.5px;color:var(--muted);margin-top:2px}
+.badge-demo{margin-left:auto;font-size:11px;font-weight:600;color:var(--amber);
+  background:rgba(210,153,34,.13);border:1px solid rgba(210,153,34,.35);
+  padding:4px 11px;border-radius:20px;letter-spacing:.3px;white-space:nowrap}
+.subbar{display:flex;gap:18px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin:14px 0 22px}
+.subbar .mono{font-family:var(--mono)}
+.subbar b{color:var(--text);font-weight:600}
+
+/* cards */
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:16px}
+.sec{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin:0 0 14px;display:flex;align-items:center;gap:8px}
+.sec .pill-r{font-family:var(--mono);text-transform:none;letter-spacing:0;color:var(--muted);font-weight:400;font-size:11px}
+
+/* headline insight */
+.insight{border-color:#2a3550;background:linear-gradient(135deg,rgba(37,99,235,.10),rgba(37,99,235,.02))}
+.insight .lead{font-size:18px;font-weight:600;line-height:1.45;letter-spacing:-.2px}
+.insight .lead .hl{color:#7aa7ff}
+.insight .lead .hl2{color:var(--pos)}
+.insight .body{color:var(--muted);font-size:13.5px;margin-top:12px;max-width:78ch}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.chip{font-size:11.5px;font-family:var(--mono);color:var(--muted);background:rgba(255,255,255,.04);
+  border:1px solid var(--line);border-radius:7px;padding:5px 10px}
+.chip b{color:var(--text);font-weight:600}
+
+/* layout grid */
+.grid2{display:grid;grid-template-columns:1.15fr 1fr;gap:16px}
+@media(max-width:880px){.grid2{grid-template-columns:1fr}}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+@media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 16px}
+.stat .k{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.stat .v{font-size:23px;font-weight:700;font-family:var(--mono);margin-top:5px;letter-spacing:-.5px}
+.stat .d{font-size:11.5px;color:var(--muted);margin-top:3px}
+
+/* chart */
+.chart-note{color:var(--muted);font-size:12.5px;margin:-4px 0 16px;max-width:70ch}
+.svg-host{width:100%}
+.svg-host svg{display:block;width:100%;height:auto}
+.bar-rect{transition:opacity .15s}
+.gradient-row{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:10px;border-top:1px dashed var(--line);padding-top:10px}
+
+/* themed mini bars (exposure) */
+.expo{display:flex;flex-direction:column;gap:11px;margin-top:2px}
+.expo .row{display:grid;grid-template-columns:120px 1fr 48px;align-items:center;gap:12px}
+.expo .lbl{font-size:12.5px;color:var(--text)}
+.expo .track{height:9px;background:rgba(255,255,255,.05);border-radius:6px;overflow:hidden}
+.expo .fill{height:100%;border-radius:6px}
+.expo .pct{font-family:var(--mono);font-size:12px;color:var(--muted);text-align:right}
+
+/* table */
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:9px 10px;color:var(--muted);font-weight:500;font-size:10.5px;
+  text-transform:uppercase;letter-spacing:.3px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:rgba(255,255,255,.022)}
+.mono{font-family:var(--mono)}
+.pos{color:var(--pos)}.neg{color:var(--neg)}.muted{color:var(--muted)}
+.qcell{max-width:300px}
+.qcell .cat{display:inline-block;font-size:10px;font-family:var(--mono);text-transform:uppercase;
+  letter-spacing:.4px;padding:2px 7px;border-radius:5px;margin-right:7px;vertical-align:1px}
+.cat.geo{background:rgba(248,81,73,.14);color:#ff8a80}
+.cat.pol{background:rgba(37,99,235,.16);color:#7aa7ff}
+.size-pills{display:inline-flex;gap:2px}
+.size-pills i{width:5px;height:13px;border-radius:1.5px;background:var(--line);display:inline-block}
+.size-pills i.on{background:var(--accent)}
+.depth-tag{font-family:var(--mono);font-size:12px}
+.t-right{text-align:right}
+
+.foot{color:var(--muted);font-size:11.5px;text-align:center;margin-top:30px;line-height:1.7}
+.foot code{font-family:var(--mono);color:#9aa4b0}
+.warn{color:var(--amber)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== HEADER ===== -->
+  <div class="top">
+    <span class="dot"></span>
+    <div>
+      <div class="title">Polymarket Edge Research — Dip-Reversion Desk</div>
+      <div class="tag">Quantitative study · paper-trading bot · last cycle 2026-06-15 14:05 UTC</div>
+    </div>
+    <span class="badge-demo">Demo · sample data</span>
+  </div>
+  <div class="subbar">
+    <span>Source: <b>Dune Analytics</b> on-chain fills</span>
+    <span class="mono">n = 42,118 cheap dips backtested</span>
+    <span>Universe: <b>geopolitics + politics</b>, liquid (≥$25k)</span>
+    <span>Fill model: <b>maker</b> (rest limit, capture spread)</span>
+    <span class="mono">real-money gate: <span class="warn">HARD-OFF</span></span>
+  </div>
+
+  <!-- ===== HEADLINE INSIGHT ===== -->
+  <div class="card insight">
+    <div class="sec">&#9889; Headline insight</div>
+    <div class="lead">
+      Profitable traders win on <span class="hl2">execution, not prediction</span> — the one replicable,
+      no-speed-race edge is slow news-driven <span class="hl">dip-reversion</span>.
+    </div>
+    <div class="body">
+      Buy the crowd's overreaction dips in liquid geopolitics/politics markets and flip ~12h later, before the
+      bounce fades. The edge is <b>monotonic in dip depth</b>: shallow dips (&lt;7¢) are dead after the
+      ~1¢ spread, but deep dips bounce hard — so capital is concentrated on depth via conviction sizing
+      (1–5 units). Crypto and sports show <b>no</b> dip edge and are excluded.
+    </div>
+    <div class="chips">
+      <span class="chip">edge driver: <b>dip DEPTH</b> (band is flat)</span>
+      <span class="chip">hold: <b>~12h flip</b>, bounce peaks then fades</span>
+      <span class="chip">detect window: <b>24h lookback</b></span>
+      <span class="chip">correlation cap: <b>2 / theme</b></span>
+      <span class="chip">shallow &lt;7¢ tier: <b>cut</b> (dead after cost)</span>
+    </div>
+  </div>
+
+  <!-- ===== SUMMARY STATS ===== -->
+  <div class="stats">
+    <div class="stat">
+      <div class="k">Flip trades (paper)</div>
+      <div class="v">128</div>
+      <div class="d">+ 19 open · 41 held-to-res</div>
+    </div>
+    <div class="stat">
+      <div class="k">Avg ¢ / bet (size-wtd)</div>
+      <div class="v pos">+0.74¢</div>
+      <div class="d">unweighted +0.38¢ · net of spread</div>
+    </div>
+    <div class="stat">
+      <div class="k">Win rate</div>
+      <div class="v">54%</div>
+      <div class="d">flip exits, n=128</div>
+    </div>
+    <div class="stat">
+      <div class="k">Theme exposure</div>
+      <div class="v">5</div>
+      <div class="d">themes open · max 2 / theme</div>
+    </div>
+  </div>
+
+  <!-- ===== DEPTH-EDGE CHART + EXPOSURE ===== -->
+  <div class="grid2">
+
+    <!-- depth edge bar chart -->
+    <div class="card">
+      <div class="sec">&#128200; Bounce edge by dip-depth tier <span class="pill-r">12h flip · gross ¢ · Dune backtest</span></div>
+      <div class="chart-note">
+        Per-trade gross bounce, before the measured ~1¢ spread. The gradient is strictly increasing —
+        the entire edge lives in <b>how deep</b> the dip is, which is exactly what conviction sizing exploits.
+      </div>
+      <div class="svg-host">
+        <!-- inline SVG bar chart -->
+        <svg viewBox="0 0 560 320" role="img" aria-label="Bounce edge by dip-depth tier">
+          <defs>
+            <linearGradient id="barGrad" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0" stop-color="#1f6f3e"/>
+              <stop offset="1" stop-color="#3fb950"/>
+            </linearGradient>
+          </defs>
+
+          <!-- y grid + labels (0 .. 7c) -->
+          <!-- plot area: x 56..540, y 20..270 ; max value 7.0c -->
+          <g font-family="JetBrains Mono, monospace" font-size="11" fill="#8b949e">
+            <!-- gridlines every 1c -->
+            <line x1="56" y1="270" x2="540" y2="270" stroke="#262d38"/>
+            <line x1="56" y1="234.3" x2="540" y2="234.3" stroke="#1c232d"/>
+            <line x1="56" y1="198.6" x2="540" y2="198.6" stroke="#1c232d"/>
+            <line x1="56" y1="162.9" x2="540" y2="162.9" stroke="#1c232d"/>
+            <line x1="56" y1="127.1" x2="540" y2="127.1" stroke="#1c232d"/>
+            <line x1="56" y1="91.4" x2="540" y2="91.4" stroke="#1c232d"/>
+            <line x1="56" y1="55.7" x2="540" y2="55.7" stroke="#1c232d"/>
+            <line x1="56" y1="20" x2="540" y2="20" stroke="#1c232d"/>
+            <text x="48" y="274" text-anchor="end">0</text>
+            <text x="48" y="238" text-anchor="end">1¢</text>
+            <text x="48" y="202" text-anchor="end">2¢</text>
+            <text x="48" y="166" text-anchor="end">3¢</text>
+            <text x="48" y="131" text-anchor="end">4¢</text>
+            <text x="48" y="95" text-anchor="end">5¢</text>
+            <text x="48" y="59" text-anchor="end">6¢</text>
+            <text x="48" y="24" text-anchor="end">7¢</text>
+          </g>
+
+          <!-- bars: each value -> height = v/7 * 250 ; baseline y=270 -->
+          <!-- 5 tiers, slot width ~96, bar width 60 -->
+          <g font-family="JetBrains Mono, monospace">
+            <!-- .07-.10 = 0.95 -> h=33.9 -->
+            <rect class="bar-rect" x="74"  y="236.1" width="60" height="33.9" rx="3" fill="url(#barGrad)" opacity=".82"/>
+            <text x="104" y="227" text-anchor="middle" font-size="12" font-weight="600" fill="#3fb950">+0.95¢</text>
+            <!-- .10-.14 = 1.51 -> h=53.9 -->
+            <rect class="bar-rect" x="170" y="216.1" width="60" height="53.9" rx="3" fill="url(#barGrad)" opacity=".86"/>
+            <text x="200" y="207" text-anchor="middle" font-size="12" font-weight="600" fill="#3fb950">+1.51¢</text>
+            <!-- .14-.20 = 2.43 -> h=86.8 -->
+            <rect class="bar-rect" x="266" y="183.2" width="60" height="86.8" rx="3" fill="url(#barGrad)" opacity=".90"/>
+            <text x="296" y="174" text-anchor="middle" font-size="12" font-weight="600" fill="#3fb950">+2.43¢</text>
+            <!-- .20-.30 = 3.70 -> h=132.1 -->
+            <rect class="bar-rect" x="362" y="137.9" width="60" height="132.1" rx="3" fill="url(#barGrad)" opacity=".95"/>
+            <text x="392" y="129" text-anchor="middle" font-size="12" font-weight="600" fill="#3fb950">+3.70¢</text>
+            <!-- .30+ = 6.49 -> h=231.8 -->
+            <rect class="bar-rect" x="458" y="38.2" width="60" height="231.8" rx="3" fill="url(#barGrad)" opacity="1"/>
+            <text x="488" y="29" text-anchor="middle" font-size="12" font-weight="600" fill="#3fb950">+6.49¢</text>
+          </g>
+
+          <!-- x axis tier labels -->
+          <g font-family="JetBrains Mono, monospace" font-size="10.5" fill="#8b949e" text-anchor="middle">
+            <text x="104" y="288">.07–.10</text>
+            <text x="200" y="288">.10–.14</text>
+            <text x="296" y="288">.14–.20</text>
+            <text x="392" y="288">.20–.30</text>
+            <text x="488" y="288">.30+</text>
+          </g>
+          <text x="298" y="310" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#6e7681">dip depth (cheap-side price drop over 24h)</text>
+
+          <!-- ~1c spread cost reference line -->
+          <line x1="56" y1="234.3" x2="540" y2="234.3" stroke="#f85149" stroke-width="1" stroke-dasharray="4 4" opacity=".55"/>
+          <text x="540" y="248" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#f85149" opacity=".85">~1¢ spread cost</text>
+        </svg>
+      </div>
+      <div class="gradient-row">
+        <span>shallow tiers (&lt;.07) cut — dead after cost</span>
+        <span>sizing 1u &rarr; 5u</span>
+      </div>
+    </div>
+
+    <!-- theme exposure -->
+    <div class="card">
+      <div class="sec">&#129517; Theme exposure (open book) <span class="pill-r">19 positions · cap 2/theme</span></div>
+      <div class="chart-note">Correlation cap keeps any single news theme from dominating — at most 2 open positions per theme.</div>
+      <div class="expo">
+        <div class="row">
+          <span class="lbl">Iran / Israel</span>
+          <span class="track"><span class="fill" style="width:100%;background:#f85149"></span></span>
+          <span class="pct">2</span>
+        </div>
+        <div class="row">
+          <span class="lbl">Ukraine / Russia</span>
+          <span class="track"><span class="fill" style="width:100%;background:#f85149"></span></span>
+          <span class="pct">2</span>
+        </div>
+        <div class="row">
+          <span class="lbl">US elections</span>
+          <span class="track"><span class="fill" style="width:100%;background:#2563eb"></span></span>
+          <span class="pct">2</span>
+        </div>
+        <div class="row">
+          <span class="lbl">Venezuela</span>
+          <span class="track"><span class="fill" style="width:50%;background:#f85149"></span></span>
+          <span class="pct">1</span>
+        </div>
+        <div class="row">
+          <span class="lbl">Gov shutdown</span>
+          <span class="track"><span class="fill" style="width:50%;background:#2563eb"></span></span>
+          <span class="pct">1</span>
+        </div>
+      </div>
+      <div class="gradient-row">
+        <span>geopolitics</span><span>politics</span>
+      </div>
+
+      <div class="sec" style="margin-top:22px">P&amp;L variants <span class="pill-r">net of measured spread</span></div>
+      <div class="expo">
+        <div class="row">
+          <span class="lbl">24h flip exit</span>
+          <span class="track"><span class="fill" style="width:62%;background:var(--pos)"></span></span>
+          <span class="pct pos">+0.74¢</span>
+        </div>
+        <div class="row">
+          <span class="lbl">Hold-to-res</span>
+          <span class="track"><span class="fill" style="width:46%;background:var(--pos)"></span></span>
+          <span class="pct pos">+0.21¢</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== OPEN POSITIONS TABLE ===== -->
+  <div class="card">
+    <div class="sec">&#128221; Paper dip-bot — open positions <span class="pill-r">forward 12h · fill=maker · paper only</span></div>
+    <table>
+      <thead>
+        <tr>
+          <th class="qcell">Market</th>
+          <th class="t-right">Entry</th>
+          <th class="t-right">Dip 24h</th>
+          <th>Size</th>
+          <th class="t-right">Current</th>
+          <th class="t-right">Fwd-12h P&amp;L</th>
+          <th class="t-right">Liq</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="qcell"><span class="cat geo">geo</span>Will Iran and Israel reach a ceasefire by July 31?</td>
+          <td class="t-right mono">0.21</td>
+          <td class="t-right mono neg">−0.31</td>
+          <td><span class="size-pills"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span> <span class="muted mono">5u</span></td>
+          <td class="t-right mono">0.27</td>
+          <td class="t-right mono pos">+6.0¢</td>
+          <td class="t-right mono muted">$184k</td>
+        </tr>
+        <tr>
+          <td class="qcell"><span class="cat geo">geo</span>Will Israel strike Iranian nuclear sites before Aug 1?</td>
+          <td class="t-right mono">0.34</td>
+          <td class="t-right mono neg">−0.22</td>
+          <td><span class="size-pills"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span> <span class="muted mono">4u</span></td>
+          <td class="t-right mono">0.37</td>
+          <td class="t-right mono pos">+3.1¢</td>
+          <td class="t-right mono muted">$92k</td>
+        </tr>
+        <tr>
+          <td class="qcell"><span class="cat geo">geo</span>Will Russia and Ukraine sign a ceasefire in 2026?</td>
+          <td class="t-right mono">0.18</td>
+          <td class="t-right mono neg">−0.16</td>
+          <td><span class="size-pills"><i class="on"></i><i class="on"></i><i class="on"></i></span> <span class="muted mono">3u</span></td>
+          <td class="t-right mono">0.19</td>
+          <td class="t-right mono pos">+1.2¢</td>
+          <td class="t-right mono muted">$61k</td>
+        </tr>
+        <tr>
+          <td class="qcell"><span class="cat geo">geo</span>Will Zelensky leave office before October 2026?</td>
+          <td class="t-right mono">0.12</td>
+          <td class="t-right mono neg">−0.11</td>
+          <td><span class="size-pills"><i class="on"></i><i class="on"></i></span> <span class="muted mono">2u</span></td>
+          <td class="t-right mono">0.115</td>
+          <td class="t-right mono neg">−0.5¢</td>
+          <td class="t-right mono muted">$44k</td>
+        </tr>
+        <tr>
+          <td class="qcell"><span class="cat pol">pol</span>Will the US government shut down before Oct 15?</td>
+          <td class="t-right mono">0.29</td>
+          <td class="t-right mono neg">−0.24</td>
+          <td><span class="size-pills"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span> <span class="muted mono">4u</span></td>
+          <td class="t-right mono">0.33</td>
+          <td class="t-right mono pos">+4.0¢</td>
+          <td class="t-right mono muted">$118k</td>
+        </tr>
+        <tr>
+          <td class="qcell"><span class="cat pol">pol</span>Will Trump pardon a January 6 defendant by Sept 1?</td>
+          <td class="t-right mono">0.41</td>
+          <td class="t-right mono neg">−0.09</td>
+          <td><span class="size-pills"><i class="on"></i></span> <span class="muted mono">1u</span></td>
+          <td class="t-right mono">0.415</td>
+          <td class="t-right mono pos">+0.5¢</td>
+          <td class="t-right mono muted">$73k</td>
+        </tr>
+        <tr>
+          <td class="qcell"><span class="cat pol">pol</span>Will a new Speaker be elected before the August recess?</td>
+          <td class="t-right mono">0.16</td>
+          <td class="t-right mono neg">−0.13</td>
+          <td><span class="size-pills"><i class="on"></i><i class="on"></i></span> <span class="muted mono">2u</span></td>
+          <td class="t-right mono">0.155</td>
+          <td class="t-right mono neg">−0.5¢</td>
+          <td class="t-right mono muted">$38k</td>
+        </tr>
+        <tr>
+          <td class="qcell"><span class="cat geo">geo</span>Will the US conduct a military strike on Venezuela in 2026?</td>
+          <td class="t-right mono">0.23</td>
+          <td class="t-right mono neg">−0.19</td>
+          <td><span class="size-pills"><i class="on"></i><i class="on"></i><i class="on"></i></span> <span class="muted mono">3u</span></td>
+          <td class="t-right mono">0.245</td>
+          <td class="t-right mono pos">+1.5¢</td>
+          <td class="t-right mono muted">$57k</td>
+        </tr>
+        <tr>
+          <td class="qcell"><span class="cat geo">geo</span>Will there be a Hezbollah–Israel ceasefire by Aug 31?</td>
+          <td class="t-right mono">0.27</td>
+          <td class="t-right mono neg">−0.17</td>
+          <td><span class="size-pills"><i class="on"></i><i class="on"></i><i class="on"></i></span> <span class="muted mono">3u</span></td>
+          <td class="t-right mono">0.275</td>
+          <td class="t-right mono pos">+0.5¢</td>
+          <td class="t-right mono muted">$49k</td>
+        </tr>
+        <tr>
+          <td class="qcell"><span class="cat pol">pol</span>Will the Senate confirm the new cabinet nominee by July 20?</td>
+          <td class="t-right mono">0.38</td>
+          <td class="t-right mono neg">−0.10</td>
+          <td><span class="size-pills"><i class="on"></i><i class="on"></i></span> <span class="muted mono">2u</span></td>
+          <td class="t-right mono">0.39</td>
+          <td class="t-right mono pos">+1.0¢</td>
+          <td class="t-right mono muted">$66k</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="gradient-row" style="margin-top:14px">
+      <span>showing 10 of 19 open · forward P&amp;L marks to live mid, not yet realized</span>
+      <span class="pos">open book mark: +1.78¢ avg</span>
+    </div>
+  </div>
+
+  <!-- ===== FOOT ===== -->
+  <div class="foot">
+    <span class="warn">Demo · sample data only</span> — front-end snapshot of a paper-trading research desk; no live orders, no keys, no wallet.<br>
+    Strategy logic from <code>dip_scanner.py</code> (paper-only; <code>LIVE = False</code> hard-coded). Backtest on Dune Analytics on-chain fills.<br>
+    This is research, not a money machine — paper P&amp;L is near break-even by design and net of measured spread.
+  </div>
+
+</div>
+</body>
+</html>

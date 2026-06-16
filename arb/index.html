@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prediction Arb Monitor — Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#14b8a6;
+    --bg:#0b1220;
+    --panel:#111a2e;
+    --book:#0e1626;
+    --book-alt:#0c1424;
+    --th:#13203a;
+    --border:#1e293b;
+    --line:#16203a;
+    --text:#e2e8f0;
+    --muted:#94a3b8;
+    --dim:#64748b;
+    --green:#22c55e;
+    --red:#ef4444;
+    --amber:#f59e0b;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--text);
+    font:14px/1.5 'Inter',-apple-system,Segoe UI,Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1100px;margin:0 auto;padding:20px 20px 60px}
+  .topline{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  h1{font-size:20px;margin:0 0 4px;font-weight:700;letter-spacing:-.2px}
+  h1 .dot{color:var(--accent);margin-right:4px}
+  .sub{color:var(--muted);font-size:12px;margin-bottom:14px}
+  .demo-badge{
+    display:inline-flex;align-items:center;gap:6px;
+    border:1px solid var(--accent);color:var(--accent);
+    background:rgba(20,184,166,.08);
+    border-radius:999px;padding:4px 12px;font-size:11.5px;font-weight:600;
+    white-space:nowrap;
+  }
+  .demo-badge .pulse{
+    width:6px;height:6px;border-radius:50%;background:var(--accent);
+    box-shadow:0 0 0 0 rgba(20,184,166,.6);animation:pulse 2s infinite;
+  }
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(20,184,166,.5)}70%{box-shadow:0 0 0 6px rgba(20,184,166,0)}100%{box-shadow:0 0 0 0 rgba(20,184,166,0)}}
+
+  .badges{margin:4px 0 2px}
+  .badge{
+    display:inline-flex;align-items:center;gap:6px;
+    border:1px solid var(--border);border-radius:999px;
+    padding:3px 11px;margin:2px 6px 2px 0;font-size:12px;
+  }
+  .badge .vdot{width:7px;height:7px;border-radius:50%}
+  .badge .ms{color:var(--dim);font-size:11px}
+
+  .cards{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0 4px}
+  .card{
+    background:var(--panel);border:1px solid var(--border);border-radius:12px;
+    padding:14px 16px;flex:1;min-width:150px;
+  }
+  .card .n{font-size:26px;font-weight:700;color:var(--accent);font-family:'JetBrains Mono',monospace;line-height:1.1}
+  .card .l{font-size:12px;color:var(--muted);margin-top:2px}
+
+  h2{
+    font-size:14px;margin:24px 0 8px;color:#cbd5e1;font-weight:600;
+    border-left:3px solid var(--accent);padding-left:9px;
+  }
+  h2 .hint{color:var(--dim);font-weight:400;font-size:11.5px}
+
+  .tbl-wrap{border:1px solid var(--border);border-radius:10px;overflow:hidden;overflow-x:auto}
+  table{width:100%;border-collapse:collapse;background:var(--book);min-width:560px}
+  th,td{text-align:left;padding:7px 11px;font-size:12.5px;white-space:nowrap}
+  th{background:var(--th);color:var(--muted);font-weight:600;font-size:11.5px;letter-spacing:.02em}
+  td{border-top:1px solid var(--line)}
+  tr:nth-child(even) td{background:var(--book-alt)}
+  td.market{white-space:normal;color:#cbd5e1;min-width:200px}
+  .mono{font-family:'JetBrains Mono',monospace}
+  .empty{color:var(--dim);text-align:center;padding:16px;font-style:italic}
+  .pill{display:inline-block;padding:1px 8px;border-radius:6px;font-size:11px;font-weight:600}
+  .pill.ver{color:var(--green);background:rgba(34,197,94,.1)}
+  .pill.cand{color:var(--amber);background:rgba(245,158,11,.12)}
+  .pos{color:var(--green);font-weight:600}
+  .neutral{color:var(--muted)}
+  .venue-tag{color:var(--accent);font-weight:500}
+  .note{color:var(--dim);font-size:11.5px;margin-top:20px;line-height:1.7;max-width:840px}
+  .note b{color:var(--muted);font-weight:600}
+  footer{margin-top:28px;color:var(--dim);font-size:11px;border-top:1px solid var(--border);padding-top:14px}
+  footer a{color:var(--accent);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topline">
+    <div>
+      <h1><span class="dot">◆</span> Prediction Arb Monitor</h1>
+      <div class="sub">updated 11s ago · auto-refresh 20s · scan loop 90s · READ-ONLY (never trades)</div>
+    </div>
+    <span class="demo-badge"><span class="pulse"></span>Demo · sample data</span>
+  </div>
+
+  <!-- Venue status -->
+  <div class="badges">
+    <span class="badge" style="border-color:var(--green)">
+      <span class="vdot" style="background:var(--green)"></span>
+      <span style="color:var(--green)">polymarket</span><span class="ms">· 412 markets</span>
+    </span>
+    <span class="badge" style="border-color:var(--green)">
+      <span class="vdot" style="background:var(--green)"></span>
+      <span style="color:var(--green)">kalshi</span><span class="ms">· 287 markets</span>
+    </span>
+    <span class="badge" style="border-color:var(--green)">
+      <span class="vdot" style="background:var(--green)"></span>
+      <span style="color:var(--green)">limitless</span><span class="ms">· 96 markets</span>
+    </span>
+    <span class="badge" style="border-color:var(--accent)">
+      <span class="vdot" style="background:var(--accent)"></span>
+      <span style="color:var(--accent)">pinnacle</span><span class="ms">· no-vig anchor</span>
+    </span>
+  </div>
+
+  <!-- Stat cards -->
+  <div class="cards">
+    <div class="card"><div class="n">0</div><div class="l">verified cross-venue arbs</div></div>
+    <div class="card"><div class="n">0</div><div class="l">both-sides arbs</div></div>
+    <div class="card"><div class="n">2</div><div class="l">value vs Pinnacle (+EV)</div></div>
+    <div class="card"><div class="n">42</div><div class="l">live books sampled</div></div>
+  </div>
+
+  <!-- Cross-venue arbs -->
+  <h2>Cross-venue arbs <span class="hint">Polymarket ↔ Kalshi · ✓ verified to trade · ⚠ auto-matched candidate, check resolution first</span></h2>
+  <div class="tbl-wrap">
+  <table>
+    <tr><th>status</th><th>direction</th><th>edge¢</th><th>size</th><th>cap$</th><th>ann%</th><th>market</th></tr>
+    <tr>
+      <td><span class="pill cand">⚠ candidate</span></td>
+      <td class="mono">PM buy YES @ .61 / KAL buy NO @ .38</td>
+      <td class="mono pos">0.71</td>
+      <td class="mono">240</td>
+      <td class="mono">238</td>
+      <td class="mono">~9</td>
+      <td class="market">Fed cuts rates at June FOMC meeting <span class="neutral">(resolution wording differs — not confirmed)</span></td>
+    </tr>
+    <tr>
+      <td><span class="pill cand">⚠ candidate</span></td>
+      <td class="mono">KAL buy YES @ .44 / PM buy NO @ .55</td>
+      <td class="mono pos">0.58</td>
+      <td class="mono">115</td>
+      <td class="mono">114</td>
+      <td class="mono">~6</td>
+      <td class="market">Government shutdown before Oct 1 <span class="neutral">(settlement date mismatch — needs human check)</span></td>
+    </tr>
+  </table>
+  </div>
+
+  <!-- Both-sides arbs -->
+  <h2>Both-sides arbs <span class="hint">YES + NO &lt; $1.00 within a single venue (risk-free lock)</span></h2>
+  <div class="tbl-wrap">
+  <table>
+    <tr><th>kind</th><th>venue</th><th>edge¢</th><th>qty</th><th>profit$</th><th>market</th></tr>
+    <tr><td colspan="6" class="empty">none right now — closest book is YES+NO = $1.001 (see live sample below)</td></tr>
+  </table>
+  </div>
+
+  <!-- Value vs Pinnacle -->
+  <h2>Value vs Pinnacle no-vig <span class="hint">+EV vs the sharp line — carries variance, NOT risk-free · ✓ verified · ⚠ auto-matched, confirm side first</span></h2>
+  <div class="tbl-wrap">
+  <table>
+    <tr><th>status</th><th>venue</th><th>side</th><th>ask</th><th>fair</th><th>edge¢</th><th>market</th></tr>
+    <tr>
+      <td><span class="pill ver">✓ verified</span></td>
+      <td><span class="venue-tag">kalshi</span></td>
+      <td class="mono">YES</td>
+      <td class="mono">.412</td>
+      <td class="mono">.447</td>
+      <td class="mono pos">+3.5</td>
+      <td class="market">Lakers to win NBA Finals</td>
+    </tr>
+    <tr>
+      <td><span class="pill cand">⚠ candidate</span></td>
+      <td><span class="venue-tag">polymarket</span></td>
+      <td class="mono">NO</td>
+      <td class="mono">.633</td>
+      <td class="mono">.661</td>
+      <td class="mono pos">+2.8</td>
+      <td class="market">Djokovic to win Wimbledon <span class="neutral">(auto-matched to Pinnacle line)</span></td>
+    </tr>
+  </table>
+  </div>
+
+  <!-- Live book sample -->
+  <h2>Live book sample <span class="hint">closest-to-arb first · YES + NO sum (so there's always live data to read)</span></h2>
+  <div class="tbl-wrap">
+  <table>
+    <tr><th>venue</th><th>YES ask</th><th>NO ask</th><th>sum</th><th>spread</th><th>market</th></tr>
+    <tr><td><span class="venue-tag">polymarket</span></td><td class="mono">.508</td><td class="mono">.493</td><td class="mono neutral">1.001</td><td class="mono">.004</td><td class="market">Bitcoin above $120k on July 1</td></tr>
+    <tr><td><span class="venue-tag">kalshi</span></td><td class="mono">.371</td><td class="mono">.630</td><td class="mono neutral">1.001</td><td class="mono">.003</td><td class="market">CPI MoM above 0.3% in June</td></tr>
+    <tr><td><span class="venue-tag">limitless</span></td><td class="mono">.622</td><td class="mono">.380</td><td class="mono neutral">1.002</td><td class="mono">.006</td><td class="market">ETH/BTC ratio up this week</td></tr>
+    <tr><td><span class="venue-tag">kalshi</span></td><td class="mono">.455</td><td class="mono">.547</td><td class="mono neutral">1.002</td><td class="mono">.005</td><td class="market">Fed cuts at June FOMC</td></tr>
+    <tr><td><span class="venue-tag">polymarket</span></td><td class="mono">.289</td><td class="mono">.714</td><td class="mono neutral">1.003</td><td class="mono">.007</td><td class="market">Trump approval above 45% end of June</td></tr>
+    <tr><td><span class="venue-tag">polymarket</span></td><td class="mono">.812</td><td class="mono">.192</td><td class="mono neutral">1.004</td><td class="mono">.005</td><td class="market">SpaceX Starship orbital flight in Q3</td></tr>
+    <tr><td><span class="venue-tag">limitless</span></td><td class="mono">.534</td><td class="mono">.471</td><td class="mono neutral">1.005</td><td class="mono">.009</td><td class="market">Solana above $200 by month end</td></tr>
+    <tr><td><span class="venue-tag">kalshi</span></td><td class="mono">.668</td><td class="mono">.338</td><td class="mono neutral">1.006</td><td class="mono">.006</td><td class="market">US payrolls above 150k in June</td></tr>
+    <tr><td><span class="venue-tag">polymarket</span></td><td class="mono">.147</td><td class="mono">.861</td><td class="mono neutral">1.008</td><td class="mono">.011</td><td class="market">Recession declared in 2026</td></tr>
+    <tr><td><span class="venue-tag">limitless</span></td><td class="mono">.402</td><td class="mono">.609</td><td class="mono neutral">1.011</td><td class="mono">.014</td><td class="market">Base TVL all-time high this month</td></tr>
+  </table>
+  </div>
+
+  <div class="note">
+    <b>Cross-venue</b> &amp; <b>both-sides</b> arbs are risk-free locks — they require funding both legs and an identical, human-verified resolution; the ⚠ candidates above are auto-matched and <i>not</i> safe to trade until the wording is confirmed.
+    <b>Value vs Pinnacle</b> is +EV against the sharp no-vig line but carries variance — it is not risk-free.
+    Empty tables are the normal, honest state: these markets are mostly efficient, so genuine gaps are rare and disappear within seconds. Notice every live book sums to ≈ $1.001–1.01 — the "cheap" legs are a mirage, unbuyable once you cross the spread. Nothing here is ever executed; this is a read-only monitor.
+  </div>
+
+  <footer>
+    Prediction Arb Monitor · pluggable venue-adapter design (Polymarket · Kalshi · Limitless) with a Pinnacle no-vig anchor · read-only.
+    Static portfolio snapshot with synthetic sample data — no live feeds, keys, or server. Part of <a href="../">Julian Jung's portfolio</a>.
+  </footer>
+
+</div>
+</body>
+</html>

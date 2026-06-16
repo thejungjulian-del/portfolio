@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Liquidity-Provider Experiment — Measurement Dashboard</title>
+<meta name="description" content="A paper-only test of whether a $250 market-maker captures any real edge from Polymarket's liquidity-rewards program — modeled against live book depth and adverse selection.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#15130f; --bg:#fbfaf7; --muted:#6b6660; --faint:#9b958c;
+    --line:#e8e4db; --line-strong:#15130f; --hover:#f3f0ea; --card:#fffdfa;
+    --pos:#1f7a4d; --neg:#b4452f; --neutral:#7a756d; --amber:#9a6b16;
+    --serif:"Fraunces", Georgia, "Times New Roman", serif;
+    --sans:"Helvetica Neue", system-ui, -apple-system, Arial, sans-serif;
+    --mono:"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.6 var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 28px}
+  a{color:inherit}
+
+  /* ---------- header ---------- */
+  header{padding:54px 0 28px;border-bottom:2px solid var(--line-strong)}
+  .topline{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+  .kicker{font-size:11px;text-transform:uppercase;letter-spacing:.22em;color:var(--muted)}
+  .back{font-size:12px;text-transform:uppercase;letter-spacing:.12em;text-decoration:none;
+    color:var(--muted);border-bottom:1px solid var(--line-strong);padding-bottom:2px;transition:opacity .15s}
+  .back:hover{opacity:.55}
+  h1{font-family:var(--serif);font-weight:300;font-size:clamp(34px,6vw,58px);
+    line-height:1;letter-spacing:-.02em;margin:14px 0 0}
+  .lede{font-family:var(--serif);font-weight:300;font-style:italic;
+    font-size:clamp(17px,2.6vw,23px);color:var(--ink);margin:14px 0 0;line-height:1.3;max-width:760px}
+  .intro{max-width:740px;font-size:15px;color:var(--muted);margin:16px 0 0}
+  .badge{display:inline-flex;align-items:center;gap:7px;font-size:10px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--muted);background:#fff;border:1px solid var(--line);
+    padding:6px 11px;border-radius:999px;white-space:nowrap}
+  .badge .dot{width:6px;height:6px;border-radius:50%;background:var(--amber)}
+  .meta-row{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:20px;align-items:center}
+  .tag{font:inherit;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--muted);border:1px solid var(--line);padding:5px 11px;border-radius:999px;background:#fff}
+  .tag.live{color:#fff;background:var(--ink);border-color:var(--ink)}
+
+  /* ---------- KPI strip ---------- */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:30px 0 10px}
+  .kpi{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:18px 18px 16px;
+    box-shadow:0 1px 2px rgba(21,19,15,.04)}
+  .kpi .k-label{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+  .kpi .k-val{font-family:var(--mono);font-size:26px;font-weight:500;letter-spacing:-.01em;margin-top:7px}
+  .kpi .k-sub{font-size:11.5px;color:var(--muted);margin-top:4px}
+  .pos{color:var(--pos)} .neg{color:var(--neg)} .neu{color:var(--neutral)} .amb{color:var(--amber)}
+
+  /* ---------- section ---------- */
+  section{margin:42px 0 0}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    border-top:1px solid var(--line);padding-top:26px;margin-bottom:18px}
+  h2{font-family:var(--serif);font-weight:400;font-size:25px;letter-spacing:-.01em;margin:0;line-height:1.1}
+  .sec-note{font-size:13px;color:var(--muted);max-width:560px;font-style:italic;font-family:var(--serif)}
+
+  /* ---------- tables ---------- */
+  .card{border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden;
+    box-shadow:0 1px 2px rgba(21,19,15,.04)}
+  .tscroll{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  thead th{text-align:right;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);
+    font-weight:500;padding:15px 16px 11px;border-bottom:1px solid var(--line);white-space:nowrap}
+  thead th:first-child{text-align:left}
+  tbody td{text-align:right;padding:14px 16px;border-bottom:1px solid var(--line);font-family:var(--mono);
+    font-size:13px;white-space:nowrap;color:var(--ink)}
+  tbody td:first-child{text-align:left;font-family:var(--sans);font-size:13.5px}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:var(--hover)}
+  .q{font-weight:500;letter-spacing:-.005em}
+  .sub{display:block;font-size:11px;color:var(--faint);font-family:var(--sans);margin-top:2px;letter-spacing:.02em}
+  .pill{display:inline-block;font-family:var(--mono);font-size:11.5px;padding:2px 8px;border-radius:6px;
+    border:1px solid var(--line);color:var(--muted);background:#fff}
+  .pill.bid{color:var(--pos);border-color:#cfe3d6}
+  .pill.ask{color:var(--neg);border-color:#ecd4cc}
+  tfoot td{padding:13px 16px;font-family:var(--mono);font-size:13px;font-weight:600;
+    border-top:2px solid var(--line-strong);text-align:right;background:#faf8f3}
+  tfoot td:first-child{text-align:left;font-family:var(--sans);font-size:12px;
+    text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:500}
+
+  /* ---------- two-col ---------- */
+  .cols{display:grid;grid-template-columns:1.35fr 1fr;gap:22px;align-items:start}
+
+  /* ---------- chart ---------- */
+  .chart-card{padding:22px 22px 16px}
+  .chart-legend{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:6px;font-size:11.5px;color:var(--muted)}
+  .chart-legend span{display:inline-flex;align-items:center;gap:7px}
+  .swatch{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .chart-wrap{width:100%}
+  svg{display:block;width:100%;height:auto}
+  .axis-lbl{font-family:var(--mono);font-size:9.5px;fill:var(--faint)}
+
+  /* ---------- verdict ---------- */
+  .verdict{border:1px solid var(--line-strong);border-radius:16px;background:#fff;padding:28px 30px;
+    box-shadow:0 1px 2px rgba(21,19,15,.04)}
+  .verdict .v-kicker{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--amber)}
+  .verdict h3{font-family:var(--serif);font-weight:400;font-size:23px;letter-spacing:-.01em;margin:10px 0 0;line-height:1.2}
+  .verdict p{font-size:14px;color:var(--muted);margin:14px 0 0;line-height:1.6}
+  .verdict .vrow{display:flex;gap:24px;flex-wrap:wrap;margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
+  .vstat{flex:1;min-width:130px}
+  .vstat .vl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+  .vstat .vv{font-family:var(--mono);font-size:19px;font-weight:500;margin-top:5px}
+  .formula{margin-top:18px;font-family:var(--mono);font-size:13px;background:#faf8f3;border:1px solid var(--line);
+    border-radius:10px;padding:13px 15px;color:var(--ink);overflow-x:auto}
+  .formula small{display:block;font-family:var(--sans);font-size:11.5px;color:var(--faint);margin-top:6px;letter-spacing:.01em}
+
+  /* ---------- footer ---------- */
+  footer{padding:40px 0 70px;border-top:2px solid var(--line-strong);margin-top:48px}
+  .disclaimer{font-size:12px;color:var(--faint);max-width:760px;line-height:1.65}
+  .disclaimer strong{color:var(--muted)}
+
+  @media (max-width:860px){
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .cols{grid-template-columns:1fr}
+  }
+  @media (max-width:520px){
+    .kpis{grid-template-columns:1fr}
+    header{padding:40px 0 24px}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <div class="topline">
+      <div class="kicker">Liquidity-Provider Experiment</div>
+      <span class="badge"><span class="dot"></span>Demo · sample data</span>
+    </div>
+    <h1>Does retail market-making actually pay?</h1>
+    <p class="lede">A paper-only test of whether a $250 maker captures any material edge from
+      Polymarket's liquidity-rewards program — measured honestly against live book depth and adverse selection.</p>
+    <p class="intro">Independent research (24 of 25 claims verified) says retail market-making on
+      Polymarket is net-unprofitable today: rewards are whale-dominated and informed traders pick off
+      stale quotes. This dashboard doesn't try to beat that finding — it <em>measures</em> it. The
+      prediction going in: rewards ≈ adverse-selection bleed, no material edge.</p>
+    <div class="meta-row">
+      <span class="tag">Paper only · no live orders</span>
+      <span class="tag">Capital · $250</span>
+      <span class="tag">Mid-prob 0.30–0.70</span>
+      <span class="tag">Two-sided post-only GTC</span>
+      <a class="back" href="../index.html">← Back to portfolio</a>
+    </div>
+  </header>
+
+  <!-- ============ KPI STRIP ============ -->
+  <div class="kpis">
+    <div class="kpi">
+      <div class="k-label">Cumulative rewards Σ</div>
+      <div class="k-val pos">+$14.62</div>
+      <div class="k-sub">over 23 days, 3 markets</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">Adverse-selection bleed</div>
+      <div class="k-val neg">−$16.01</div>
+      <div class="k-sub">fills marked to mid</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">Net paper P&amp;L</div>
+      <div class="k-val neg">−$1.39</div>
+      <div class="k-sub">−0.56% on $250</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">Effective reward APR</div>
+      <div class="k-val neu">≈ 9.3%</div>
+      <div class="k-sub">gross, before bleed</div>
+    </div>
+  </div>
+
+  <!-- ============ MARKETS QUOTED ============ -->
+  <section>
+    <div class="sec-head">
+      <h2>Markets quoted</h2>
+      <p class="sec-note">Reward-eligible, mid-probability, calm and far from resolution. Two-sided
+        resting quotes posted just inside each market's max spread from the midpoint.</p>
+    </div>
+    <div class="card tscroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Market</th>
+            <th>Mid</th>
+            <th>Max spread</th>
+            <th>Reward rate</th>
+            <th>Your bid</th>
+            <th>Your ask</th>
+            <th>Reward share</th>
+            <th>Est. reward / day</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="q">EU recession declared in 2026?</span><span class="sub">Geopolitics · calm · resolves Dec 2026</span></td>
+            <td>0.41</td>
+            <td>3.0¢</td>
+            <td>$58 / day</td>
+            <td><span class="pill bid">0.388 · 37 sh</span></td>
+            <td><span class="pill ask">0.432 · 37 sh</span></td>
+            <td>0.41%</td>
+            <td>$0.238</td>
+          </tr>
+          <tr>
+            <td><span class="q">Fed cuts rates at September meeting?</span><span class="sub">Economics · calm · resolves Sep 2026</span></td>
+            <td>0.63</td>
+            <td>2.0¢</td>
+            <td>$44 / day</td>
+            <td><span class="pill bid">0.614 · 24 sh</span></td>
+            <td><span class="pill ask">0.646 · 24 sh</span></td>
+            <td>0.33%</td>
+            <td>$0.145</td>
+          </tr>
+          <tr>
+            <td><span class="q">Will Party X win the state election?</span><span class="sub">Politics · calm · resolves Nov 2026</span></td>
+            <td>0.52</td>
+            <td>3.0¢</td>
+            <td>$71 / day</td>
+            <td><span class="pill bid">0.496 · 30 sh</span></td>
+            <td><span class="pill ask">0.544 · 30 sh</span></td>
+            <td>0.39%</td>
+            <td>$0.277</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td>Portfolio · 3 markets · $250 deployed</td>
+            <td colspan="6"></td>
+            <td>$0.660 / day</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ ADVERSE SELECTION ============ -->
+  <section>
+    <div class="sec-head">
+      <h2>Adverse-selection panel</h2>
+      <p class="sec-note">When the market trades through a resting quote, the fill is marked to the
+        <em>new</em> mid — so informed flow shows up as spread bleed. This is the cost that eats the reward.</p>
+    </div>
+    <div class="card tscroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Market</th>
+            <th>Sim fills</th>
+            <th>Avg fill px</th>
+            <th>Mark-to-mid</th>
+            <th>Bleed / fill</th>
+            <th>Reward earned</th>
+            <th>Net (market)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="q">EU recession declared in 2026?</span></td>
+            <td>41</td>
+            <td>0.409</td>
+            <td>0.401</td>
+            <td class="neg">−0.27¢</td>
+            <td class="pos">+$5.18</td>
+            <td class="neg">−$0.39</td>
+          </tr>
+          <tr>
+            <td><span class="q">Fed cuts rates at September meeting?</span></td>
+            <td>28</td>
+            <td>0.631</td>
+            <td>0.627</td>
+            <td class="neg">−0.21¢</td>
+            <td class="pos">+$3.19</td>
+            <td class="pos">+$0.07</td>
+          </tr>
+          <tr>
+            <td><span class="q">Will Party X win the state election?</span></td>
+            <td>53</td>
+            <td>0.518</td>
+            <td>0.507</td>
+            <td class="neg">−0.34¢</td>
+            <td class="pos">+$6.25</td>
+            <td class="neg">−$1.07</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td>Total · 122 sim fills</td>
+            <td colspan="3"></td>
+            <td class="neg">−$16.01</td>
+            <td class="pos">+$14.62</td>
+            <td class="neg">−$1.39</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ P&L + CHART + VERDICT ============ -->
+  <section>
+    <div class="sec-head">
+      <h2>Running paper P&amp;L</h2>
+      <p class="sec-note">Cumulative rewards versus realized adverse-selection bleed, 23 days. The two
+        curves track each other — net stays pinned near zero.</p>
+    </div>
+
+    <div class="cols">
+
+      <!-- chart -->
+      <div class="card chart-card">
+        <div class="chart-legend">
+          <span><span class="swatch" style="background:#1f7a4d"></span>Cumulative rewards Σ</span>
+          <span><span class="swatch" style="background:#b4452f"></span>Adverse-selection bleed</span>
+          <span><span class="swatch" style="background:#15130f"></span>Net P&amp;L</span>
+        </div>
+        <div class="chart-wrap">
+          <!-- inline SVG cumulative chart. x: day 0..23, y: USD -18..+16 -->
+          <svg viewBox="0 0 620 280" role="img" aria-label="Cumulative rewards, bleed and net paper P&L over 23 days">
+            <!-- grid + axes -->
+            <g stroke="#e8e4db" stroke-width="1">
+              <line x1="48" y1="20"  x2="608" y2="20"/>
+              <line x1="48" y1="70"  x2="608" y2="70"/>
+              <line x1="48" y1="120" x2="608" y2="120"/>
+              <line x1="48" y1="170" x2="608" y2="170"/>
+              <line x1="48" y1="220" x2="608" y2="220"/>
+            </g>
+            <!-- zero line (net) emphasized -->
+            <line x1="48" y1="170" x2="608" y2="170" stroke="#15130f" stroke-width="1" stroke-dasharray="2 4" opacity="0.5"/>
+            <!-- y labels -->
+            <text class="axis-lbl" x="42" y="24"  text-anchor="end">+16</text>
+            <text class="axis-lbl" x="42" y="74"  text-anchor="end">+8</text>
+            <text class="axis-lbl" x="42" y="124" text-anchor="end">+4</text>
+            <text class="axis-lbl" x="42" y="174" text-anchor="end">0</text>
+            <text class="axis-lbl" x="42" y="224" text-anchor="end">−16</text>
+            <!-- x labels -->
+            <text class="axis-lbl" x="48"  y="240" text-anchor="middle">D0</text>
+            <text class="axis-lbl" x="188" y="240" text-anchor="middle">D6</text>
+            <text class="axis-lbl" x="328" y="240" text-anchor="middle">D12</text>
+            <text class="axis-lbl" x="468" y="240" text-anchor="middle">D18</text>
+            <text class="axis-lbl" x="608" y="240" text-anchor="middle">D23</text>
+
+            <!-- REWARDS (green, rises 0 -> +14.62 mapped to y 170 -> ~78) -->
+            <polyline fill="none" stroke="#1f7a4d" stroke-width="2.2" stroke-linejoin="round"
+              points="48,170 71,165 95,159 119,154 142,148 166,143 190,137 213,133 237,128 260,124 284,119 308,115 331,111 355,107 378,103 402,99 426,96 449,92 473,89 496,86 520,84 543,81 567,80 608,78"/>
+            <!-- BLEED (red, falls 0 -> -16.01 mapped to y 170 -> ~270 clipped to 230) -->
+            <polyline fill="none" stroke="#b4452f" stroke-width="2.2" stroke-linejoin="round"
+              points="48,170 71,174 95,179 119,182 142,187 166,191 190,196 213,199 237,201 260,205 284,209 308,212 331,214 355,217 378,219 402,220 426,222 449,221 473,223 496,225 520,225 543,227 567,228 608,229"/>
+            <!-- NET (ink, hovers near zero) -->
+            <polyline fill="none" stroke="#15130f" stroke-width="2.4" stroke-linejoin="round"
+              points="48,170 71,169 95,170 119,172 142,170 166,168 190,171 213,173 237,170 260,169 284,170 308,173 331,171 355,170 378,172 402,171 426,173 449,170 473,172 496,171 520,170 543,173 567,172 608,173"/>
+            <!-- end-point dots -->
+            <circle cx="608" cy="78"  r="3.5" fill="#1f7a4d"/>
+            <circle cx="608" cy="229" r="3.5" fill="#b4452f"/>
+            <circle cx="608" cy="173" r="3.5" fill="#15130f"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- verdict -->
+      <div class="verdict">
+        <div class="v-kicker">Verdict · measurement test</div>
+        <h3>Rewards ≈ bleed. No material edge — exactly as the research predicted.</h3>
+        <p>Over 23 paper days a $250 two-sided maker collected <strong>+$14.62</strong> in liquidity
+          rewards and gave back <strong>−$16.01</strong> to adverse selection, netting <strong>−$1.39</strong>
+          (−0.56%). The reward stream is real but thin at this size — share never crosses ~0.4% of any
+          pool — and informed flow reclaims it. The hard real-money gate stays closed: a successful
+          experiment, because it priced the trade before risking a dollar.</p>
+        <div class="vrow">
+          <div class="vstat"><div class="vl">Rewards Σ</div><div class="vv pos">+$14.62</div></div>
+          <div class="vstat"><div class="vl">Bleed</div><div class="vv neg">−$16.01</div></div>
+          <div class="vstat"><div class="vl">Net / day</div><div class="vv neu">−$0.06</div></div>
+        </div>
+        <div class="formula">
+          S(v, s) = ((v − s) / v)² · b
+          <small>v = max spread from mid · s = your order's distance from mid · b = in-game multiplier.
+          Closer to mid ⇒ quadratically more reward. Share = your Q ÷ (your Q + book Q).</small>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <p class="disclaimer">
+      <strong>Demo · sample data.</strong> This is a static front-end snapshot of a paper-trading
+      research dashboard — no live orders, no real money, no API keys, no wallet. All figures are
+      plausible sample values illustrating the documented finding that small-scale retail
+      market-making on Polymarket is net-unprofitable: reward income at $250 is roughly offset by
+      adverse-selection bleed. The reward score formula <em>S = ((v−s)/v)²·b</em>, eligibility
+      mechanics, and the mid-probability (0.30–0.70) targeting mirror the real paper simulator;
+      the numbers here are illustrative, not measured.
+    </p>
+  </footer>
+
+</div>
+</body>
+</html>

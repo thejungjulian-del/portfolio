@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scanner — Kalshi Bot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Helvetica+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #111111; --bg: #ffffff; --muted: #767676; --faint: #a6a6a6;
+    --line: #e6e6e6; --line-strong: #111111; --hover: #fafafa;
+    --pos: #0a7d4f; --posbg: #eaf6ef; --neg: #b42318; --negbg: #fdeceb;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  body { font-family: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+         -webkit-font-smoothing: antialiased; font-size: 15px; line-height: 1.5; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 32px 96px; }
+  a { color: inherit; }
+  .label { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .num { font-variant-numeric: tabular-nums; }
+
+  .demo-badge {
+    position: fixed; top: 14px; right: 16px; z-index: 50;
+    font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--muted); background: rgba(255,255,255,.86); backdrop-filter: blur(4px);
+    border: 1px solid var(--line); padding: 6px 10px; border-radius: 2px;
+  }
+
+  .masthead { padding: 56px 0 24px; border-bottom: 1px solid var(--line-strong);
+              display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; }
+  .masthead .kicker { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
+  .masthead h1 { margin: 10px 0 0; font-size: 40px; font-weight: 300; letter-spacing: -0.025em; }
+  .masthead .sub { margin-top: 8px; color: var(--muted); font-size: 14px; max-width: 560px; }
+  .masthead .right { text-align: right; }
+  button.refresh { font: inherit; font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+                   background: var(--ink); color: #fff; border: 1px solid var(--ink); padding: 9px 18px; cursor: pointer; }
+  button.refresh:hover { background: #fff; color: var(--ink); }
+  .mode { margin-top: 10px; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .mode .dry { display: inline-block; border: 1px solid var(--line-strong); padding: 3px 8px; border-radius: 1px;
+               color: var(--ink); font-weight: 700; }
+
+  .stats { display: flex; gap: 48px; padding: 24px 0; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .stat .n { font-size: 28px; font-weight: 300; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+  .stat .l { margin-top: 2px; }
+
+  .sec { margin: 46px 0 14px; }
+  .sec h2 { margin: 0; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; }
+  .sec .note { font-size: 12px; color: var(--faint); margin-top: 4px; max-width: 640px; }
+
+  table { width: 100%; border-collapse: collapse; }
+  thead th { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+             text-align: left; font-weight: 400; padding: 0 12px 10px; border-bottom: 1px solid var(--line-strong); }
+  thead th.r, tbody td.r { text-align: right; }
+  tbody td { padding: 14px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tbody tr:hover { background: var(--hover); }
+  td.market { font-size: 15px; }
+  td.market .tk { font-size: 11px; color: var(--faint); letter-spacing: .04em; margin-top: 3px;
+                  font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+  .city { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+
+  .edge { font-variant-numeric: tabular-nums; font-weight: 400; }
+  .pill { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .04em;
+          padding: 3px 9px; border-radius: 2px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .pill.pos { color: var(--pos); background: var(--posbg); }
+  .pill.flat { color: var(--muted); background: #f3f3f3; }
+  .side { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; }
+  .side.yes { color: var(--ink); }
+  .side.no  { color: var(--muted); }
+
+  .arb-yes { color: var(--ink); } .arb-sum { font-weight: 700; }
+  tr.locked td { background: var(--posbg); }
+  tr.locked:hover td { background: #e1f1e7; }
+  .arbtag { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700;
+            color: #fff; background: var(--pos); padding: 2px 6px; border-radius: 1px; margin-left: 8px; }
+
+  /* scoreboard */
+  .board { display: grid; grid-template-columns: 1.1fr 1fr; gap: 28px; margin-top: 8px; }
+  .card { border: 1px solid var(--line-strong); padding: 26px 26px 22px; }
+  .card .head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 12px; }
+  .card .pnl { font-size: 44px; font-weight: 300; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .card .pnl.pos { color: var(--pos); } .card .pnl.neg { color: var(--neg); }
+  .row3 { display: flex; gap: 36px; margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+  .row3 .b .n { font-size: 22px; font-weight: 300; font-variant-numeric: tabular-nums; }
+  .wl { font-size: 22px; font-weight: 300; font-variant-numeric: tabular-nums; }
+  .wl .w { color: var(--pos); } .wl .l { color: var(--neg); }
+  .strat-rows { margin-top: 4px; }
+  .strat { display: grid; grid-template-columns: 1fr auto auto; align-items: baseline; gap: 14px;
+           padding: 13px 0; border-bottom: 1px solid var(--line); }
+  .strat:last-child { border-bottom: none; }
+  .strat .name { text-transform: capitalize; }
+  .strat .rec { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .strat .wr { font-size: 13px; font-variant-numeric: tabular-nums; }
+  .bar { height: 4px; background: var(--line); margin-top: 8px; border-radius: 2px; overflow: hidden; }
+  .bar > span { display: block; height: 100%; background: var(--ink); }
+
+  .colophon { margin-top: 52px; padding-top: 18px; border-top: 1px solid var(--line);
+              color: var(--faint); font-size: 12px; line-height: 1.7; }
+
+  @media (max-width: 760px){
+    .masthead h1{font-size:30px}
+    .board{grid-template-columns:1fr}
+    td.market .tk{display:none}
+    thead th.hide, tbody td.hide{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="demo-badge">Demo · sample data</div>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div>
+      <div class="kicker">Kalshi Bot · Read-only Scanner</div>
+      <h1>Edge Scanner</h1>
+      <div class="sub">Value &amp; arbitrage scanner for the Kalshi event exchange. Prices next-day weather
+        markets against free Open-Meteo forecasts, hunts locked book arbitrage, and cross-references Polymarket.</div>
+    </div>
+    <div class="right">
+      <button class="refresh" id="refresh">Re-scan</button>
+      <div class="mode"><span class="dry">Dry-run</span> · paper only</div>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><div class="n num" id="s-scanned">—</div><div class="l label">Markets scanned</div></div>
+    <div class="stat"><div class="n num" id="s-weather">—</div><div class="l label">Weather edges</div></div>
+    <div class="stat"><div class="n num" id="s-arb">—</div><div class="l label">Locked book arbs</div></div>
+    <div class="stat"><div class="n num" id="s-last" style="font-size:17px;padding-top:8px">—</div><div class="l label">Last scan</div></div>
+  </div>
+
+  <!-- WEATHER EDGE -->
+  <section class="sec">
+    <h2>Weather Edge · Daily High Temperature</h2>
+    <div class="note">Forecast high (Open-Meteo) turned into a per-bucket probability via Normal(forecast, σ≈2.0°F),
+      compared to the Kalshi YES price. Flagged when the model beats price by more than fees + 8pp. Maker (limit) only.</div>
+  </section>
+  <table id="t-weather">
+    <thead>
+      <tr>
+        <th>City</th>
+        <th>Market</th>
+        <th class="r">Forecast</th>
+        <th class="r">Model P</th>
+        <th class="r">Market</th>
+        <th class="r">Edge</th>
+        <th class="r">Side</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <!-- INTERNAL ARB -->
+  <section class="sec">
+    <h2>Internal Book Arbitrage</h2>
+    <div class="note">Within one binary market, YES + NO always pays exactly $1 at settlement. If yes_ask + no_ask &lt; $1
+      after a fee buffer, that's a locked edge regardless of outcome. Most rows sit at ~$1.00 — true arb is rare.</div>
+  </section>
+  <table id="t-arb">
+    <thead>
+      <tr>
+        <th>Market</th>
+        <th class="r">YES ask</th>
+        <th class="r">NO ask</th>
+        <th class="r">Sum</th>
+        <th class="r hide">Liquidity</th>
+        <th class="r">Edge (net)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <!-- PAPER SCOREBOARD -->
+  <section class="sec">
+    <h2>Practice Scoreboard · Paper Money</h2>
+    <div class="note">Simulated fills only — promising, not proven. Starting bankroll $100, $5 stake per paper bet.</div>
+  </section>
+  <div class="board">
+    <div class="card" id="card-pnl"></div>
+    <div class="card" id="card-strat"></div>
+  </div>
+
+  <div class="colophon">
+    This is a static portfolio snapshot of the live Kalshi scanner (normally a Python service polling every 5 min and
+    posting to Discord). The bot is read-only and runs in DRY-RUN mode only — it logs paper trades and never places a
+    real order. Weather is the primary edge; book arbitrage and Kalshi↔Polymarket cross-referencing are secondary.
+    All figures shown are realistic sample data.
+  </div>
+
+</div>
+
+<script>
+// ---------- Sample data (realistic, honest) ----------
+const STATS = { scanned: 3184, last_scan_min: 6 };
+
+// Weather: forecast high -> model prob vs market price. Edge in probability points.
+const WEATHER = [
+  { city:"New York",     tk:"KXHIGHNY-26JUN16-B79",   market:"NYC daily high 78–79°F", fc:79, modelP:0.41, price:0.29, side:"YES" },
+  { city:"Chicago",      tk:"KXHIGHCHI-26JUN16-T84",  market:"Chicago daily high > 83°F", fc:86, modelP:0.74, price:0.62, side:"YES" },
+  { city:"Austin",       tk:"KXHIGHAUS-26JUN16-T97",  market:"Austin daily high > 96°F", fc:99, modelP:0.81, price:0.69, side:"YES" },
+  { city:"Denver",       tk:"KXHIGHDEN-26JUN16-B88",  market:"Denver daily high 87–88°F", fc:88, modelP:0.38, price:0.27, side:"YES" },
+  { city:"Miami",        tk:"KXHIGHMIA-26JUN16-T90",  market:"Miami daily high > 89°F", fc:91, modelP:0.66, price:0.55, side:"YES" },
+  { city:"Los Angeles",  tk:"KXHIGHLAX-26JUN16-B74",  market:"LA daily high 73–74°F", fc:73, modelP:0.43, price:0.33, side:"YES" },
+  { city:"Philadelphia", tk:"KXHIGHPHIL-26JUN16-T82", market:"Philly daily high > 81°F", fc:80, modelP:0.31, price:0.44, side:"NO"  },
+];
+
+// Internal book arb: most ~$1.00 (no arb), a couple slightly < $1. fee buffer ~0.02.
+const FEE_BUFFER = 0.02;
+const ARB = [
+  { tk:"KXPRESPARTY-28-D",        market:"Control of House after 2028 — Democratic", yes:0.54, no:0.46, liq: 9100 },
+  { tk:"KXFEDDECISION-26JUL-CUT", market:"Fed cuts rates at July 2026 meeting",      yes:0.38, no:0.61, liq: 14200 },
+  { tk:"KXBTCEOY-26-T100K",       market:"BTC above $100k on Dec 31, 2026",          yes:0.47, no:0.50, liq:  6300 }, // slight arb
+  { tk:"KXOSCARPIC-27-WIN",       market:"Best Picture winner — favorite",           yes:0.41, no:0.59, liq:  2200 },
+  { tk:"KXNBAFINALS-26-W",        market:"NBA Finals — Western champ wins title",    yes:0.55, no:0.45, liq: 18400 },
+  { tk:"KXCPIYOY-26JUN-T3",       market:"June 2026 CPI YoY above 3.0%",             yes:0.48, no:0.49, liq:  5100 }, // slight arb
+  { tk:"KXGASPRICE-26JUL-T350",   market:"Avg US gas price > $3.50 in July",         yes:0.33, no:0.67, liq:  4400 },
+];
+
+// Paper scoreboard (modest, honest).
+const SCORE = {
+  pnl: 3.85, staked: 165.00, principal: 100.00,
+  wins: 17, losses: 13, open: 6, at_stake: 28.50, total_buys: 41,
+  strategies: [
+    { name:"weather", wins:12, losses:7 },
+    { name:"book",    wins: 2, losses:1 },
+    { name:"edge",    wins: 2, losses:3 },
+    { name:"arb",     wins: 1, losses:2 },
+  ],
+};
+
+// ---------- helpers ----------
+const pp = x => (x*100);
+const fmtPP = x => (x>=0?"+":"") + (x*100).toFixed(0) + "pp";
+const usd = n => (n<0?"-$":"$") + Math.abs(n).toFixed(2);
+const k = n => n>=1000 ? (n/1000).toFixed(1).replace(/\.0$/,"")+"k" : ""+n;
+
+function render() {
+  // headline stats
+  const weatherEdges = WEATHER.filter(w => Math.abs(w.modelP - w.price) >= 0.08).length;
+  const lockedArbs = ARB.filter(a => (1 - (a.yes + a.no) - FEE_BUFFER) > 0).length;
+  document.getElementById("s-scanned").textContent = STATS.scanned.toLocaleString();
+  document.getElementById("s-weather").textContent = weatherEdges;
+  document.getElementById("s-arb").textContent = lockedArbs;
+  document.getElementById("s-last").textContent = STATS.last_scan_min + " min ago";
+
+  // weather table
+  const wb = document.querySelector("#t-weather tbody");
+  wb.innerHTML = "";
+  WEATHER.forEach(w => {
+    const edge = w.modelP - w.price; // YES side
+    const dir = w.side === "YES" ? edge : -edge; // edge in favor of suggested side
+    const tr = document.createElement("tr");
+    tr.innerHTML =
+      `<td><span class="city">${w.city}</span></td>
+       <td class="market">${w.market}<div class="tk">${w.tk}</div></td>
+       <td class="r num">${w.fc}°F</td>
+       <td class="r num">${pp(w.modelP).toFixed(0)}%</td>
+       <td class="r num">${pp(w.price).toFixed(0)}¢</td>
+       <td class="r"><span class="pill pos">${fmtPP(Math.abs(dir))}</span></td>
+       <td class="r"><span class="side ${w.side.toLowerCase()}">${w.side}</span></td>`;
+    wb.appendChild(tr);
+  });
+
+  // arb table
+  const ab = document.querySelector("#t-arb tbody");
+  ab.innerHTML = "";
+  ARB.forEach(a => {
+    const sum = a.yes + a.no;
+    const net = 1 - sum - FEE_BUFFER;
+    const locked = net > 0;
+    const tr = document.createElement("tr");
+    if (locked) tr.className = "locked";
+    const edgeCell = locked
+      ? `<span class="pill pos">+${(net*100).toFixed(1)}¢<span class="arbtag">Locked</span></span>`
+      : `<span class="pill flat">—</span>`;
+    tr.innerHTML =
+      `<td class="market">${a.market}<div class="tk">${a.tk}</div></td>
+       <td class="r num">${a.yes.toFixed(2)}</td>
+       <td class="r num">${a.no.toFixed(2)}</td>
+       <td class="r num arb-sum">$${sum.toFixed(2)}</td>
+       <td class="r num hide">$${k(a.liq)}</td>
+       <td class="r">${edgeCell}</td>`;
+    ab.appendChild(tr);
+  });
+
+  // scoreboard — P&L card
+  const s = SCORE;
+  const settled = s.wins + s.losses;
+  const winRate = settled ? (s.wins/settled*100) : 0;
+  const roi = s.staked ? (s.pnl/s.staked*100) : 0;
+  const pnlClass = s.pnl >= 0 ? "pos" : "neg";
+  document.getElementById("card-pnl").innerHTML =
+    `<div class="head">
+       <div>
+         <div class="label">Realized P&amp;L · paper</div>
+         <div class="pnl ${pnlClass}">${s.pnl>=0?"+":""}${usd(s.pnl).replace("$","$")}</div>
+       </div>
+       <div style="text-align:right">
+         <div class="label">Record</div>
+         <div class="wl"><span class="w">${s.wins}W</span> / <span class="l">${s.losses}L</span></div>
+       </div>
+     </div>
+     <div class="row3">
+       <div class="b"><div class="n num">${winRate.toFixed(0)}%</div><div class="label">Win rate</div></div>
+       <div class="b"><div class="n num">${roi>=0?"+":""}${roi.toFixed(1)}%</div><div class="label">ROI on $${s.staked.toFixed(0)}</div></div>
+       <div class="b"><div class="n num">${s.open}</div><div class="label">Open · $${s.at_stake.toFixed(0)} at stake</div></div>
+       <div class="b"><div class="n num">${s.total_buys}</div><div class="label">Total buys</div></div>
+     </div>`;
+
+  // scoreboard — strategy breakdown
+  const rows = s.strategies.map(st => {
+    const n = st.wins + st.losses;
+    const wr = n ? Math.round(st.wins/n*100) : 0;
+    return `<div class="strat">
+        <div>
+          <div class="name">${st.name}</div>
+          <div class="bar"><span style="width:${wr}%"></span></div>
+        </div>
+        <div class="rec">${st.wins}W / ${st.losses}L</div>
+        <div class="wr">${n? wr+"%" : "—"}</div>
+      </div>`;
+  }).join("");
+  document.getElementById("card-strat").innerHTML =
+    `<div class="label" style="margin-bottom:6px">By strategy · settled win rate</div>
+     <div class="strat-rows">${rows}</div>`;
+}
+
+document.getElementById("refresh").onclick = render;
+render();
+</script>
+</body>
+</html>
