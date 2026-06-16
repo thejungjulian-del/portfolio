@@ -87,23 +87,17 @@
   .dsub{color:var(--muted);margin:14px 0 30px;max-width:580px}
   .design-grid{column-count:3;column-gap:20px}
   .dtile{break-inside:avoid;width:100%;margin:0 0 20px;border:1px solid var(--line);background:#fff;
-    overflow:hidden;cursor:zoom-in;transition:border-color .18s,transform .18s}
+    overflow:hidden;cursor:pointer;display:block;text-decoration:none;color:inherit;transition:border-color .18s,transform .18s}
   .dtile:hover{border-color:var(--line-strong);transform:translateY(-2px)}
   .dthumb{overflow:hidden;background:var(--hover)}
   .dthumb img{width:100%;height:auto;display:block;transition:transform .45s ease}
   .dtile:hover .dthumb img{transform:scale(1.035)}
-  .dtile figcaption{padding:13px 15px;border-top:1px solid var(--line)}
+  .dtile .dcap{padding:13px 15px;border-top:1px solid var(--line)}
   .dt{font-size:15.5px;font-weight:500}
   .dc{font-size:13px;color:var(--muted);margin-top:2px}
-  .dnote{font-size:13px;color:var(--faint);margin:16px 0 0}
-  /* lightbox */
-  .lightbox{position:fixed;inset:0;background:rgba(17,17,17,.93);display:none;
-    align-items:center;justify-content:center;z-index:50;padding:30px;cursor:zoom-out}
-  .lightbox.on{display:flex;animation:lbfade .2s both}
-  .lightbox img{max-width:100%;max-height:86vh;object-fit:contain;box-shadow:0 12px 60px rgba(0,0,0,.5)}
-  .lcap{position:absolute;bottom:20px;left:0;right:0;text-align:center;color:#fff;font-size:13px;letter-spacing:.04em;opacity:.85}
-  .lx{position:absolute;top:16px;right:22px;color:#fff;font-size:12px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;opacity:.8}
-  @keyframes lbfade{from{opacity:0}to{opacity:1}}
+  .dgo{display:inline-block;margin-top:10px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    border-bottom:1px solid currentColor;padding-bottom:1px}
+  .dtile:hover .dgo{opacity:.6}
   @media (max-width:920px){.design-grid{column-count:2}}
   @media (max-width:600px){.design-grid{column-count:1}}
 
@@ -281,22 +275,22 @@
       <p class="dsub">Interfaces, landing pages, and brand concepts — designed in Figma. Click any to enlarge.</p>
     </div>
     <div class="design-grid">
-      <figure class="dtile" onclick="zoom('images/uhnother.png','uhnother — fashion e-commerce concept')">
+      <a class="dtile" href="https://www.figma.com/proto/FSUlxSOY0CVDNE1fbWoIgJ?node-id=0-1" target="_blank" rel="noopener">
         <div class="dthumb"><img src="images/uhnother.png" alt="uhnother fashion e-commerce design" loading="lazy"></div>
-        <figcaption><div class="dt">uhnother</div><div class="dc">Fashion e-commerce concept</div></figcaption>
-      </figure>
-      <figure class="dtile" onclick="zoom('images/porsche-speed.png','Porsche — Speed · automotive landing page')">
+        <div class="dcap"><div class="dt">uhnother</div><div class="dc">Fashion e-commerce concept</div><div class="dgo">Open prototype ↗</div></div>
+      </a>
+      <a class="dtile" href="https://www.figma.com/design/uDntkLCNx69hB3RPezXqKF/Julian-Jung-HW" target="_blank" rel="noopener">
         <div class="dthumb"><img src="images/porsche-speed.png" alt="Porsche Speed landing page design" loading="lazy"></div>
-        <figcaption><div class="dt">Porsche — Speed</div><div class="dc">Automotive landing page</div></figcaption>
-      </figure>
-      <figure class="dtile" onclick="zoom('images/mu-sick.png','Mu-Sick — music marketplace, mobile UI')">
+        <div class="dcap"><div class="dt">Porsche — Speed</div><div class="dc">Automotive landing page</div><div class="dgo">Open in Figma ↗</div></div>
+      </a>
+      <a class="dtile" href="https://www.figma.com/design/8l61YW1jIDHwGydA8KktJ0/Mu-Sick" target="_blank" rel="noopener">
         <div class="dthumb"><img src="images/mu-sick.png" alt="Mu-Sick music app mobile UI design" loading="lazy"></div>
-        <figcaption><div class="dt">Mu-Sick</div><div class="dc">Music marketplace — mobile UI</div></figcaption>
-      </figure>
-      <figure class="dtile" onclick="zoom('images/bb-portfolio.png','Blockchain at Berkeley — brand graphics')">
+        <div class="dcap"><div class="dt">Mu-Sick</div><div class="dc">Music marketplace — mobile UI</div><div class="dgo">Open in Figma ↗</div></div>
+      </a>
+      <a class="dtile" href="https://www.figma.com/design/CHYRfO0F3S2kdx1Pq4ocsp/B-B-Portfolio-Figma-Creations" target="_blank" rel="noopener">
         <div class="dthumb"><img src="images/bb-portfolio.png" alt="Blockchain at Berkeley brand graphic design" loading="lazy"></div>
-        <figcaption><div class="dt">Blockchain at Berkeley</div><div class="dc">Brand &amp; web graphics</div></figcaption>
-      </figure>
+        <div class="dcap"><div class="dt">Blockchain at Berkeley</div><div class="dc">Brand &amp; web graphics</div><div class="dgo">Open in Figma ↗</div></div>
+      </a>
     </div>
   </section>
 
@@ -311,26 +305,7 @@
   </footer>
 </div>
 
-<div class="lightbox" id="lightbox" onclick="unzoom()">
-  <span class="lx" onclick="unzoom()">Close ✕</span>
-  <img id="lbimg" src="" alt="Enlarged design">
-  <div class="lcap" id="lbcap"></div>
-</div>
-
 <script>
-  // ---- design lightbox ----
-  function zoom(src, cap){
-    document.getElementById("lbimg").src = src;
-    document.getElementById("lbcap").textContent = cap || "";
-    document.getElementById("lightbox").classList.add("on");
-    document.body.style.overflow = "hidden";
-  }
-  function unzoom(){
-    document.getElementById("lightbox").classList.remove("on");
-    document.body.style.overflow = "";
-  }
-  document.addEventListener("keydown", e => { if(e.key === "Escape") unzoom(); });
-
   const chips = document.querySelectorAll(".chip");
   const cards = [...document.querySelectorAll(".proj")];
   const count = document.getElementById("count");
