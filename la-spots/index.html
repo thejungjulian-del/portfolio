@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LA — A Field Guide for the Stylish</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050506;
+    --card: #0b0b0d;
+    --line: rgba(255,255,255,0.10);
+    --line-hi: rgba(255,255,255,0.30);
+    --text: #f4f5f6;
+    --muted: #6f7177;
+    --street: #6ff2d6;   /* raw / minimal — cool */
+    --fancy: #cfd2d8;    /* polished — chrome */
+    --disp: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    --mono: "Space Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    color: var(--text);
+    font-family: var(--disp);
+    line-height: 1.5;
+    padding: 0 0 120px;
+    -webkit-font-smoothing: antialiased;
+    background: var(--bg);
+  }
+  /* faint grid — futuristic blueprint */
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.5;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(120% 90% at 50% 0%, #000 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(120% 90% at 50% 0%, #000 30%, transparent 80%);
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 28px; position: relative; z-index: 1; }
+
+  /* ───── HERO ───── */
+  .hero { padding: 76px 0 34px; border-bottom: 1px solid var(--line); margin-bottom: 36px; }
+  .kicker {
+    font-family: var(--mono); font-size: 0.7rem; font-weight: 400;
+    text-transform: uppercase; letter-spacing: 0.42em; color: var(--street); margin-bottom: 26px;
+  }
+  h1 {
+    font-family: var(--disp); font-weight: 500; font-size: clamp(2.6rem, 8vw, 5rem);
+    line-height: 0.98; letter-spacing: -0.045em; text-transform: uppercase;
+  }
+  h1 em { font-style: normal; color: var(--muted); }
+  .sub {
+    color: var(--muted); margin-top: 24px; font-size: 0.98rem; max-width: 52ch;
+    font-family: var(--mono); line-height: 1.7;
+  }
+  .sub b { color: var(--text); font-weight: 400; }
+
+  /* ───── CONTROLS ───── */
+  .vibe { display: flex; gap: 0; margin: 36px 0 18px; border: 1px solid var(--line); }
+  .vibe button {
+    flex: 1; background: transparent; border: none; border-right: 1px solid var(--line); color: var(--muted);
+    padding: 15px; font-family: var(--mono); font-size: 0.72rem; font-weight: 400;
+    cursor: pointer; transition: 0.2s; letter-spacing: 0.16em; text-transform: uppercase;
+  }
+  .vibe button:last-child { border-right: none; }
+  .vibe button:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+  .vibe button.on-all { background: var(--text); color: #000; }
+  .vibe button.on-street { background: var(--street); color: #04201a; }
+  .vibe button.on-fancy { background: var(--fancy); color: #111; }
+
+  .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 8px; }
+  #search {
+    flex: 1; min-width: 220px; background: transparent; border: 1px solid var(--line);
+    color: var(--text); padding: 13px 16px; border-radius: 0; font-family: var(--mono); font-size: 0.82rem;
+    transition: 0.2s; letter-spacing: 0.04em;
+  }
+  #search:focus { outline: none; border-color: var(--line-hi); }
+  #search::placeholder { color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.72rem; }
+  .filters { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    background: transparent; border: 1px solid var(--line); color: var(--muted);
+    padding: 9px 14px; border-radius: 0; font-size: 0.68rem; font-family: var(--mono);
+    cursor: pointer; transition: 0.2s; letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .chip:hover { color: var(--text); border-color: var(--line-hi); }
+  .chip.active { background: var(--text); color: #000; border-color: var(--text); }
+
+  /* ───── SECTIONS ───── */
+  .group-label {
+    font-family: var(--disp); font-weight: 500; font-size: 1.05rem; text-transform: uppercase;
+    color: var(--text); letter-spacing: 0.04em;
+    margin: 54px 0 20px; padding-bottom: 14px; border-bottom: 1px solid var(--line);
+    display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  }
+  .group-label .n {
+    font-family: var(--mono); font-weight: 400; font-size: 0.68rem;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted);
+  }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+
+  /* ───── CARDS ───── */
+  .card {
+    background: var(--bg); padding: 24px 22px 22px;
+    display: flex; flex-direction: column; position: relative; overflow: hidden;
+    transition: background 0.25s, transform 0.25s;
+  }
+  /* corner index tick */
+  .card::before {
+    content: ""; position: absolute; top: 0; left: 0; width: 0; height: 1px; opacity: 0.9;
+    transition: width 0.35s cubic-bezier(.2,.7,.2,1);
+  }
+  .card.v-street::before { background: var(--street); }
+  .card.v-fancy::before { background: var(--fancy); }
+  .card.v-both::before { background: linear-gradient(90deg, var(--street), var(--fancy)); }
+  .card:hover { background: var(--card); }
+  .card:hover::before { width: 100%; }
+  .tags { display: flex; gap: 6px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
+  .pill {
+    font-family: var(--mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.14em;
+    font-weight: 400; padding: 4px 8px; border: 1px solid var(--line);
+  }
+  .pill.street { color: var(--street); border-color: rgba(111,242,214,0.35); }
+  .pill.fancy { color: var(--fancy); border-color: rgba(207,210,216,0.3); }
+  .pill.cat { color: var(--muted); }
+  .card h3 { font-family: var(--disp); font-weight: 500; font-size: 1.32rem; line-height: 1.1; margin: 2px 0 8px; letter-spacing: -0.025em; }
+  .card .hood {
+    font-family: var(--mono); font-size: 0.64rem; color: var(--muted); margin-bottom: 14px;
+    text-transform: uppercase; letter-spacing: 0.18em;
+  }
+  .card p { color: #a9abb0; font-size: 0.88rem; flex: 1; line-height: 1.55; }
+  .tip {
+    margin-top: 16px; font-family: var(--mono); font-size: 0.72rem; color: var(--text); line-height: 1.6;
+    border-left: 1px solid var(--street); padding: 2px 0 2px 12px;
+  }
+  .tip b { color: var(--street); font-weight: 400; }
+  .hours {
+    margin-top: 14px; font-family: var(--mono); font-size: 0.64rem; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.16em;
+  }
+  .links { display: flex; gap: 8px; margin-top: 10px; }
+  .links a {
+    text-decoration: none; font-family: var(--mono); font-size: 0.7rem; font-weight: 400; padding: 11px 14px;
+    transition: 0.2s; letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .map { background: var(--text); color: #000; flex: 1; text-align: center; }
+  .map:hover { background: var(--street); }
+  .empty { color: var(--muted); padding: 70px 0; text-align: center; display: none; font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.2em; font-size: 0.85rem; }
+
+  footer { margin-top: 80px; padding-top: 28px; border-top: 1px solid var(--line); color: var(--muted); font-family: var(--mono); font-size: 0.72rem; line-height: 1.9; }
+  footer a { color: var(--muted); text-decoration: none; border-bottom: 1px solid var(--line); }
+  footer a:hover { color: var(--street); }
+
+  @media (max-width: 560px) {
+    .hero { padding: 52px 0 26px; }
+    .vibe { flex-direction: column; }
+    .vibe button { border-right: none; border-bottom: 1px solid var(--line); }
+    .vibe button:last-child { border-bottom: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="kicker">LOS ANGELES / SHOT INDEX 001</div>
+    <h1>The best<br><em>backdrops.</em></h1>
+    <div class="sub">A curated index of LA's most photogenic backgrounds — walls, architecture, cafes &amp; design spaces — plus the clean shops &amp; spots around them. Tap <b>MAP · HOURS</b> on any node for directions + live opening hours.</div>
+  </header>
+
+  <div class="vibe" id="vibe">
+    <button data-vibe="all" class="on-all">All</button>
+    <button data-vibe="street">◾ Raw / Minimal</button>
+    <button data-vibe="fancy">✦ Polished / Upscale</button>
+  </div>
+
+  <div class="controls">
+    <input id="search" type="text" placeholder="Search… (e.g. brutalist, latte, gallery)">
+    <div class="filters" id="filters"></div>
+  </div>
+
+  <div id="board">
+    <div class="group-label"><span>Backdrops · Walls</span><span class="n">6 spots</span></div>
+    <div class="grid">
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Wall</span></div>
+        <h3>Paul Smith Pink Wall</h3>
+        <div class="hood">📍 Melrose · WeHo</div>
+        <p>The Barragán-inspired Pepto-pink wall — LA's single most-shot color block.</p>
+        <div class="tip"><b>Best:</b> Go at opening (a line forms by midday). Shoot straight-on for the clean block; step back for full-body.</div>
+        <div class="hours">◷ Outdoor wall — daylight</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Paul%20Smith%20Pink%20Wall%208221%20Melrose%20Avenue%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Installation</span></div>
+        <h3>Urban Light — LACMA</h3>
+        <div class="hood">📍 Mid-City</div>
+        <p>202 white cast-iron street lamps in a grid — minimal, symmetric, endlessly shootable.</p>
+        <div class="tip"><b>Best:</b> Dusk when the lamps light up; before 8am for an empty grid.</div>
+        <div class="hours">◷ Outdoor — best at dusk (lit nightly)</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Urban%20Light%20LACMA%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Wall</span></div>
+        <h3>'Made in LA' Wall</h3>
+        <div class="hood">📍 Melrose</div>
+        <p>Bold black-and-white typographic wall on Melrose — graphic, high-contrast, reads instantly.</p>
+        <div class="tip"><b>Best:</b> Wear color to pop against the monochrome type.</div>
+        <div class="hours">◷ Outdoor wall — daylight</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Made%20in%20LA%20wall%20Cisco%20Home%20Melrose%20Avenue%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Wall</span></div>
+        <h3>Geometric Wall</h3>
+        <div class="hood">📍 Venice</div>
+        <p>Pastel geometric blocks — gives a different composition from every angle.</p>
+        <div class="tip"><b>Best:</b> Move around it; each side frames you differently.</div>
+        <div class="hours">◷ Outdoor wall — daylight</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Geometric%20Wall%20Venice%20National%20Council%20Jewish%20Women%20Thrift" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Mural</span></div>
+        <h3>Angel Wings</h3>
+        <div class="hood">📍 Mid-City</div>
+        <p>Colette Miller's wings — stand between them for the classic 'LA angel' frame.</p>
+        <div class="tip"><b>Best:</b> 3rd &amp; Orlando is the cleanest of the several locations.</div>
+        <div class="hours">◷ Outdoor mural — daylight</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Angel%20Wings%20mural%20West%203rd%20Street%20Orlando%20Avenue%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Stairs</span></div>
+        <h3>Micheltorena (Heart) Stairs</h3>
+        <div class="hood">📍 Silver Lake</div>
+        <p>Painted rainbow-heart steps with a skyline peek behind them.</p>
+        <div class="tip"><b>Best:</b> Sunrise — it's a residential street and gets tight + busy fast.</div>
+        <div class="hours">◷ Outdoor — quiet at sunrise</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Micheltorena%20Stairs%20Silver%20Lake%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+    </div>
+    <div class="group-label"><span>Coffee Shops</span><span class="n">8 spots</span></div>
+    <div class="grid">
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Coffee</span></div>
+        <h3>Maru Coffee</h3>
+        <div class="hood">📍 Arts District / Los Feliz</div>
+        <p>The minimalist benchmark — where DJs, producers and stylists post up. Quiet, clean, photogenic.</p>
+        <div class="tip"><b>Best:</b> Off-peak for the empty-counter shot; the light wood + concrete reads on camera.</div>
+        <div class="hours">◷ Mon–Fri 7:30–5, Sat–Sun 8–5</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Maru%20Coffee%20Arts%20District%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-street">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill cat">Coffee</span></div>
+        <h3>Comet Over Delphi</h3>
+        <div class="hood">📍 Highland Park</div>
+        <p>Sheet-metal walls and a $20K espresso machine. Industrial-cool, serious coffee.</p>
+        <div class="tip"><b>Best:</b> The metal walls = a raw, moody backdrop for fits.</div>
+        <div class="hours">◷ Daily 7–5</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Comet%20Over%20Delphi%20Highland%20Park%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Coffee</span></div>
+        <h3>Archives of Us</h3>
+        <div class="hood">📍 Chinatown</div>
+        <p>Cinematic minimalist by designer Jialun Xiong — concrete floors, black-ash wood, brushed silver chrome, cream seating. Premium high-fashion mood.</p>
+        <div class="tip"><b>Best:</b> INVITE-ONLY / secret — confirm access before you go. The chrome + concrete reads luxe on camera.</div>
+        <div class="hours">◷ Invite-only — confirm access</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Archives%20of%20Us%20coffee%20Chinatown%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-street">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill cat">Coffee</span></div>
+        <h3>Cafe De Mama</h3>
+        <div class="hood">📍 Koreatown</div>
+        <p>Minimal, warm room and a rotating menu (the Black Sesame Cream Latte is the move).</p>
+        <div class="tip"><b>Best:</b> Order the sesame latte — it's the photogenic one.</div>
+        <div class="hours">◷ Daily 8–8</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Cafe%20De%20Mama%20Western%20Ave%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-fancy">
+        <div class="tags"><span class="pill fancy">Polished</span><span class="pill cat">Coffee</span></div>
+        <h3>Yala Coffee</h3>
+        <div class="hood">📍 Silver Lake</div>
+        <p>Middle-East-inspired — earthy walls, woven textures, a calm, elevated palette.</p>
+        <div class="tip"><b>Best:</b> Warm earth tones flatter neutral/tailored fits.</div>
+        <div class="hours">◷ Daily 8–4</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Yala%20Coffee%20Silver%20Lake%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Coffee</span></div>
+        <h3>Noun Coffee</h3>
+        <div class="hood">📍 Virgil Village</div>
+        <p>Clean but warm — natural textures, soft color, lived-in instead of cold-minimal.</p>
+        <div class="tip"><b>Best:</b> Cozy enough to actually sit and shoot candids.</div>
+        <div class="hours">◷ Check map — verify location</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Noun%20Coffee%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-street">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill cat">Coffee</span></div>
+        <h3>Laveta Coffee</h3>
+        <div class="hood">📍 Echo Park</div>
+        <p>Brutalist-minimalist — bare stone, wood and plants, with a counter carved from a single plank of stone. Went viral for the austere interior.</p>
+        <div class="tip"><b>Best:</b> Golden-hour window light against the stone is the shot.</div>
+        <div class="hours">◷ Mon–Fri 8–3, Sat–Sun 8–4</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Laveta%20Coffee%20318%20Glendale%20Blvd%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-street">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill cat">Coffee</span></div>
+        <h3>File Systems of Coffee</h3>
+        <div class="hood">📍 Hollywood</div>
+        <p>Retrofuturistic — vintage Apple monitors and plastic filing cabinets as tables, surrounded by plants. 'Nature meets tech' eclectic.</p>
+        <div class="tip"><b>Best:</b> Frame the old computers + greenery for a one-of-one backdrop.</div>
+        <div class="hours">◷ Mon–Fri 7–4, Sat–Sun 8–4</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=File%20Systems%20of%20Coffee%20Melrose%20Hollywood%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+    </div>
+    <div class="group-label"><span>Architecture</span><span class="n">7 spots</span></div>
+    <div class="grid">
+      <div class="card v-fancy">
+        <div class="tags"><span class="pill fancy">Polished</span><span class="pill cat">Modern</span></div>
+        <h3>Walt Disney Concert Hall</h3>
+        <div class="hood">📍 Downtown</div>
+        <p>Gehry's rippling stainless-steel curves — the most cinematic facade in the city.</p>
+        <div class="tip"><b>Best:</b> Morning side-light makes the steel glow; shoot the curved alcoves on the side.</div>
+        <div class="hours">◷ Exterior 24h; interior tours vary</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Walt%20Disney%20Concert%20Hall%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-street">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill cat">Brutalist</span></div>
+        <h3>Westin Bonaventure</h3>
+        <div class="hood">📍 Downtown</div>
+        <p>Mirror-glass cylindrical concrete towers — sci-fi brutalist fortress (a Hollywood favorite).</p>
+        <div class="tip"><b>Best:</b> The glass elevators + atrium interiors are a free shoot.</div>
+        <div class="hours">◷ Hotel lobby — open 24h</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Westin%20Bonaventure%20Hotel%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Brutalist</span></div>
+        <h3>American Cement Building</h3>
+        <div class="hood">📍 Mid-City</div>
+        <p>A lattice-like concrete exoskeleton wrapping the tower — pure brutalist geometry.</p>
+        <div class="tip"><b>Best:</b> Shoot low looking up to catch the lattice pattern.</div>
+        <div class="hours">◷ Exterior only — daylight</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=American%20Cement%20Building%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-fancy">
+        <div class="tags"><span class="pill fancy">Polished</span><span class="pill cat">Art Deco</span></div>
+        <h3>Eastern Columbia Building</h3>
+        <div class="hood">📍 Downtown</div>
+        <p>Turquoise terra-cotta Art Deco tower with a sunburst entry and a glowing clock tower.</p>
+        <div class="tip"><b>Best:</b> Blue hour — the turquoise + clock glow pop against dusk sky.</div>
+        <div class="hours">◷ Exterior only — daylight</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Eastern%20Columbia%20Building%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Modern</span></div>
+        <h3>Petersen Automotive Museum</h3>
+        <div class="hood">📍 Mid-City</div>
+        <p>308 stainless ribbons wrapping a red facade — the most photographed exterior on Museum Row.</p>
+        <div class="tip"><b>Best:</b> The silver 'ribbons' catch light differently all day — circle it.</div>
+        <div class="hours">◷ Daily 10–6</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Petersen%20Automotive%20Museum%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-street">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill cat">Brutalist</span></div>
+        <h3>Hayden Tract</h3>
+        <div class="hood">📍 Culver City</div>
+        <p>Eric Owen Moss's deconstructivist/brutalist office blocks — a self-guided architecture walk.</p>
+        <div class="tip"><b>Best:</b> Whole district is shootable; weekends are quietest.</div>
+        <div class="hours">◷ Outdoor district — daylight</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Hayden%20Tract%20Culver%20City" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Brutalist</span></div>
+        <h3>The Line Hotel</h3>
+        <div class="hood">📍 Koreatown</div>
+        <p>1964 mid-century brutalist bones, softened with lush plants + floor-to-ceiling glass.</p>
+        <div class="tip"><b>Best:</b> Lobby/atrium greenery against raw concrete = great contrast shot.</div>
+        <div class="hours">◷ Hotel lobby — open 24h</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=The%20Line%20Hotel%20Koreatown%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+    </div>
+    <div class="group-label"><span>Design &amp; Galleries</span><span class="n">5 spots</span></div>
+    <div class="grid">
+      <div class="card v-fancy">
+        <div class="tags"><span class="pill fancy">Polished</span><span class="pill cat">Gallery</span></div>
+        <h3>David Geffen Galleries — LACMA</h3>
+        <div class="hood">📍 Mid-City</div>
+        <p>Peter Zumthor's new sinuous concrete sweep, glass-wrapped and floating ~30 ft up. Opened 2026.</p>
+        <div class="tip"><b>Best:</b> The elevated underside + glass walls are the architecture shot, ticket or not.</div>
+        <div class="hours">◷ Mon–Tue 11–6, Thu 11–6, Fri 11–8, Sat–Sun 10–7, closed Wed</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=David%20Geffen%20Galleries%20LACMA%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Gallery</span></div>
+        <h3>The Broad</h3>
+        <div class="hood">📍 Downtown</div>
+        <p>Free museum; the honeycomb 'veil' facade + Kusama Infinity Room are both content.</p>
+        <div class="tip"><b>Best:</b> Book the Infinity Room slot ahead; shoot the facade from the plaza.</div>
+        <div class="hours">◷ Tue–Wed 11–5, Thu 11–8, Fri 11–5, Sat–Sun 10–6, closed Mon</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=The%20Broad%20museum%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">House</span></div>
+        <h3>MAK Center — Schindler House</h3>
+        <div class="hood">📍 West Hollywood</div>
+        <p>Rudolph Schindler's 1922 landmark — a modernist house museum with rotating shows.</p>
+        <div class="tip"><b>Best:</b> Indoor-outdoor concrete + glass; calm, design-nerd backdrop.</div>
+        <div class="hours">◷ Wed–Sun 11–6, closed Mon–Tue</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Schindler%20House%20MAK%20Center%20West%20Hollywood" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">House</span></div>
+        <h3>Hollyhock House</h3>
+        <div class="hood">📍 Barnsdall Park</div>
+        <p>Frank Lloyd Wright UNESCO site in a hilltop park with great open communal space + views.</p>
+        <div class="tip"><b>Best:</b> Park grounds are free + shoot well even without going inside.</div>
+        <div class="hours">◷ Thu–Sat 11–4 (tickets req.), closed Sun–Wed</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Hollyhock%20House%20Barnsdall%20Park%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-street">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill cat">House</span></div>
+        <h3>Neutra VDL House</h3>
+        <div class="hood">📍 Silver Lake</div>
+        <p>Richard Neutra's glass-and-steel modernist studio on the Silver Lake Reservoir.</p>
+        <div class="tip"><b>Best:</b> Open select days — check hours before going.</div>
+        <div class="hours">◷ Sat only 11–3 (last tour 2:30)</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Neutra%20VDL%20Studio%20and%20Residences%20Silver%20Lake" target="_blank">Map →</a></div>
+      </div>
+    </div>
+    <div class="group-label"><span>Fashion · Minimal</span><span class="n">6 spots</span></div>
+    <div class="grid">
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Street</span></div>
+        <h3>Aimé Leon Dore</h3>
+        <div class="hood">📍 Melrose · WeHo</div>
+        <p>Elevated-minimal flagship — Mediterranean stone, an 80-year-old olive tree and a custom La Marzocco espresso bar.</p>
+        <div class="tip"><b>Best:</b> Grab an espresso; the olive-tree corner is the shot.</div>
+        <div class="hours">◷ Mon–Sat 11–7, Sun 12–6</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Aime%20Leon%20Dore%208746%20Melrose%20Avenue%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Street</span></div>
+        <h3>Kith Los Angeles</h3>
+        <div class="hood">📍 West Hollywood</div>
+        <p>Monolithic stone flagship tucked into the Fred Segal complex, paired with the Ronnie's Pronto cafe.</p>
+        <div class="tip"><b>Best:</b> Stark stone interior + a cafe set in one stop.</div>
+        <div class="hours">◷ Mon–Sat 11–7, Sun 11–6</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Kith%20Los%20Angeles%20Sunset%20West%20Hollywood" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-street">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill cat">Street</span></div>
+        <h3>Stüssy Chapter</h3>
+        <div class="hood">📍 La Brea</div>
+        <p>OG streetwear, stripped back — concrete, restraint, zero clutter. The minimal take on the genre.</p>
+        <div class="tip"><b>Best:</b> Clean concrete interior; easy fit backdrop.</div>
+        <div class="hours">◷ Mon–Sat 11–7, Sun 12–6</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Stussy%20Los%20Angeles%20112%20South%20La%20Brea%20Avenue" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Street</span></div>
+        <h3>424 Fairfax</h3>
+        <div class="hood">📍 Fairfax</div>
+        <p>High-fashion-meets-street in a spare, industrial room. Bridges tailored and street.</p>
+        <div class="tip"><b>Best:</b> Best if you mix tailored fits with street.</div>
+        <div class="hours">◷ Mon 11–6, Tue–Fri 11–7, Sat 12–7, Sun 12–6</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=424%20Fairfax%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-fancy">
+        <div class="tags"><span class="pill fancy">Polished</span><span class="pill cat">High Fashion</span></div>
+        <h3>Rick Owens</h3>
+        <div class="hood">📍 La Brea</div>
+        <p>A brutalist raw-concrete temple — high ceilings, reductivist gothic minimalism. The purest minimal-luxe space in LA.</p>
+        <div class="tip"><b>Best:</b> The concrete cathedral interior IS the shot.</div>
+        <div class="hours">◷ Mon–Fri 11–7, Sat–Sun 12–6</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Rick%20Owens%20819%20North%20La%20Brea%20Avenue%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-fancy">
+        <div class="tags"><span class="pill fancy">Polished</span><span class="pill cat">High Fashion</span></div>
+        <h3>Maxfield</h3>
+        <div class="hood">📍 West Hollywood</div>
+        <p>Avant-garde luxury in a windowless brutalist block — designer + rare archive, gallery-quiet inside.</p>
+        <div class="tip"><b>Best:</b> The concrete exterior doubles as a fancy-fit backdrop.</div>
+        <div class="hours">◷ Mon–Sat 11–7, Sun 12–5</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Maxfield%20West%20Hollywood" target="_blank">Map →</a></div>
+      </div>
+    </div>
+    <div class="group-label"><span>Restaurants</span><span class="n">5 spots</span></div>
+    <div class="grid">
+      <div class="card v-fancy">
+        <div class="tags"><span class="pill fancy">Polished</span><span class="pill cat">Restaurant</span></div>
+        <h3>Sushi Samba</h3>
+        <div class="hood">📍 West Hollywood</div>
+        <p>Japanese-Peruvian-Brazilian, luxe and raw-fish-forward, with a giant rooftop + DJs. Classic see-and-be-seen.</p>
+        <div class="tip"><b>Best:</b> Rooftop at sunset — book ahead, dress sharp.</div>
+        <div class="hours">◷ Sun–Wed 5pm–12, Thu–Sat 5pm–1am; wknd brunch 10:30–4</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Sushi%20Samba%20West%20Hollywood" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-fancy">
+        <div class="tags"><span class="pill fancy">Polished</span><span class="pill cat">Restaurant</span></div>
+        <h3>Catch LA</h3>
+        <div class="hood">📍 West Hollywood</div>
+        <p>Freshly remodeled rooftop staple for stylish locals and celebrations. Lush, photogenic.</p>
+        <div class="tip"><b>Best:</b> The greenhouse/greenery rooftop is the shot. Reserve.</div>
+        <div class="hours">◷ Mon–Thu 6–10pm, Fri–Sun 5:30pm+; wknd brunch 11–2:30</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Catch%20LA%20West%20Hollywood" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Restaurant</span></div>
+        <h3>Bar di Bello</h3>
+        <div class="hood">📍 Silver Lake</div>
+        <p>Warm wood + lush velvet curtains, NY-Grill-style polish in the Sunset Row development.</p>
+        <div class="tip"><b>Best:</b> Moody interior light flatters everyone — sit inside.</div>
+        <div class="hours">◷ Wed–Sun 5–11pm, closed Mon–Tue</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Bar%20di%20Bello%20Silver%20Lake%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Restaurant</span></div>
+        <h3>Amiguita</h3>
+        <div class="hood">📍 Silver Lake</div>
+        <p>Afro-Latin, dimly lit, just 34 seats with a specialty mural by L.A. artist Lara Apponyi.</p>
+        <div class="tip"><b>Best:</b> Intimate + arty — great for a candid dinner set.</div>
+        <div class="hours">◷ Mon–Sat 5–10pm, closed Sun</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Amiguita%20Silver%20Lake%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-fancy">
+        <div class="tags"><span class="pill fancy">Polished</span><span class="pill cat">Restaurant</span></div>
+        <h3>Baldi</h3>
+        <div class="hood">📍 Beverly Hills</div>
+        <p>Terracotta 180-seat room at the Waldorf Astoria with a mural depicting an Italian dinner party.</p>
+        <div class="tip"><b>Best:</b> The terracotta + mural backdrop = upscale-fit content.</div>
+        <div class="hours">◷ Dinner Wed–Sun 5–10pm; bar daily 5–11pm</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Baldi%20Waldorf%20Astoria%20Beverly%20Hills" target="_blank">Map →</a></div>
+      </div>
+    </div>
+    <div class="group-label"><span>Bars</span><span class="n">8 spots</span></div>
+    <div class="grid">
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Bar</span></div>
+        <h3>Capri Club</h3>
+        <div class="hood">📍 Eagle Rock</div>
+        <p>Trendy aperitivo bar, deep amaro list — packed nightly with a well-dressed crowd on spritzes.</p>
+        <div class="tip"><b>Best:</b> Retro-Italian vibe; go early, it fills up fast.</div>
+        <div class="hours">◷ Mon–Wed 4–11, Thu–Fri 4pm–12, Sat 2pm–12, Sun 2–11</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Capri%20Club%20Eagle%20Rock%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Bar</span></div>
+        <h3>Death &amp; Co</h3>
+        <div class="hood">📍 Arts District</div>
+        <p>Legendary, dark and sophisticated cocktail den — refined and intimate.</p>
+        <div class="tip"><b>Best:</b> Low moody light — lean into the silhouette shot.</div>
+        <div class="hours">◷ Sun–Thu 6pm–12 (Wed to 1), Fri–Sat 6pm–2am</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Death%20and%20Co%20Arts%20District%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Bar</span></div>
+        <h3>Real Charmer</h3>
+        <div class="hood">📍 Virgil Village</div>
+        <p>Dark-and-stormy room with a bubbling stone fountain, wax candles and an ocean oil painting.</p>
+        <div class="tip"><b>Best:</b> Atmospheric AF — the candlelight does the work.</div>
+        <div class="hours">◷ Daily 5pm–12 (Fri–Sat to 1am)</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Real%20Charmer%20bar%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-street">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill cat">Bar</span></div>
+        <h3>Night On Earth</h3>
+        <div class="hood">📍 Cahuenga Pass</div>
+        <p>Strip-mall gem with a glowing neon-blue bar, curvy banquettes and grungy band posters.</p>
+        <div class="tip"><b>Best:</b> The neon-blue bar = an instant colorful backdrop.</div>
+        <div class="hours">◷ Mon–Thu 6pm–1, Fri–Sat 6pm–2, Sun 6pm–1</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Night%20On%20Earth%20bar%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-street">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill cat">Bar</span></div>
+        <h3>Café Tondo</h3>
+        <div class="hood">📍 Eastside</div>
+        <p>CDMX-inspired natural-wine spot — graphic designers and character-actor types spill onto the patio nightly.</p>
+        <div class="tip"><b>Best:</b> Sidewalk-patio scene; show up and people-watch.</div>
+        <div class="hours">◷ Tue–Sun 8am–11pm (Fri–Sat to 12), closed Mon</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Cafe%20Tondo%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-fancy">
+        <div class="tags"><span class="pill fancy">Polished</span><span class="pill cat">Bar</span></div>
+        <h3>Or Bar</h3>
+        <div class="hood">📍 West Hollywood</div>
+        <p>Award-winning French-disco room — a custom ~22ft, 3,700-crystal chandelier and a hand-painted black-and-gold mural.</p>
+        <div class="tip"><b>Best:</b> Chandelier + gold mural are the hero shots; go evening for the disco lighting.</div>
+        <div class="hours">◷ Mon–Wed 10am–12, Thu–Sat 10am–2am, Sun 10am–12</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Or%20Bar%208228%20Santa%20Monica%20Blvd%20West%20Hollywood" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-fancy">
+        <div class="tags"><span class="pill fancy">Polished</span><span class="pill cat">Bar</span></div>
+        <h3>The Wolves</h3>
+        <div class="hood">📍 Downtown</div>
+        <p>Parisian-salon maximalism built from salvaged antiques — marble, mahogany booths, and a domed stained-glass ceiling from an old Illinois train station.</p>
+        <div class="tip"><b>Best:</b> Shoot up at the stained-glass dome; rich, layered, antique backdrop.</div>
+        <div class="hours">◷ Mon &amp; Thu 5pm–12, Fri–Sat 5pm–2, Sun 5pm–12, closed Tue–Wed</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=The%20Wolves%20519%20S%20Spring%20St%20Downtown%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Bar</span></div>
+        <h3>Mirate</h3>
+        <div class="hood">📍 Los Feliz</div>
+        <p>A 40-foot tree rising from a central atrium courtyard, Oaxacan-influenced decor. Voted a top bar in North America.</p>
+        <div class="tip"><b>Best:</b> The indoor tree under the atrium is the frame — shoot from the rooftop edge.</div>
+        <div class="hours">◷ Mon–Thu 5–11, Fri 5pm–12, Sat 11am–12, Sun 11–11</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Mirate%201712%20N%20Vermont%20Ave%20Los%20Feliz%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+    </div>
+    <div class="group-label"><span>Concept &amp; Design Stores</span><span class="n">4 spots</span></div>
+    <div class="grid">
+      <div class="card v-fancy">
+        <div class="tags"><span class="pill fancy">Polished</span><span class="pill cat">Concept</span></div>
+        <h3>forte_forte</h3>
+        <div class="hood">📍 Melrose Place</div>
+        <p>A totemic stone sculpture mid-floor + non-concentric plaster ceiling circles as a James Turrell homage. Ethereal Italian flagship.</p>
+        <div class="tip"><b>Best:</b> The sculptural ceiling + stone are the shot — shoot up.</div>
+        <div class="hours">◷ Mon–Sat 10–6, closed Sun</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=forte%20forte%20Melrose%20Place%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Concept</span></div>
+        <h3>Ulla Johnson</h3>
+        <div class="hood">📍 Melrose Place</div>
+        <p>Full-scale indoor trees, marbleized resin tables, a Miranda Brooks garden patio — playful 1970s California.</p>
+        <div class="tip"><b>Best:</b> The plant-filled patio entry is the standout frame.</div>
+        <div class="hours">◷ Mon–Sat 11–7, Sun 12–6</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Ulla%20Johnson%20boutique%20Melrose%20Place%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Concept</span></div>
+        <h3>Cleo</h3>
+        <div class="hood">📍 Highland Park</div>
+        <p>Fashion concept store with an in-house matcha cafe (Good Boy) and lounge areas built for lingering, not just browsing.</p>
+        <div class="tip"><b>Best:</b> Grab a matcha, shoot the cafe corner — two contents in one.</div>
+        <div class="hours">◷ Check map — verify location</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Cleo%20store%20Highland%20Park%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Concept</span></div>
+        <h3>Dover Street Market LA</h3>
+        <div class="hood">📍 Arts District</div>
+        <p>CDG's multi-level concept space — installation-style displays where fashion becomes art.</p>
+        <div class="tip"><b>Best:</b> Each floor is a different set; ride it top to bottom.</div>
+        <div class="hours">◷ Mon–Sat 11–6, Sun 12–6</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Dover%20Street%20Market%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+    </div>
+    <div class="group-label"><span>Books, Records &amp; Plants</span><span class="n">2 spots</span></div>
+    <div class="grid">
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Books</span></div>
+        <h3>The Last Bookstore</h3>
+        <div class="hood">📍 Downtown</div>
+        <p>The world's most-Instagrammed bookstore — old bank building, marble columns, and the famous book tunnel + Labyrinth upstairs.</p>
+        <div class="tip"><b>Best:</b> The book tunnel + flying-pages arch are THE shots. Go at opening to beat the line.</div>
+        <div class="hours">◷ Daily 11–8</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=The%20Last%20Bookstore%20Downtown%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-street">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill cat">Books</span></div>
+        <h3>Counterpoint Records &amp; Books</h3>
+        <div class="hood">📍 Hollywood</div>
+        <p>Cult secondhand books (lit, film, philosophy) stacked floor-to-ceiling, with deep vinyl crates.</p>
+        <div class="tip"><b>Best:</b> Dense, lived-in shelves = a warm, brainy backdrop.</div>
+        <div class="hours">◷ Daily 12–8</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Counterpoint%20Records%20and%20Books%20Hollywood%20Los%20Angeles" target="_blank">Map →</a></div>
+      </div>
+    </div>
+    <div class="group-label"><span>Nearby · Day Trips</span><span class="n">3 spots</span></div>
+    <div class="grid">
+      <div class="card v-both">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill fancy">Polished</span><span class="pill cat">Modern</span></div>
+        <h3>Frey House II</h3>
+        <div class="hood">📍 Palm Springs</div>
+        <p>Albert Frey's 800-sq-ft steel-and-glass desert-modern icon — corrugated metal, glass spans, and a natural boulder protruding inside as a room divider, perched over the whole valley.</p>
+        <div class="tip"><b>Best:</b> Museum-owned — access by Palm Springs Art Museum tour/lottery, not walk-up. Book ahead.</div>
+        <div class="hours">◷ By Palm Springs Art Museum tour only (Modernism Week, Feb &amp; Oct)</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Frey%20House%20II%20686%20Palisades%20Dr%20Palm%20Springs" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-fancy">
+        <div class="tags"><span class="pill fancy">Polished</span><span class="pill cat">Shopping</span></div>
+        <h3>Malibu Country Mart</h3>
+        <div class="hood">📍 Malibu</div>
+        <p>Open-air on-vibe cluster — Chrome Hearts, Oliver Peoples, John Varvatos + an Alfred Coffee (black/gold/marble) for cafe content.</p>
+        <div class="tip"><b>Best:</b> Daytime to golden hour; the open-air courtyards shoot clean.</div>
+        <div class="hours">◷ Retail daily ~10–7; shops vary</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=Malibu%20Country%20Mart%203835%20Cross%20Creek%20Rd%20Malibu" target="_blank">Map →</a></div>
+      </div>
+      <div class="card v-street">
+        <div class="tags"><span class="pill street">Raw</span><span class="pill cat">Shopping</span></div>
+        <h3>The LAB Anti-Mall</h3>
+        <div class="hood">📍 Costa Mesa · OC</div>
+        <p>Open-air 'Anti-Mall' of curated indie vendors with intentionally non-conventional, photogenic design.</p>
+        <div class="tip"><b>Best:</b> Formally allows photoshoots — a pro camera needs a release form + $75 fee. Worth it for the textures.</div>
+        <div class="hours">◷ Shops vary, ~11–9</div>
+        <div class="links"><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=The%20LAB%20Anti-Mall%202930%20Bristol%20Street%20Costa%20Mesa" target="_blank">Map →</a></div>
+      </div>
+    </div>
+  </div>
+  <div class="empty" id="empty">Nothing matches. Try another search or vibe.</div>
+
+  <footer>
+    ◷ Hours verified ~June 2026 — always tap <b style="color:var(--street)">Map →</b> to confirm live before you go. Architecture shoots best at <b style="color:var(--street)">early morning</b> or <b style="color:var(--street)">blue hour</b>; cafés are cleanest off-peak (2–4pm).<br><br>
+    Sources:
+    <a href="https://www.theinfatuation.com/los-angeles/guides/where-to-get-coffee-and-be-seen" target="_blank">The Infatuation</a> ·
+    <a href="https://www.baristamagazine.com/designed-for-coffee-cafes-with-standout-interiors-los-angeles-edition/" target="_blank">Barista Mag</a> ·
+    <a href="https://www.timeout.com/los-angeles/attractions/the-30-most-beautiful-buildings-in-los-angeles" target="_blank">Time Out</a> ·
+    <a href="https://archgyan.com/unforgettable-brutalist-buildings-in-los-angeles/" target="_blank">Archgyan</a> ·
+    <a href="https://www.atlasobscura.com/things-to-do/los-angeles-california/architecture" target="_blank">Atlas Obscura</a> ·
+    <a href="https://www.wallpaper.com/architecture/public-buildings/david-geffen-galleries-lacma-peter-zumthor-usa" target="_blank">Wallpaper*</a>
+  </footer>
+</div>
+
+<script>
+  // vibe: "street" (raw/minimal) | "fancy" (polished/upscale) | "both"
+  const SPOTS = [
+    // ───────── BACKDROPS · WALLS & INSTALLATIONS (pure photo spots) ─────────
+    { group: "Backdrops · Walls", cat: "Wall", vibe: "both", name: "Paul Smith Pink Wall", hood: "Melrose · WeHo", q: "Paul Smith Pink Wall 8221 Melrose Avenue Los Angeles",
+      desc: "The Barragán-inspired Pepto-pink wall — LA's single most-shot color block.",
+      tip: "Go at opening (a line forms by midday). Shoot straight-on for the clean block; step back for full-body." },
+    { group: "Backdrops · Walls", cat: "Installation", vibe: "both", name: "Urban Light — LACMA", hood: "Mid-City", q: "Urban Light LACMA Los Angeles",
+      desc: "202 white cast-iron street lamps in a grid — minimal, symmetric, endlessly shootable.",
+      tip: "Dusk when the lamps light up; before 8am for an empty grid." },
+    { group: "Backdrops · Walls", cat: "Wall", vibe: "both", name: "'Made in LA' Wall", hood: "Melrose", q: "Made in LA wall Cisco Home Melrose Avenue Los Angeles",
+      desc: "Bold black-and-white typographic wall on Melrose — graphic, high-contrast, reads instantly.",
+      tip: "Wear color to pop against the monochrome type." },
+    { group: "Backdrops · Walls", cat: "Wall", vibe: "both", name: "Geometric Wall", hood: "Venice", q: "Geometric Wall Venice National Council Jewish Women Thrift",
+      desc: "Pastel geometric blocks — gives a different composition from every angle.",
+      tip: "Move around it; each side frames you differently." },
+    { group: "Backdrops · Walls", cat: "Mural", vibe: "both", name: "Angel Wings", hood: "Mid-City", q: "Angel Wings mural West 3rd Street Orlando Avenue Los Angeles",
+      desc: "Colette Miller's wings — stand between them for the classic 'LA angel' frame.",
+      tip: "3rd & Orlando is the cleanest of the several locations." },
+    { group: "Backdrops · Walls", cat: "Stairs", vibe: "both", name: "Micheltorena (Heart) Stairs", hood: "Silver Lake", q: "Micheltorena Stairs Silver Lake Los Angeles",
+      desc: "Painted rainbow-heart steps with a skyline peek behind them.",
+      tip: "Sunrise — it's a residential street and gets tight + busy fast." },
+
+    // ───────── COFFEE ─────────
+    { group: "Coffee Shops", cat: "Coffee", vibe: "both", name: "Maru Coffee", hood: "Arts District / Los Feliz", q: "Maru Coffee Arts District Los Angeles",
+      desc: "The minimalist benchmark — where DJs, producers and stylists post up. Quiet, clean, photogenic.",
+      tip: "Off-peak for the empty-counter shot; the light wood + concrete reads on camera." },
+    { group: "Coffee Shops", cat: "Coffee", vibe: "street", name: "Comet Over Delphi", hood: "Highland Park", q: "Comet Over Delphi Highland Park Los Angeles",
+      desc: "Sheet-metal walls and a $20K espresso machine. Industrial-cool, serious coffee.",
+      tip: "The metal walls = a raw, moody backdrop for fits." },
+    { group: "Coffee Shops", cat: "Coffee", vibe: "both", name: "Archives of Us", hood: "Chinatown", q: "Archives of Us coffee Chinatown Los Angeles",
+      desc: "Cinematic minimalist by designer Jialun Xiong — concrete floors, black-ash wood, brushed silver chrome, cream seating. Premium high-fashion mood.",
+      tip: "INVITE-ONLY / secret — confirm access before you go. The chrome + concrete reads luxe on camera." },
+    { group: "Coffee Shops", cat: "Coffee", vibe: "street", name: "Cafe De Mama", hood: "Koreatown", q: "Cafe De Mama Western Ave Los Angeles",
+      desc: "Minimal, warm room and a rotating menu (the Black Sesame Cream Latte is the move).",
+      tip: "Order the sesame latte — it's the photogenic one." },
+    { group: "Coffee Shops", cat: "Coffee", vibe: "fancy", name: "Yala Coffee", hood: "Silver Lake", q: "Yala Coffee Silver Lake Los Angeles",
+      desc: "Middle-East-inspired — earthy walls, woven textures, a calm, elevated palette.",
+      tip: "Warm earth tones flatter neutral/tailored fits." },
+    { group: "Coffee Shops", cat: "Coffee", vibe: "both", name: "Noun Coffee", hood: "Virgil Village", q: "Noun Coffee Los Angeles",
+      desc: "Clean but warm — natural textures, soft color, lived-in instead of cold-minimal.",
+      tip: "Cozy enough to actually sit and shoot candids." },
+    { group: "Coffee Shops", cat: "Coffee", vibe: "street", name: "Laveta Coffee", hood: "Echo Park", q: "Laveta Coffee 318 Glendale Blvd Los Angeles",
+      desc: "Brutalist-minimalist — bare stone, wood and plants, with a counter carved from a single plank of stone. Went viral for the austere interior.",
+      tip: "Golden-hour window light against the stone is the shot." },
+    { group: "Coffee Shops", cat: "Coffee", vibe: "street", name: "File Systems of Coffee", hood: "Hollywood", q: "File Systems of Coffee Melrose Hollywood Los Angeles",
+      desc: "Retrofuturistic — vintage Apple monitors and plastic filing cabinets as tables, surrounded by plants. 'Nature meets tech' eclectic.",
+      tip: "Frame the old computers + greenery for a one-of-one backdrop." },
+
+    // ───────── ARCHITECTURE ─────────
+    { group: "Architecture", cat: "Modern", vibe: "fancy", name: "Walt Disney Concert Hall", hood: "Downtown", q: "Walt Disney Concert Hall Los Angeles",
+      desc: "Gehry's rippling stainless-steel curves — the most cinematic facade in the city.",
+      tip: "Morning side-light makes the steel glow; shoot the curved alcoves on the side." },
+    { group: "Architecture", cat: "Brutalist", vibe: "street", name: "Westin Bonaventure", hood: "Downtown", q: "Westin Bonaventure Hotel Los Angeles",
+      desc: "Mirror-glass cylindrical concrete towers — sci-fi brutalist fortress (a Hollywood favorite).",
+      tip: "The glass elevators + atrium interiors are a free shoot." },
+    { group: "Architecture", cat: "Brutalist", vibe: "both", name: "American Cement Building", hood: "Mid-City", q: "American Cement Building Los Angeles",
+      desc: "A lattice-like concrete exoskeleton wrapping the tower — pure brutalist geometry.",
+      tip: "Shoot low looking up to catch the lattice pattern." },
+    { group: "Architecture", cat: "Art Deco", vibe: "fancy", name: "Eastern Columbia Building", hood: "Downtown", q: "Eastern Columbia Building Los Angeles",
+      desc: "Turquoise terra-cotta Art Deco tower with a sunburst entry and a glowing clock tower.",
+      tip: "Blue hour — the turquoise + clock glow pop against dusk sky." },
+    { group: "Architecture", cat: "Modern", vibe: "both", name: "Petersen Automotive Museum", hood: "Mid-City", q: "Petersen Automotive Museum Los Angeles",
+      desc: "308 stainless ribbons wrapping a red facade — the most photographed exterior on Museum Row.",
+      tip: "The silver 'ribbons' catch light differently all day — circle it." },
+    { group: "Architecture", cat: "Brutalist", vibe: "street", name: "Hayden Tract", hood: "Culver City", q: "Hayden Tract Culver City",
+      desc: "Eric Owen Moss's deconstructivist/brutalist office blocks — a self-guided architecture walk.",
+      tip: "Whole district is shootable; weekends are quietest." },
+    { group: "Architecture", cat: "Brutalist", vibe: "both", name: "The Line Hotel", hood: "Koreatown", q: "The Line Hotel Koreatown Los Angeles",
+      desc: "1964 mid-century brutalist bones, softened with lush plants + floor-to-ceiling glass.",
+      tip: "Lobby/atrium greenery against raw concrete = great contrast shot." },
+
+    // ───────── DESIGN & GALLERIES ─────────
+    { group: "Design & Galleries", cat: "Gallery", vibe: "fancy", name: "David Geffen Galleries — LACMA", hood: "Mid-City", q: "David Geffen Galleries LACMA Los Angeles",
+      desc: "Peter Zumthor's new sinuous concrete sweep, glass-wrapped and floating ~30 ft up. Opened 2026.",
+      tip: "The elevated underside + glass walls are the architecture shot, ticket or not." },
+    { group: "Design & Galleries", cat: "Gallery", vibe: "both", name: "The Broad", hood: "Downtown", q: "The Broad museum Los Angeles",
+      desc: "Free museum; the honeycomb 'veil' facade + Kusama Infinity Room are both content.",
+      tip: "Book the Infinity Room slot ahead; shoot the facade from the plaza." },
+    { group: "Design & Galleries", cat: "House", vibe: "both", name: "MAK Center — Schindler House", hood: "West Hollywood", q: "Schindler House MAK Center West Hollywood",
+      desc: "Rudolph Schindler's 1922 landmark — a modernist house museum with rotating shows.",
+      tip: "Indoor-outdoor concrete + glass; calm, design-nerd backdrop." },
+    { group: "Design & Galleries", cat: "House", vibe: "both", name: "Hollyhock House", hood: "Barnsdall Park", q: "Hollyhock House Barnsdall Park Los Angeles",
+      desc: "Frank Lloyd Wright UNESCO site in a hilltop park with great open communal space + views.",
+      tip: "Park grounds are free + shoot well even without going inside." },
+    { group: "Design & Galleries", cat: "House", vibe: "street", name: "Neutra VDL House", hood: "Silver Lake", q: "Neutra VDL Studio and Residences Silver Lake",
+      desc: "Richard Neutra's glass-and-steel modernist studio on the Silver Lake Reservoir.",
+      tip: "Open select days — check hours before going." },
+
+    // ───────── FASHION · MINIMAL (clean street + high fashion flagships) ─────────
+    { group: "Fashion · Minimal", cat: "Street", vibe: "both", name: "Aimé Leon Dore", hood: "Melrose · WeHo", q: "Aime Leon Dore 8746 Melrose Avenue Los Angeles",
+      desc: "Elevated-minimal flagship — Mediterranean stone, an 80-year-old olive tree and a custom La Marzocco espresso bar.",
+      tip: "Grab an espresso; the olive-tree corner is the shot." },
+    { group: "Fashion · Minimal", cat: "Street", vibe: "both", name: "Kith Los Angeles", hood: "West Hollywood", q: "Kith Los Angeles Sunset West Hollywood",
+      desc: "Monolithic stone flagship tucked into the Fred Segal complex, paired with the Ronnie's Pronto cafe.",
+      tip: "Stark stone interior + a cafe set in one stop." },
+    { group: "Fashion · Minimal", cat: "Street", vibe: "street", name: "Stüssy Chapter", hood: "La Brea", q: "Stussy Los Angeles 112 South La Brea Avenue",
+      desc: "OG streetwear, stripped back — concrete, restraint, zero clutter. The minimal take on the genre.",
+      tip: "Clean concrete interior; easy fit backdrop." },
+    { group: "Fashion · Minimal", cat: "Street", vibe: "both", name: "424 Fairfax", hood: "Fairfax", q: "424 Fairfax Los Angeles",
+      desc: "High-fashion-meets-street in a spare, industrial room. Bridges tailored and street.",
+      tip: "Best if you mix tailored fits with street." },
+    { group: "Fashion · Minimal", cat: "High Fashion", vibe: "fancy", name: "Rick Owens", hood: "La Brea", q: "Rick Owens 819 North La Brea Avenue Los Angeles",
+      desc: "A brutalist raw-concrete temple — high ceilings, reductivist gothic minimalism. The purest minimal-luxe space in LA.",
+      tip: "The concrete cathedral interior IS the shot." },
+    { group: "Fashion · Minimal", cat: "High Fashion", vibe: "fancy", name: "Maxfield", hood: "West Hollywood", q: "Maxfield West Hollywood",
+      desc: "Avant-garde luxury in a windowless brutalist block — designer + rare archive, gallery-quiet inside.",
+      tip: "The concrete exterior doubles as a fancy-fit backdrop." },
+
+    // ───────── RESTAURANTS ─────────
+    { group: "Restaurants", cat: "Restaurant", vibe: "fancy", name: "Sushi Samba", hood: "West Hollywood", q: "Sushi Samba West Hollywood",
+      desc: "Japanese-Peruvian-Brazilian, luxe and raw-fish-forward, with a giant rooftop + DJs. Classic see-and-be-seen.",
+      tip: "Rooftop at sunset — book ahead, dress sharp." },
+    { group: "Restaurants", cat: "Restaurant", vibe: "fancy", name: "Catch LA", hood: "West Hollywood", q: "Catch LA West Hollywood",
+      desc: "Freshly remodeled rooftop staple for stylish locals and celebrations. Lush, photogenic.",
+      tip: "The greenhouse/greenery rooftop is the shot. Reserve." },
+    { group: "Restaurants", cat: "Restaurant", vibe: "both", name: "Bar di Bello", hood: "Silver Lake", q: "Bar di Bello Silver Lake Los Angeles",
+      desc: "Warm wood + lush velvet curtains, NY-Grill-style polish in the Sunset Row development.",
+      tip: "Moody interior light flatters everyone — sit inside." },
+    { group: "Restaurants", cat: "Restaurant", vibe: "both", name: "Amiguita", hood: "Silver Lake", q: "Amiguita Silver Lake Los Angeles",
+      desc: "Afro-Latin, dimly lit, just 34 seats with a specialty mural by L.A. artist Lara Apponyi.",
+      tip: "Intimate + arty — great for a candid dinner set." },
+    { group: "Restaurants", cat: "Restaurant", vibe: "fancy", name: "Baldi", hood: "Beverly Hills", q: "Baldi Waldorf Astoria Beverly Hills",
+      desc: "Terracotta 180-seat room at the Waldorf Astoria with a mural depicting an Italian dinner party.",
+      tip: "The terracotta + mural backdrop = upscale-fit content." },
+
+    // ───────── BARS ─────────
+    { group: "Bars", cat: "Bar", vibe: "both", name: "Capri Club", hood: "Eagle Rock", q: "Capri Club Eagle Rock Los Angeles",
+      desc: "Trendy aperitivo bar, deep amaro list — packed nightly with a well-dressed crowd on spritzes.",
+      tip: "Retro-Italian vibe; go early, it fills up fast." },
+    { group: "Bars", cat: "Bar", vibe: "both", name: "Death & Co", hood: "Arts District", q: "Death and Co Arts District Los Angeles",
+      desc: "Legendary, dark and sophisticated cocktail den — refined and intimate.",
+      tip: "Low moody light — lean into the silhouette shot." },
+    { group: "Bars", cat: "Bar", vibe: "both", name: "Real Charmer", hood: "Virgil Village", q: "Real Charmer bar Los Angeles",
+      desc: "Dark-and-stormy room with a bubbling stone fountain, wax candles and an ocean oil painting.",
+      tip: "Atmospheric AF — the candlelight does the work." },
+    { group: "Bars", cat: "Bar", vibe: "street", name: "Night On Earth", hood: "Cahuenga Pass", q: "Night On Earth bar Los Angeles",
+      desc: "Strip-mall gem with a glowing neon-blue bar, curvy banquettes and grungy band posters.",
+      tip: "The neon-blue bar = an instant colorful backdrop." },
+    { group: "Bars", cat: "Bar", vibe: "street", name: "Café Tondo", hood: "Eastside", q: "Cafe Tondo Los Angeles",
+      desc: "CDMX-inspired natural-wine spot — graphic designers and character-actor types spill onto the patio nightly.",
+      tip: "Sidewalk-patio scene; show up and people-watch." },
+    { group: "Bars", cat: "Bar", vibe: "fancy", name: "Or Bar", hood: "West Hollywood", q: "Or Bar 8228 Santa Monica Blvd West Hollywood",
+      desc: "Award-winning French-disco room — a custom ~22ft, 3,700-crystal chandelier and a hand-painted black-and-gold mural.",
+      tip: "Chandelier + gold mural are the hero shots; go evening for the disco lighting." },
+    { group: "Bars", cat: "Bar", vibe: "fancy", name: "The Wolves", hood: "Downtown", q: "The Wolves 519 S Spring St Downtown Los Angeles",
+      desc: "Parisian-salon maximalism built from salvaged antiques — marble, mahogany booths, and a domed stained-glass ceiling from an old Illinois train station.",
+      tip: "Shoot up at the stained-glass dome; rich, layered, antique backdrop." },
+    { group: "Bars", cat: "Bar", vibe: "both", name: "Mirate", hood: "Los Feliz", q: "Mirate 1712 N Vermont Ave Los Feliz Los Angeles",
+      desc: "A 40-foot tree rising from a central atrium courtyard, Oaxacan-influenced decor. Voted a top bar in North America.",
+      tip: "The indoor tree under the atrium is the frame — shoot from the rooftop edge." },
+
+    // ───────── CONCEPT & DESIGN STORES (the beautiful interiors) ─────────
+    { group: "Concept & Design Stores", cat: "Concept", vibe: "fancy", name: "forte_forte", hood: "Melrose Place", q: "forte forte Melrose Place Los Angeles",
+      desc: "A totemic stone sculpture mid-floor + non-concentric plaster ceiling circles as a James Turrell homage. Ethereal Italian flagship.",
+      tip: "The sculptural ceiling + stone are the shot — shoot up." },
+    { group: "Concept & Design Stores", cat: "Concept", vibe: "both", name: "Ulla Johnson", hood: "Melrose Place", q: "Ulla Johnson boutique Melrose Place Los Angeles",
+      desc: "Full-scale indoor trees, marbleized resin tables, a Miranda Brooks garden patio — playful 1970s California.",
+      tip: "The plant-filled patio entry is the standout frame." },
+    { group: "Concept & Design Stores", cat: "Concept", vibe: "both", name: "Cleo", hood: "Highland Park", q: "Cleo store Highland Park Los Angeles",
+      desc: "Fashion concept store with an in-house matcha cafe (Good Boy) and lounge areas built for lingering, not just browsing.",
+      tip: "Grab a matcha, shoot the cafe corner — two contents in one." },
+    { group: "Concept & Design Stores", cat: "Concept", vibe: "both", name: "Dover Street Market LA", hood: "Arts District", q: "Dover Street Market Los Angeles",
+      desc: "CDG's multi-level concept space — installation-style displays where fashion becomes art.",
+      tip: "Each floor is a different set; ride it top to bottom." },
+
+    // ───────── BOOKS, RECORDS & PLANTS ─────────
+    { group: "Books, Records & Plants", cat: "Books", vibe: "both", name: "The Last Bookstore", hood: "Downtown", q: "The Last Bookstore Downtown Los Angeles",
+      desc: "The world's most-Instagrammed bookstore — old bank building, marble columns, and the famous book tunnel + Labyrinth upstairs.",
+      tip: "The book tunnel + flying-pages arch are THE shots. Go at opening to beat the line." },
+    { group: "Books, Records & Plants", cat: "Books", vibe: "street", name: "Counterpoint Records & Books", hood: "Hollywood", q: "Counterpoint Records and Books Hollywood Los Angeles",
+      desc: "Cult secondhand books (lit, film, philosophy) stacked floor-to-ceiling, with deep vinyl crates.",
+      tip: "Dense, lived-in shelves = a warm, brainy backdrop." },
+
+    // ───────── NEARBY · DAY TRIPS (Palm Springs / Malibu / OC) ─────────
+    { group: "Nearby · Day Trips", cat: "Modern", vibe: "both", name: "Frey House II", hood: "Palm Springs", q: "Frey House II 686 Palisades Dr Palm Springs",
+      desc: "Albert Frey's 800-sq-ft steel-and-glass desert-modern icon — corrugated metal, glass spans, and a natural boulder protruding inside as a room divider, perched over the whole valley.",
+      tip: "Museum-owned — access by Palm Springs Art Museum tour/lottery, not walk-up. Book ahead." },
+    { group: "Nearby · Day Trips", cat: "Shopping", vibe: "fancy", name: "Malibu Country Mart", hood: "Malibu", q: "Malibu Country Mart 3835 Cross Creek Rd Malibu",
+      desc: "Open-air on-vibe cluster — Chrome Hearts, Oliver Peoples, John Varvatos + an Alfred Coffee (black/gold/marble) for cafe content.",
+      tip: "Daytime to golden hour; the open-air courtyards shoot clean." },
+    { group: "Nearby · Day Trips", cat: "Shopping", vibe: "street", name: "The LAB Anti-Mall", hood: "Costa Mesa · OC", q: "The LAB Anti-Mall 2930 Bristol Street Costa Mesa",
+      desc: "Open-air 'Anti-Mall' of curated indie vendors with intentionally non-conventional, photogenic design.",
+      tip: "Formally allows photoshoots — a pro camera needs a release form + $75 fee. Worth it for the textures." },
+  ];
+
+  // Opening hours — verified ~June 2026. Tap Map to confirm live before going.
+  const HOURS = {
+    // Backdrops (outdoor / exterior)
+    "Paul Smith Pink Wall": "Outdoor wall — daylight",
+    "Urban Light — LACMA": "Outdoor — best at dusk (lit nightly)",
+    "'Made in LA' Wall": "Outdoor wall — daylight",
+    "Geometric Wall": "Outdoor wall — daylight",
+    "Angel Wings": "Outdoor mural — daylight",
+    "Micheltorena (Heart) Stairs": "Outdoor — quiet at sunrise",
+    // Coffee
+    "Maru Coffee": "Mon–Fri 7:30–5, Sat–Sun 8–5",
+    "Comet Over Delphi": "Daily 7–5",
+    "Archives of Us": "Invite-only — confirm access",
+    "Cafe De Mama": "Daily 8–8",
+    "Yala Coffee": "Daily 8–4",
+    "Noun Coffee": "Check map — verify location",
+    "Laveta Coffee": "Mon–Fri 8–3, Sat–Sun 8–4",
+    "File Systems of Coffee": "Mon–Fri 7–4, Sat–Sun 8–4",
+    // Architecture
+    "Walt Disney Concert Hall": "Exterior 24h; interior tours vary",
+    "Westin Bonaventure": "Hotel lobby — open 24h",
+    "American Cement Building": "Exterior only — daylight",
+    "Eastern Columbia Building": "Exterior only — daylight",
+    "Petersen Automotive Museum": "Daily 10–6",
+    "Hayden Tract": "Outdoor district — daylight",
+    "The Line Hotel": "Hotel lobby — open 24h",
+    // Design & Galleries
+    "David Geffen Galleries — LACMA": "Mon–Tue 11–6, Thu 11–6, Fri 11–8, Sat–Sun 10–7, closed Wed",
+    "The Broad": "Tue–Wed 11–5, Thu 11–8, Fri 11–5, Sat–Sun 10–6, closed Mon",
+    "MAK Center — Schindler House": "Wed–Sun 11–6, closed Mon–Tue",
+    "Hollyhock House": "Thu–Sat 11–4 (tickets req.), closed Sun–Wed",
+    "Neutra VDL House": "Sat only 11–3 (last tour 2:30)",
+    // Fashion
+    "Aimé Leon Dore": "Mon–Sat 11–7, Sun 12–6",
+    "Kith Los Angeles": "Mon–Sat 11–7, Sun 11–6",
+    "Stüssy Chapter": "Mon–Sat 11–7, Sun 12–6",
+    "424 Fairfax": "Mon 11–6, Tue–Fri 11–7, Sat 12–7, Sun 12–6",
+    "Rick Owens": "Mon–Fri 11–7, Sat–Sun 12–6",
+    "Maxfield": "Mon–Sat 11–7, Sun 12–5",
+    // Concept stores
+    "forte_forte": "Mon–Sat 10–6, closed Sun",
+    "Ulla Johnson": "Mon–Sat 11–7, Sun 12–6",
+    "Cleo": "Check map — verify location",
+    "Dover Street Market LA": "Mon–Sat 11–6, Sun 12–6",
+    // Books
+    "The Last Bookstore": "Daily 11–8",
+    "Counterpoint Records & Books": "Daily 12–8",
+    // Restaurants
+    "Sushi Samba": "Sun–Wed 5pm–12, Thu–Sat 5pm–1am; wknd brunch 10:30–4",
+    "Catch LA": "Mon–Thu 6–10pm, Fri–Sun 5:30pm+; wknd brunch 11–2:30",
+    "Bar di Bello": "Wed–Sun 5–11pm, closed Mon–Tue",
+    "Amiguita": "Mon–Sat 5–10pm, closed Sun",
+    "Baldi": "Dinner Wed–Sun 5–10pm; bar daily 5–11pm",
+    // Bars
+    "Capri Club": "Mon–Wed 4–11, Thu–Fri 4pm–12, Sat 2pm–12, Sun 2–11",
+    "Death & Co": "Sun–Thu 6pm–12 (Wed to 1), Fri–Sat 6pm–2am",
+    "Real Charmer": "Daily 5pm–12 (Fri–Sat to 1am)",
+    "Night On Earth": "Mon–Thu 6pm–1, Fri–Sat 6pm–2, Sun 6pm–1",
+    "Café Tondo": "Tue–Sun 8am–11pm (Fri–Sat to 12), closed Mon",
+    "Or Bar": "Mon–Wed 10am–12, Thu–Sat 10am–2am, Sun 10am–12",
+    "The Wolves": "Mon & Thu 5pm–12, Fri–Sat 5pm–2, Sun 5pm–12, closed Tue–Wed",
+    "Mirate": "Mon–Thu 5–11, Fri 5pm–12, Sat 11am–12, Sun 11–11",
+    // Nearby
+    "Frey House II": "By Palm Springs Art Museum tour only (Modernism Week, Feb & Oct)",
+    "Malibu Country Mart": "Retail daily ~10–7; shops vary",
+    "The LAB Anti-Mall": "Shops vary, ~11–9",
+  };
+
+  const board = document.getElementById('board');
+  const filtersEl = document.getElementById('filters');
+  const searchEl = document.getElementById('search');
+  const emptyEl = document.getElementById('empty');
+  const vibeEl = document.getElementById('vibe');
+
+  let activeCat = "All";
+  let activeVibe = "all";
+
+  vibeEl.querySelectorAll('button').forEach(b => {
+    b.onclick = () => {
+      activeVibe = b.dataset.vibe;
+      vibeEl.querySelectorAll('button').forEach(x => x.className = '');
+      b.classList.add('on-' + activeVibe);
+      render();
+    };
+  });
+
+  const cats = ["All", ...new Set(SPOTS.map(s => s.cat))];
+  cats.forEach(c => {
+    const b = document.createElement('button');
+    b.className = 'chip' + (c === "All" ? ' active' : '');
+    b.textContent = c;
+    b.onclick = () => {
+      activeCat = c;
+      document.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      render();
+    };
+    filtersEl.appendChild(b);
+  });
+
+  const mapUrl = q => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q);
+  const vibeMatch = s => activeVibe === "all" || s.vibe === activeVibe || s.vibe === "both";
+
+  function vibePills(s) {
+    if (s.vibe === "both") return '<span class="pill street">Raw</span><span class="pill fancy">Polished</span>';
+    if (s.vibe === "street") return '<span class="pill street">Raw</span>';
+    return '<span class="pill fancy">Polished</span>';
+  }
+
+  function render() {
+    const term = searchEl.value.trim().toLowerCase();
+    board.innerHTML = '';
+    let count = 0;
+    const groups = [...new Set(SPOTS.map(s => s.group))];
+
+    groups.forEach(g => {
+      const items = SPOTS.filter(s =>
+        s.group === g && vibeMatch(s) &&
+        (activeCat === "All" || s.cat === activeCat) &&
+        (term === "" || (s.name + s.desc + s.cat + s.hood).toLowerCase().includes(term))
+      );
+      if (!items.length) return;
+
+      const label = document.createElement('div');
+      label.className = 'group-label';
+      label.innerHTML = `<span>${g}</span><span class="n">${items.length} ${items.length === 1 ? 'spot' : 'spots'}</span>`;
+      board.appendChild(label);
+
+      const grid = document.createElement('div');
+      grid.className = 'grid';
+      items.forEach(s => {
+        count++;
+        const card = document.createElement('div');
+        card.className = 'card v-' + s.vibe;
+        card.innerHTML = `
+          <div class="tags">${vibePills(s)}<span class="pill cat">${s.cat}</span></div>
+          <h3>${s.name}</h3>
+          <div class="hood">📍 ${s.hood}</div>
+          <p>${s.desc}</p>
+          <div class="tip"><b>Best:</b> ${s.tip}</div>
+          <div class="hours">◷ ${HOURS[s.name] || 'Check map'}</div>
+          <div class="links"><a class="map" href="${mapUrl(s.q)}" target="_blank">Map →</a></div>`;
+        grid.appendChild(card);
+      });
+      board.appendChild(grid);
+    });
+
+    emptyEl.style.display = count ? 'none' : 'block';
+  }
+
+  searchEl.addEventListener('input', render);
+  render();
+</script>
+</body>
+</html>
