@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trend Radar — VideoTrends</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Helvetica+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #111111; --bg: #ffffff; --muted: #767676; --faint: #a6a6a6;
+    --line: #e6e6e6; --line-strong: #111111; --hover: #fafafa;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  body { font-family: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+         -webkit-font-smoothing: antialiased; font-size: 15px; line-height: 1.5; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 32px 96px; }
+  a { color: inherit; }
+  .label { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+
+  /* Demo badge */
+  .demo-badge {
+    position: fixed; top: 14px; right: 16px; z-index: 50;
+    font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--muted); background: rgba(255,255,255,.86); backdrop-filter: blur(4px);
+    border: 1px solid var(--line); padding: 6px 10px; border-radius: 2px;
+  }
+
+  .masthead { padding: 56px 0 24px; border-bottom: 1px solid var(--line-strong);
+              display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; }
+  .masthead .kicker { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
+  .masthead h1 { margin: 10px 0 0; font-size: 40px; font-weight: 300; letter-spacing: -0.025em; }
+  .masthead .sub { margin-top: 8px; color: var(--muted); font-size: 14px; max-width: 520px; }
+  button.refresh { font: inherit; font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+                   background: var(--ink); color: #fff; border: 1px solid var(--ink); padding: 9px 18px; cursor: pointer; }
+  button.refresh:hover { background: #fff; color: var(--ink); }
+
+  .stats { display: flex; gap: 56px; padding: 24px 0; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .stat .n { font-size: 28px; font-weight: 300; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+  .stat .l { margin-top: 2px; }
+
+  .hero { padding: 44px 0; border-bottom: 1px solid var(--line); }
+  .hero .eyebrow { margin-bottom: 12px; }
+  .hero .big { font-size: 52px; font-weight: 300; letter-spacing: -0.03em; line-height: 1.05; text-transform: capitalize; }
+  .hero .meta { margin-top: 16px; color: var(--muted); font-size: 14px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .hero .meta a { border-bottom: 1px solid var(--line-strong); text-decoration: none; }
+
+  .sec { margin: 40px 0 16px; }
+  .sec h2 { margin: 0; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; }
+  .sec .note { font-size: 12px; color: var(--faint); margin-top: 4px; }
+
+  .ranked { border-top: 1px solid var(--line-strong); }
+  .r { display: grid; grid-template-columns: 40px 1fr auto auto; align-items: baseline; gap: 20px;
+       padding: 18px 0; border-bottom: 1px solid var(--line); }
+  .r:hover { background: var(--hover); }
+  .idx { font-size: 13px; color: var(--faint); font-variant-numeric: tabular-nums; }
+  .piece { font-size: 21px; font-weight: 400; letter-spacing: -0.01em; text-transform: capitalize; }
+  .piece-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .count { font-size: 16px; font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; }
+  .count .u { font-size: 12px; color: var(--muted); letter-spacing: .04em; }
+  .likes { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; }
+  .ex { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+        text-decoration: none; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  .ex:hover { color: var(--ink); border-color: var(--ink); }
+
+  /* VETTED badge */
+  .vetted { font-size: 9px; letter-spacing: .16em; text-transform: uppercase; font-weight: 700;
+            background: var(--ink); color: #fff; padding: 3px 7px; border-radius: 1px; }
+
+  /* momentum indicator */
+  .mom { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+         display: inline-flex; align-items: center; gap: 5px; }
+  .mom .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--faint); display: inline-block; }
+  .mom.rising .dot { background: var(--ink); }
+  .mom.rising { color: var(--ink); }
+  .mom.new .dot { background: var(--ink); box-shadow: 0 0 0 3px rgba(17,17,17,.12); }
+  .mom.new { color: var(--ink); }
+  .mom.cooling .dot { background: #fff; border: 1px solid var(--faint); }
+
+  /* Forecast / Track record tile */
+  .forecast { border: 1px solid var(--line-strong); padding: 28px 28px 24px; margin-top: 28px; }
+  .forecast .head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 12px; }
+  .forecast .rate { font-size: 44px; font-weight: 300; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .forecast .rate .pct { font-size: 22px; color: var(--muted); }
+  .fbreak { display: flex; gap: 40px; margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+  .fbreak .b .n { font-size: 22px; font-weight: 300; font-variant-numeric: tabular-nums; }
+  .calls { margin-top: 22px; }
+  .call { display: grid; grid-template-columns: 1fr auto auto; align-items: baseline; gap: 16px;
+          padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .call:last-child { border-bottom: none; }
+  .call .ctag { text-transform: capitalize; }
+  .call .when { font-size: 12px; color: var(--faint); white-space: nowrap; }
+  .outcome { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; }
+  .outcome.confirmed { color: var(--ink); font-weight: 700; }
+  .outcome.missed { color: var(--faint); }
+  .outcome.pending { color: var(--muted); }
+
+  .colophon { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--line);
+              color: var(--faint); font-size: 12px; line-height: 1.7; }
+  @media (max-width: 720px){
+    .masthead h1{font-size:30px} .hero .big{font-size:36px}
+    .r{grid-template-columns: 28px 1fr auto; gap: 12px;}
+    .r .likes{display:none}
+    .call{grid-template-columns: 1fr auto;}
+    .call .when{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="demo-badge">Demo · sample data</div>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div>
+      <div class="kicker">Fashion Trend Intelligence</div>
+      <h1>Trend Radar</h1>
+      <div class="sub">The fashion pieces showing up across the most Instagram &amp; TikTok posts right now — recognized by vision AI, ranked by likes.</div>
+    </div>
+    <button class="refresh" id="refresh">Refresh</button>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><div class="n" id="s-posts">—</div><div class="l label">Posts analyzed</div></div>
+    <div class="stat"><div class="n" id="s-pool">—</div><div class="l label">In current window</div></div>
+    <div class="stat"><div class="n" id="s-last" style="font-size:17px;padding-top:8px">—</div><div class="l label">Last scan</div></div>
+  </div>
+
+  <section class="hero" id="hero">
+    <div class="eyebrow label">Most-liked rising piece</div>
+    <div class="big" id="hero-tag">—</div>
+    <div class="meta" id="hero-meta"></div>
+  </section>
+
+  <section class="sec">
+    <h2>Top 10 Pieces</h2>
+    <div class="note" id="top-note"></div>
+  </section>
+  <div class="ranked" id="t-top"></div>
+
+  <section class="sec">
+    <h2>Forecast Accuracy · Track Record</h2>
+    <div class="note">Did our "rising" calls keep gaining 24h later?</div>
+  </section>
+  <div class="forecast" id="forecast"></div>
+
+  <div class="colophon">
+    Each piece is recognized by a local AI vision model from the actual post image, then counted and
+    likes-weighted across all posts collected in the current window. Pieces past 100K likes are marked
+    <strong>VETTED</strong>. Momentum compares this scan with the one before it. This is a static portfolio
+    demo of the live dashboard (normally served on localhost:8775); all figures below are realistic sample data.
+  </div>
+
+</div>
+
+<script>
+// ---- Sample data: realistic likes-weighted garment trends ----
+const STATS = { videos: 4821, pool: 612, last_scan_min: 41 };
+
+// likes-weighted ordering (peak_likes drives rank, like the real weight metric)
+const PIECES = [
+  { tag: "Corteiz cargos",                          posts: 318, likes: 612000, momentum: "rising"  },
+  { tag: "baby tee",                                posts: 504, likes: 489000, momentum: "rising"  },
+  { tag: "off-the-shoulder long-sleeve crop top",   posts: 271, likes: 421000, momentum: "rising"  },
+  { tag: "Scuffers hoodie",                         posts: 196, likes: 357000, momentum: "steady"  },
+  { tag: "high-waisted distressed denim shorts",    posts: 389, likes: 304000, momentum: "rising"  },
+  { tag: "wide-leg low-rise cargo pants",           posts: 342, likes: 268000, momentum: "steady"  },
+  { tag: "ballet flats",                            posts: 287, likes: 211000, momentum: "rising"  },
+  { tag: "leather bomber jacket",                   posts: 163, likes: 158000, momentum: "new"     },
+  { tag: "ribbed tube top",                         posts: 224, likes: 132000, momentum: "steady"  },
+  { tag: "pleated micro tennis skirt",              posts: 178, likes: 104000, momentum: "rising"  },
+  { tag: "oversized varsity jacket",                posts: 141, likes: 88000,  momentum: "cooling" },
+  { tag: "linen wide-leg trousers",                 posts: 119, likes: 71000,  momentum: "steady"  },
+  { tag: "knit halter top",                         posts:  96, likes: 54000,  momentum: "cooling" },
+].slice(0, 10);
+
+const FORECAST = {
+  rate: 71.4, hits: 25, total: 35, pending: 6,
+  calls: [
+    { tag: "Corteiz cargos",                        when_hr: 4,  outcome: "pending"   },
+    { tag: "ballet flats",                          when_hr: 9,  outcome: "pending"   },
+    { tag: "baby tee",                              when_hr: 28, outcome: "confirmed" },
+    { tag: "high-waisted distressed denim shorts",  when_hr: 31, outcome: "confirmed" },
+    { tag: "off-the-shoulder crop top",             when_hr: 33, outcome: "confirmed" },
+    { tag: "cargo skirt",                           when_hr: 52, outcome: "missed"    },
+    { tag: "pleated tennis skirt",                  when_hr: 55, outcome: "confirmed" },
+    { tag: "fur-trim trench",                       when_hr: 77, outcome: "missed"    },
+  ],
+};
+
+// ---- formatting helpers ----
+const VETTED = 100000;
+const fmtLikes = n => n >= 1000 ? Math.round(n/1000) + "K likes" : n + " likes";
+const momLabel = m => ({rising:"Rising", steady:"Steady", cooling:"Cooling", new:"New"}[m] || m);
+const momClass = m => (m === "new" ? "new" : m === "rising" ? "rising" : m === "cooling" ? "cooling" : "steady");
+const agoHr = h => h < 1 ? "just now" : h < 24 ? Math.round(h) + " hr ago" : Math.round(h/24) + " d ago";
+
+function render() {
+  document.getElementById("s-posts").textContent = STATS.videos.toLocaleString();
+  document.getElementById("s-pool").textContent = STATS.pool.toLocaleString();
+  document.getElementById("s-last").textContent = STATS.last_scan_min + " min ago";
+
+  // Hero = strongest rising, most-liked piece
+  const hero = PIECES.find(p => p.momentum === "rising") || PIECES[0];
+  document.getElementById("hero-tag").textContent = hero.tag;
+  const heroVetted = hero.likes >= VETTED ? '<span class="vetted">Vetted</span>' : '';
+  document.getElementById("hero-meta").innerHTML =
+    `${heroVetted}<span>${fmtLikes(hero.likes)} · ${hero.posts} posts</span>` +
+    `<a href="#" onclick="return false">view example</a>`;
+
+  // Top pieces list
+  document.getElementById("top-note").textContent = `Across ${STATS.pool} vetted posts · likes-weighted`;
+  const el = document.getElementById("t-top");
+  el.innerHTML = "";
+  PIECES.forEach((it, i) => {
+    const vetted = it.likes >= VETTED ? '<span class="vetted">Vetted</span>' : '';
+    const div = document.createElement("div");
+    div.className = "r";
+    div.innerHTML =
+      `<span class="idx">${String(i+1).padStart(2,"0")}</span>
+       <span>
+         <span class="piece-row">
+           <span class="piece">${it.tag}</span>${vetted}
+         </span>
+         <span class="mom ${momClass(it.momentum)}" style="margin-top:6px;display:inline-flex">
+           <span class="dot"></span>${momLabel(it.momentum)}
+         </span>
+       </span>
+       <span class="count">${it.posts}<br><span class="u">posts</span></span>
+       <span class="likes">${fmtLikes(it.likes)}</span>`;
+    el.appendChild(div);
+  });
+
+  // Forecast tile
+  const f = FORECAST;
+  const callsHtml = f.calls.map(c =>
+    `<div class="call">
+       <span class="ctag">${c.tag}</span>
+       <span class="outcome ${c.outcome}">${c.outcome}</span>
+       <span class="when">${agoHr(c.when_hr)}</span>
+     </div>`).join("");
+  document.getElementById("forecast").innerHTML =
+    `<div class="head">
+       <div>
+         <div class="label">Hit rate · last ${f.total} judged calls</div>
+         <div class="rate">${f.rate}<span class="pct">%</span></div>
+       </div>
+     </div>
+     <div class="fbreak">
+       <div class="b"><div class="n">${f.hits}</div><div class="label">Confirmed</div></div>
+       <div class="b"><div class="n">${f.total - f.hits}</div><div class="label">Missed</div></div>
+       <div class="b"><div class="n">${f.pending}</div><div class="label">Pending</div></div>
+     </div>
+     <div class="calls">${callsHtml}</div>`;
+}
+
+document.getElementById("refresh").onclick = render;
+render();
+</script>
+</body>
+</html>

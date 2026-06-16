@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TrendTracker — clothes & social trends over time</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#0f1115; --bg2:#0c0e12; --card:#181b22; --card2:#1c2029;
+      --line:#262b36; --line2:#2f3543;
+      --text:#e8eaed; --muted:#9aa3b2; --muted2:#6b7280;
+      --accent:#ff4d6d; --accent2:#ff708b;
+      --good:#33d17a; --up:#7aa2ff; --warn:#ffce4d; --down:#ff6b6b;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      margin:0;
+      font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:radial-gradient(1200px 600px at 80% -10%, #1a1320 0%, transparent 55%), var(--bg);
+      color:var(--text); -webkit-font-smoothing:antialiased;
+    }
+
+    /* ---------- header ---------- */
+    header {
+      padding:22px 28px; border-bottom:1px solid var(--line);
+      display:flex; align-items:center; justify-content:space-between;
+      flex-wrap:wrap; gap:14px;
+      background:linear-gradient(180deg, rgba(255,77,109,.05), transparent);
+      position:sticky; top:0; z-index:20;
+      backdrop-filter:blur(10px);
+      background-color:rgba(15,17,21,.82);
+    }
+    .brand { display:flex; align-items:center; gap:13px; }
+    .logo {
+      width:40px; height:40px; border-radius:11px;
+      background:linear-gradient(135deg,var(--accent),#b03ad9);
+      display:grid; place-items:center; flex-shrink:0;
+      box-shadow:0 6px 18px rgba(255,77,109,.3);
+    }
+    h1 { font-size:21px; margin:0; font-weight:800; letter-spacing:-.4px; }
+    h1 span { color:var(--accent); }
+    .tagline { color:var(--muted); font-size:12.5px; margin-top:2px; }
+    .head-right { display:flex; align-items:center; gap:14px; }
+    .source-chip {
+      display:flex; align-items:center; gap:7px; font-size:12px; color:var(--muted);
+      background:var(--card); border:1px solid var(--line); border-radius:999px;
+      padding:7px 13px;
+    }
+    .source-chip svg { display:block; }
+    .dot { width:7px; height:7px; border-radius:50%; background:var(--good); box-shadow:0 0 0 3px rgba(51,209,122,.18); }
+    .btn {
+      background:var(--accent); color:#fff; border:none; padding:10px 17px;
+      border-radius:10px; font-size:13.5px; font-weight:600; cursor:pointer;
+      display:flex; align-items:center; gap:8px; transition:transform .12s, box-shadow .12s, opacity .12s;
+      box-shadow:0 4px 14px rgba(255,77,109,.28);
+    }
+    .btn:hover { transform:translateY(-1px); box-shadow:0 7px 20px rgba(255,77,109,.4); }
+    .btn:active { transform:translateY(0); }
+    .btn .spin { transition:transform .6s ease; }
+    .btn.loading .spin { transform:rotate(360deg); }
+
+    .wrap { padding:26px 28px 60px; max-width:1180px; margin:0 auto; }
+
+    /* ---------- stats row ---------- */
+    .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:26px; }
+    @media (max-width:760px){ .stats { grid-template-columns:1fr 1fr; } }
+    .stat {
+      background:linear-gradient(180deg,var(--card),var(--bg2));
+      border:1px solid var(--line); border-radius:14px; padding:16px 18px;
+    }
+    .stat .lab { color:var(--muted); font-size:11.5px; text-transform:uppercase; letter-spacing:.5px; font-weight:600; }
+    .stat b { font-size:26px; display:block; margin-top:5px; font-weight:800; letter-spacing:-.5px; }
+    .stat .sub { color:var(--muted2); font-size:11.5px; margin-top:3px; }
+    .stat .sub .g { color:var(--good); font-weight:600; }
+
+    /* ---------- section heads ---------- */
+    .sec-head { display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin:0 0 14px; flex-wrap:wrap; }
+    .sec-head h2 { margin:0; font-size:17px; font-weight:700; letter-spacing:-.2px; display:flex; align-items:center; gap:9px; }
+    .sec-head .sub { color:var(--muted); font-size:12.5px; }
+    .win-toggle { display:flex; gap:0; background:var(--card); border:1px solid var(--line); border-radius:9px; padding:3px; }
+    .win-toggle button {
+      background:none; border:none; color:var(--muted); font-size:12px; font-weight:600;
+      padding:6px 12px; border-radius:6px; cursor:pointer; font-family:inherit; transition:.12s;
+    }
+    .win-toggle button.active { background:var(--accent); color:#fff; }
+
+    /* ---------- rising-now highlight ---------- */
+    .rising-band {
+      background:linear-gradient(135deg, rgba(255,77,109,.10), rgba(176,58,217,.07));
+      border:1px solid rgba(255,77,109,.28); border-radius:16px;
+      padding:20px 22px; margin-bottom:30px;
+    }
+    .rising-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:16px; }
+    @media (max-width:880px){ .rising-grid { grid-template-columns:1fr; } }
+    .rise-card {
+      background:rgba(12,14,18,.55); border:1px solid var(--line2); border-radius:13px;
+      padding:15px 16px; position:relative; overflow:hidden;
+    }
+    .rise-card .topline { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .rise-card .name { font-weight:700; font-size:15px; }
+    .rise-card .cat { color:var(--muted2); font-size:11px; margin-top:1px; }
+    .rise-card .now { display:flex; align-items:baseline; gap:8px; margin-top:12px; }
+    .rise-card .now b { font-size:28px; font-weight:800; letter-spacing:-1px; }
+    .rise-card .now .of { color:var(--muted2); font-size:12px; }
+    .delta { font-size:12.5px; font-weight:700; padding:3px 9px; border-radius:999px; white-space:nowrap; }
+    .delta.up { background:rgba(51,209,122,.16); color:var(--good); }
+    .delta.down { background:rgba(255,107,107,.14); color:var(--down); }
+    .delta.new { background:rgba(122,162,255,.16); color:var(--up); }
+    .rise-spark { margin-top:10px; }
+
+    /* ---------- main grid ---------- */
+    .grid { display:grid; grid-template-columns:1.55fr 1fr; gap:24px; align-items:start; }
+    @media (max-width:980px){ .grid { grid-template-columns:1fr; } }
+
+    .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:6px 6px 10px; }
+    .card.pad { padding:20px 22px; }
+
+    /* trend table rows */
+    .trend-row {
+      display:grid; grid-template-columns:30px 1fr 116px 92px; gap:14px; align-items:center;
+      padding:13px 16px; border-radius:11px; transition:background .12s; cursor:default;
+    }
+    .trend-row + .trend-row { border-top:1px solid var(--line); }
+    .trend-row:hover { background:var(--card2); }
+    .trend-row .rk { color:var(--muted2); font-size:13px; font-weight:700; text-align:center; }
+    .trend-meta .nm { font-weight:600; font-size:14.5px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .trend-meta .why { color:var(--muted); font-size:11.5px; margin-top:3px; line-height:1.4; }
+    .pill { font-size:10px; font-weight:700; padding:2px 8px; border-radius:999px; letter-spacing:.3px; text-transform:uppercase; }
+    .pill.fashion { background:rgba(255,77,109,.15); color:var(--accent2); }
+    .pill.social  { background:rgba(122,162,255,.14); color:var(--up); }
+    .pill.search  { background:#23262e; color:var(--muted); }
+    .trend-val { text-align:right; }
+    .trend-val b { font-size:17px; font-weight:800; letter-spacing:-.3px; }
+    .trend-val .vlab { color:var(--muted2); font-size:10.5px; display:block; }
+
+    .chg { text-align:right; font-size:12.5px; font-weight:700; }
+    .chg.u { color:var(--good); } .chg.d { color:var(--down); } .chg.f { color:var(--muted2); }
+    .chg .arr { font-size:10px; }
+
+    .legend { display:flex; gap:18px; padding:12px 16px 6px; color:var(--muted2); font-size:11px; flex-wrap:wrap; }
+    .legend span { display:flex; align-items:center; gap:6px; }
+    .legend .sw { width:18px; height:3px; border-radius:2px; display:inline-block; }
+
+    /* fashion focus side card */
+    .focus-item { padding:14px 0; border-bottom:1px solid var(--line); }
+    .focus-item:last-child { border-bottom:none; }
+    .focus-item .row1 { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .focus-item .fn { font-weight:700; font-size:14.5px; }
+    .focus-item .fcat { color:var(--muted2); font-size:11px; margin-top:1px; }
+    .focus-item .fval { text-align:right; }
+    .focus-item .fval b { font-size:16px; font-weight:800; }
+    .focus-item .fbar-wrap { margin-top:11px; display:flex; align-items:center; gap:11px; }
+    .phase {
+      font-size:10px; font-weight:700; padding:3px 9px; border-radius:6px; letter-spacing:.3px;
+      text-transform:uppercase; white-space:nowrap;
+    }
+    .phase.emerging { background:rgba(51,209,122,.16); color:var(--good); }
+    .phase.peaking  { background:rgba(255,206,77,.16); color:var(--warn); }
+    .phase.cooling  { background:rgba(255,107,107,.14); color:var(--down); }
+    .phase.steady   { background:#23262e; color:var(--muted); }
+
+    .card-title { padding:16px 18px 4px; }
+    .card-title h2 { margin:0; font-size:16px; font-weight:700; display:flex; align-items:center; gap:8px; }
+    .card-title .sub { color:var(--muted); font-size:12px; margin-top:4px; }
+    .card-body { padding:6px 18px 8px; }
+
+    /* mini sparkline tooltip dot */
+    .spark-wrap { position:relative; }
+
+    /* footer */
+    .foot { margin-top:40px; padding-top:22px; border-top:1px solid var(--line); color:var(--muted2); font-size:12px; line-height:1.7; }
+    .foot b { color:var(--muted); }
+
+    /* demo badge */
+    .demo-badge {
+      position:fixed; top:13px; right:14px; z-index:50;
+      background:rgba(20,22,28,.86); backdrop-filter:blur(8px);
+      border:1px solid var(--line2); color:var(--muted);
+      font-size:11px; font-weight:600; letter-spacing:.3px;
+      padding:6px 11px; border-radius:999px; pointer-events:none;
+      display:flex; align-items:center; gap:7px;
+    }
+    .demo-badge .bdot { width:6px; height:6px; border-radius:50%; background:var(--accent); }
+    @media (max-width:520px){ .demo-badge { top:auto; bottom:13px; right:13px; } }
+
+    .reveal { opacity:0; transform:translateY(8px); animation:rise .5s forwards; }
+    @keyframes rise { to { opacity:1; transform:none; } }
+  </style>
+</head>
+<body>
+  <div class="demo-badge"><span class="bdot"></span>Demo · sample data</div>
+
+  <header>
+    <div class="brand">
+      <div class="logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 17 9 11 13 15 21 6"></polyline>
+          <polyline points="15 6 21 6 21 12"></polyline>
+        </svg>
+      </div>
+      <div>
+        <h1>Trend<span>Tracker</span></h1>
+        <div class="tagline">Clothes &amp; social-media trends, captured over time</div>
+      </div>
+    </div>
+    <div class="head-right">
+      <div class="source-chip">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9aa3b2" stroke-width="2"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Z"/><path d="M2 12h20M12 2c2.5 2.7 4 6.2 4 10s-1.5 7.3-4 10c-2.5-2.7-4-6.2-4-10s1.5-7.3 4-10Z"/></svg>
+        Source: Google Trends
+      </div>
+      <div class="source-chip"><span class="dot"></span>Tracking 16 terms</div>
+      <button class="btn" id="captureBtn" onclick="capture()">
+        <svg class="spin" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 8 16 8"/></svg>
+        Capture trends now
+      </button>
+    </div>
+  </header>
+
+  <div class="wrap">
+
+    <!-- ===== stats ===== -->
+    <div class="stats">
+      <div class="stat reveal" style="animation-delay:.02s">
+        <div class="lab">Rows captured</div>
+        <b>4,128</b>
+        <div class="sub">across all tracked terms</div>
+      </div>
+      <div class="stat reveal" style="animation-delay:.06s">
+        <div class="lab">Days of history</div>
+        <b>168</b>
+        <div class="sub">since Jan 1, 2026</div>
+      </div>
+      <div class="stat reveal" style="animation-delay:.10s">
+        <div class="lab">Rising this week</div>
+        <b>5</b>
+        <div class="sub"><span class="g">▲</span> momentum vs 7d ago</div>
+      </div>
+      <div class="stat reveal" style="animation-delay:.14s">
+        <div class="lab">Last capture</div>
+        <b id="lastCap">2026-06-15</b>
+        <div class="sub">09:04 · auto + manual</div>
+      </div>
+    </div>
+
+    <!-- ===== rising now highlight ===== -->
+    <div class="rising-band reveal" style="animation-delay:.18s">
+      <div class="sec-head" style="margin-bottom:2px">
+        <h2>🚀 Rising right now</h2>
+        <div class="sub">Biggest upward movers in search interest over the last 8 weeks — what's actually climbing, not just currently popular.</div>
+      </div>
+      <div class="rising-grid" id="risingGrid"></div>
+    </div>
+
+    <!-- ===== main grid ===== -->
+    <div class="grid">
+
+      <!-- LEFT: tracked trends with time-series -->
+      <div>
+        <div class="sec-head">
+          <h2>📈 Tracked trends over time</h2>
+          <div class="win-toggle" id="winToggle">
+            <button data-win="4">4w</button>
+            <button data-win="8" class="active">8w</button>
+            <button data-win="12">12w</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="legend">
+            <span><i class="sw" style="background:var(--accent)"></i> interest index (0–100, Google Trends scale)</span>
+            <span><i class="sw" style="background:var(--good)"></i> rising</span>
+            <span><i class="sw" style="background:var(--down)"></i> cooling</span>
+          </div>
+          <div id="trendList"></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: fashion focus + how it works -->
+      <div style="display:flex; flex-direction:column; gap:24px;">
+        <div class="card">
+          <div class="card-title">
+            <h2>👗 Clothing focus</h2>
+            <div class="sub">Fashion terms auto-flagged from the feed, with their lifecycle phase.</div>
+          </div>
+          <div class="card-body" id="fashionList"></div>
+        </div>
+
+        <div class="card pad">
+          <h2 style="margin:0 0 6px; font-size:16px; font-weight:700;">🕒 Why over-time matters</h2>
+          <p style="color:var(--muted); font-size:13px; line-height:1.65; margin:0 0 12px;">
+            Most trend tools show what's <i>popular today</i>. TrendTracker takes a snapshot of
+            Google Trends search interest on a schedule and stores every reading, so you can see
+            the <b style="color:var(--text)">shape of the curve</b> — emerging, peaking, or already cooling.
+          </p>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <div class="phase emerging">Emerging ▲</div>
+            <div class="phase peaking">Peaking ◆</div>
+            <div class="phase cooling">Cooling ▼</div>
+            <div class="phase steady">Steady —</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="foot">
+      <b>TrendTracker</b> — local Flask + SQLite dashboard. Every capture writes a timestamped row per term,
+      building a search-interest history you can replay. <b>Data source:</b> Google Trends RSS (free, no key).<br>
+      This is a static front-end snapshot for portfolio display. All figures shown are illustrative sample data.
+    </div>
+  </div>
+
+  <script>
+  /* ---------------------------------------------------------------
+     Sample data: realistic clothing + social trend terms, each with
+     12 weekly Google-Trends-style interest readings (0–100 index).
+     Curves are hand-shaped to read as emerging / peaking / cooling.
+  --------------------------------------------------------------- */
+  const WEEKS = 12;
+  const TRENDS = [
+    { name:"barrel jeans",     cat:"fashion", why:"Denim silhouette shift — wide tapered leg replacing straight-leg.",
+      series:[18,22,27,31,38,44,53,61,68,74,81,88] },
+    { name:"boat shoes",       cat:"fashion", why:"Prep revival; nautical loafers spiking into summer.",
+      series:[12,14,16,21,27,35,44,52,58,67,75,83] },
+    { name:"quiet luxury",     cat:"social",  why:"Logo-free, neutral-tone dressing — sustained mainstream interest.",
+      series:[71,74,72,76,79,77,80,78,75,73,70,68] },
+    { name:"leopard print",    cat:"fashion", why:"Animal print resurgence led by coats and flats.",
+      series:[34,38,42,49,57,63,70,72,69,64,58,53] },
+    { name:"ballet flats",     cat:"fashion", why:"Soft-girl footwear; balletcore carryover from spring.",
+      series:[62,66,70,74,77,79,78,75,71,66,61,56] },
+    { name:"mob wife aesthetic",cat:"social", why:"Maximalist fur-and-gold look; viral on TikTok in winter.",
+      series:[88,82,74,66,57,49,42,37,33,29,26,24] },
+    { name:"capri pants",      cat:"fashion", why:"Mid-calf trousers re-emerging in early-2026 collections.",
+      series:[9,11,13,15,19,24,30,38,45,53,62,71] },
+    { name:"sheer tights",     cat:"fashion", why:"Hosiery-as-statement; sheer layering trend.",
+      series:[28,31,29,33,36,34,38,41,39,43,46,44] },
+    { name:"suede jacket",     cat:"fashion", why:"'70s suede outerwear climbing into spring.",
+      series:[22,25,29,34,40,46,51,56,60,63,66,69] },
+    { name:"cherry red",       cat:"social",  why:"Color-of-the-season; bags, nails, knitwear.",
+      series:[40,45,52,58,63,67,69,68,65,61,57,54] },
+    { name:"dark academia",    cat:"social",  why:"Tweed, loafers, layered knits — steady evergreen interest.",
+      series:[55,53,56,54,57,55,58,56,59,57,60,58] },
+    { name:"cargo maxi skirt", cat:"fashion", why:"Utility skirt; cargo carryover from trousers.",
+      series:[15,17,20,24,29,35,40,44,47,49,50,51] },
+    { name:"clean girl",       cat:"social",  why:"Slicked-back minimal beauty + wardrobe; plateauing.",
+      series:[82,80,78,79,77,76,74,73,72,70,69,68] },
+    { name:"fur trim coat",    cat:"fashion", why:"Seasonal — fades hard heading out of winter.",
+      series:[76,70,61,52,43,36,30,25,21,18,16,14] },
+    { name:"polished pumps",   cat:"fashion", why:"Office-siren heel revival; workwear pivot.",
+      series:[19,22,26,29,33,38,42,47,51,54,57,61] },
+    { name:"chunky loafers",   cat:"fashion", why:"Lug-sole loafers; steady year-round staple.",
+      series:[48,46,49,47,50,48,51,49,52,50,53,51] },
+  ];
+
+  /* compute derived fields from each series */
+  function enrich(t, win){
+    const s = t.series.slice(WEEKS - win);
+    const now = s[s.length-1];
+    const prev = s[Math.max(0, s.length-2)];     // last week
+    const start = s[0];
+    const weekDelta = now - prev;
+    const winDelta = now - start;
+    // phase from shape over the window
+    const peak = Math.max(...s);
+    const peakIdx = s.indexOf(peak);
+    let phase;
+    const lateSlope = now - s[Math.max(0, s.length-4)];
+    if (lateSlope >= 8) phase = "emerging";
+    else if (lateSlope <= -8) phase = "cooling";
+    else if (peakIdx >= s.length-3 || now >= peak-4) phase = "peaking";
+    else phase = "steady";
+    return { ...t, s, now, weekDelta, winDelta, phase };
+  }
+
+  /* ---- inline SVG sparkline ---- */
+  function sparkline(series, opts){
+    const o = Object.assign({ w:120, h:34, stroke:"#ff4d6d", fill:true, dot:true }, opts||{});
+    const max = 100, min = 0;
+    const n = series.length;
+    const pad = 2;
+    const innerW = o.w - pad*2, innerH = o.h - pad*2;
+    const pts = series.map((v,i)=>{
+      const x = pad + (i/(n-1))*innerW;
+      const y = pad + innerH - ((v-min)/(max-min))*innerH;
+      return [x,y];
+    });
+    const d = pts.map((p,i)=>(i===0?"M":"L")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");
+    const last = pts[pts.length-1];
+    const gid = "g"+Math.random().toString(36).slice(2,8);
+    let area = "";
+    if(o.fill){
+      const ad = d + ` L ${last[0].toFixed(1)} ${(o.h-pad).toFixed(1)} L ${pad} ${(o.h-pad).toFixed(1)} Z`;
+      area = `<defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${o.stroke}" stop-opacity="0.28"/>
+        <stop offset="100%" stop-color="${o.stroke}" stop-opacity="0"/></linearGradient></defs>
+        <path d="${ad}" fill="url(#${gid})" stroke="none"/>`;
+    }
+    const dotEl = o.dot ? `<circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="2.6" fill="${o.stroke}"/>
+        <circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="5" fill="${o.stroke}" opacity="0.18"/>` : "";
+    return `<svg width="${o.w}" height="${o.h}" viewBox="0 0 ${o.w} ${o.h}" preserveAspectRatio="none" style="display:block">
+      ${area}<path d="${d}" fill="none" stroke="${o.stroke}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>${dotEl}</svg>`;
+  }
+
+  const C = { up:"#33d17a", down:"#ff6b6b", accent:"#ff4d6d", flat:"#9aa3b2" };
+  function chgColor(d){ return d > 1.5 ? C.up : d < -1.5 ? C.down : C.flat; }
+
+  function deltaFmt(d){
+    const a = Math.round(Math.abs(d));
+    if(d>1.5) return `<span class="chg u"><span class="arr">▲</span> +${a}</span>`;
+    if(d<-1.5) return `<span class="chg d"><span class="arr">▼</span> −${a}</span>`;
+    return `<span class="chg f">— ${a===0?"flat":"±"+a}</span>`;
+  }
+
+  let currentWin = 8;
+
+  function render(win){
+    currentWin = win;
+    const data = TRENDS.map(t=>enrich(t,win));
+
+    /* ---- tracked trends list (left) ---- */
+    const list = data.slice().sort((a,b)=>b.now-a.now);
+    document.getElementById("trendList").innerHTML = list.map((t,i)=>{
+      const col = chgColor(t.weekDelta);
+      const pill = t.cat==="fashion" ? `<span class="pill fashion">fashion</span>`
+                : t.cat==="social"  ? `<span class="pill social">social</span>`
+                : `<span class="pill search">search</span>`;
+      return `<div class="trend-row">
+        <div class="rk">${i+1}</div>
+        <div class="trend-meta">
+          <div class="nm">${t.name} ${pill}</div>
+          <div class="why">${t.why}</div>
+        </div>
+        <div class="spark-wrap">${sparkline(t.s,{stroke:col,w:116,h:34})}</div>
+        <div>
+          <div class="trend-val"><b>${t.now}</b><span class="vlab">interest now</span></div>
+          <div style="margin-top:3px">${deltaFmt(t.weekDelta)}<span style="color:var(--muted2);font-size:10px"> wk</span></div>
+        </div>
+      </div>`;
+    }).join("");
+
+    /* ---- rising now (top movers by window delta) ---- */
+    const rising = data.slice().sort((a,b)=>b.winDelta-a.winDelta).slice(0,3);
+    document.getElementById("risingGrid").innerHTML = rising.map(t=>{
+      const d = t.winDelta;
+      const badge = d>0 ? `<span class="delta up">▲ +${Math.round(d)} pts</span>`
+                        : `<span class="delta new">new</span>`;
+      const catlab = t.cat==="fashion"?"Clothing":t.cat==="social"?"Social / aesthetic":"Search";
+      return `<div class="rise-card">
+        <div class="topline">
+          <div><div class="name">${t.name}</div><div class="cat">${catlab}</div></div>
+          ${badge}
+        </div>
+        <div class="rise-spark">${sparkline(t.s,{stroke:C.up,w:240,h:38,fill:true})}</div>
+        <div class="now"><b>${t.now}</b><span class="of">/ 100 interest · up from ${t.s[0]} ${win}w ago</span></div>
+      </div>`;
+    }).join("");
+
+    /* ---- fashion focus (right) ---- */
+    const fashion = data.filter(t=>t.cat==="fashion").sort((a,b)=>b.winDelta-a.winDelta).slice(0,6);
+    document.getElementById("fashionList").innerHTML = fashion.map(t=>{
+      const col = chgColor(t.weekDelta);
+      return `<div class="focus-item">
+        <div class="row1">
+          <div><div class="fn">${t.name}</div><div class="fcat">${deltaText(t.winDelta,win)}</div></div>
+          <div class="fval"><b>${t.now}</b><div style="margin-top:2px">${deltaFmt(t.weekDelta)}</div></div>
+        </div>
+        <div class="fbar-wrap">
+          <div style="flex:1">${sparkline(t.s,{stroke:col,w:200,h:28,fill:true,dot:true})}</div>
+          <div class="phase ${t.phase}">${phaseLabel(t.phase)}</div>
+        </div>
+      </div>`;
+    }).join("");
+  }
+
+  function deltaText(d,win){
+    if(d>0) return `+${Math.round(d)} pts over ${win}w`;
+    if(d<0) return `${Math.round(d)} pts over ${win}w`;
+    return `flat over ${win}w`;
+  }
+  function phaseLabel(p){
+    return p==="emerging"?"Emerging ▲":p==="peaking"?"Peaking ◆":p==="cooling"?"Cooling ▼":"Steady —";
+  }
+
+  /* window toggle */
+  document.getElementById("winToggle").addEventListener("click", e=>{
+    const b = e.target.closest("button"); if(!b) return;
+    document.querySelectorAll("#winToggle button").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    render(+b.dataset.win);
+  });
+
+  /* fake "capture now" — nudges last reading & re-renders (no backend) */
+  function capture(){
+    const btn = document.getElementById("captureBtn");
+    btn.classList.add("loading");
+    setTimeout(()=>{
+      TRENDS.forEach(t=>{
+        const last = t.series[t.series.length-1];
+        const drift = Math.round((Math.random()-0.42)*5);
+        t.series.push(Math.max(2, Math.min(100, last+drift)));
+        t.series.shift();
+      });
+      const d = new Date();
+      document.getElementById("lastCap").textContent = d.toISOString().slice(0,10);
+      render(currentWin);
+      btn.classList.remove("loading");
+    }, 650);
+  }
+
+  render(8);
+  </script>
+</body>
+</html>

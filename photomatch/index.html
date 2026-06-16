@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Photo Match — Demo</title>
+  <meta name="description" content="Photo Match — upload a reference photo and your own shot; AI analyzes color & tone and builds a matching Lightroom preset. Static portfolio demo with sample data.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ============ Theme tokens (auto light/dark) ============ */
+    :root {
+      --bg: #f4f5fb;
+      --card: #ffffff;
+      --text: #1a1b25;
+      --muted: #71728a;
+      --border: #e8e9f3;
+      --accent: #6c5ce7;
+      --accent-2: #8b5cf6;
+      --accent-soft: #efeaff;
+      --green: #10b981;
+      --green-soft: #e6f7f0;
+      --danger: #e23d56;
+      --danger-soft: #fdeef0;
+      --radius: 18px;
+      --shadow: 0 8px 30px rgba(26, 27, 60, 0.07);
+      --shadow-sm: 0 2px 10px rgba(26, 27, 60, 0.05);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0e1018;
+        --card: #181b27;
+        --text: #eceef6;
+        --muted: #9698b3;
+        --border: #2a2e3f;
+        --accent: #8b7bff;
+        --accent-2: #a78bfa;
+        --accent-soft: #241f3d;
+        --green: #34d399;
+        --green-soft: #122a22;
+        --danger: #ff6b81;
+        --danger-soft: #2a1620;
+        --shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.3);
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding-bottom: 50px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    main { max-width: 920px; margin: 0 auto; padding: 0 18px; }
+
+    /* ============ Demo badge ============ */
+    .demo-badge {
+      position: fixed; top: 14px; right: 14px; z-index: 50;
+      background: rgba(20, 22, 34, 0.72);
+      color: #fff; backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.16);
+      font-size: 12px; font-weight: 600; letter-spacing: .2px;
+      padding: 6px 12px; border-radius: 999px;
+      display: inline-flex; align-items: center; gap: 7px;
+      box-shadow: 0 4px 14px rgba(0,0,0,.18);
+    }
+    .demo-badge .pulse {
+      width: 7px; height: 7px; border-radius: 50%; background: #ffd166;
+      box-shadow: 0 0 0 0 rgba(255,209,102,.7);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255,209,102,.6); }
+      70% { box-shadow: 0 0 0 6px rgba(255,209,102,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,209,102,0); }
+    }
+
+    /* ============ Hero ============ */
+    .hero {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+      color: #fff;
+      text-align: center;
+      padding: 46px 18px 56px;
+      border-radius: 0 0 32px 32px;
+      margin-bottom: -28px;
+    }
+    .logo {
+      width: 60px; height: 60px; margin: 0 auto 10px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+      backdrop-filter: blur(6px);
+    }
+    .hero h1 { margin: 0; font-size: 32px; letter-spacing: -0.5px; font-weight: 800; }
+    .hero .sub { margin: 8px 0 0; opacity: 0.92; font-size: 15px; }
+
+    /* ============ Engine selector ============ */
+    .engine-bar {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+      background: var(--card);
+      border-radius: 999px;
+      padding: 10px 16px;
+      box-shadow: var(--shadow);
+      position: relative; z-index: 2;
+      margin: 0 auto 22px;
+      width: fit-content;
+      max-width: 100%;
+    }
+    .engine-label { font-weight: 700; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      border: 1.5px solid var(--border);
+      padding: 7px 14px; border-radius: 999px;
+      cursor: pointer; font-weight: 600; font-size: 14px;
+      transition: border-color .15s, background .15s;
+      user-select: none;
+    }
+    .chip input { position: absolute; opacity: 0; pointer-events: none; }
+    .chip:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+    .chip em { font-style: normal; font-size: 12px; color: var(--muted); }
+    .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+    .dot.claude { background: var(--accent); }
+    .dot.ollama { background: var(--green); }
+    .dot.gpt { background: #19c37d; }
+
+    /* ============ Cards ============ */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 26px;
+      margin-bottom: 22px;
+      box-shadow: var(--shadow);
+    }
+    .card-head { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 18px; }
+    .step {
+      flex: none;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--accent); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 16px;
+    }
+    .card-head h2 { margin: 2px 0 4px; font-size: 20px; }
+    .muted { color: var(--muted); margin: 0; font-size: 14.5px; }
+
+    /* ============ Photo pair ============ */
+    .two-up { display: flex; gap: 16px; }
+    .two-up > div { flex: 1; min-width: 0; }
+
+    .photo {
+      position: relative;
+      width: 100%; aspect-ratio: 4 / 5;
+      border-radius: 14px; overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+    .photo .label {
+      position: absolute; top: 10px; left: 10px; z-index: 2;
+      background: rgba(15,17,26,.62); color: #fff; backdrop-filter: blur(4px);
+      font-size: 11.5px; font-weight: 700; letter-spacing: .3px; text-transform: uppercase;
+      padding: 4px 9px; border-radius: 8px;
+    }
+    .photo .meta {
+      position: absolute; bottom: 0; left: 0; right: 0; z-index: 2;
+      padding: 14px 12px 10px;
+      background: linear-gradient(to top, rgba(10,11,18,.78), rgba(10,11,18,0));
+      color: rgba(255,255,255,.92); font-size: 11.5px;
+    }
+    .photo.has-file { border-color: var(--green); }
+
+    /* Reference: warm golden-hour film look */
+    .ref-img {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(120% 90% at 75% 18%, rgba(255,221,148,.55), rgba(255,221,148,0) 55%),
+        radial-gradient(90% 70% at 20% 90%, rgba(120,72,52,.55), rgba(120,72,52,0) 60%),
+        linear-gradient(160deg, #f2b262 0%, #e08a4e 38%, #9c5a3c 74%, #4a2c28 100%);
+    }
+    .ref-img::after {
+      content: ""; position: absolute; inset: 0;
+      background:
+        radial-gradient(closest-side at 68% 30%, rgba(255,255,255,.35), transparent 70%),
+        linear-gradient(0deg, rgba(0,0,0,.25), transparent 40%);
+      mix-blend-mode: screen; opacity: .8;
+    }
+    /* Your photo: cooler, flatter, brighter — before the match */
+    .mine-img {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(110% 80% at 70% 22%, rgba(214,228,240,.5), rgba(214,228,240,0) 55%),
+        linear-gradient(160deg, #cfd6dd 0%, #b3bcc6 40%, #8b97a4 76%, #5d6772 100%);
+    }
+    .mine-img::after {
+      content: ""; position: absolute; inset: 0;
+      background: radial-gradient(closest-side at 64% 32%, rgba(255,255,255,.4), transparent 72%);
+      mix-blend-mode: screen; opacity: .6;
+    }
+
+    /* ============ Buttons ============ */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff; border: none; border-radius: 12px;
+      padding: 14px 20px; font-size: 16px; font-weight: 650;
+      cursor: pointer; margin-top: 18px;
+      text-decoration: none; text-align: center;
+      transition: filter .15s, transform .1s, opacity .15s;
+    }
+    .btn:hover:not(:disabled) { filter: brightness(1.05); }
+    .btn:active:not(:disabled) { transform: translateY(1px); }
+    .btn.download {
+      background: var(--green); width: auto; padding: 11px 18px; font-size: 14.5px; margin: 0 0 4px;
+    }
+
+    /* ============ Result columns ============ */
+    .columns { display: grid; gap: 16px; margin-top: 20px; grid-template-columns: 1fr 1fr 1fr; }
+    @media (max-width: 820px) {
+      .columns { grid-template-columns: 1fr; }
+      .two-up { flex-direction: column; }
+    }
+
+    .result {
+      padding: 18px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      animation: fade .25s ease;
+    }
+    @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; } }
+
+    .col-head {
+      display: flex; align-items: center; gap: 8px;
+      font-weight: 700; font-size: 15px; margin-bottom: 12px;
+      padding-bottom: 10px; border-bottom: 1px solid var(--border);
+    }
+    .col-head .grow { flex: 1; }
+    .tag { font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 999px; letter-spacing: .3px; }
+    .tag.paid { background: var(--accent-soft); color: var(--accent); }
+    .tag.free { background: var(--green-soft); color: var(--green); }
+
+    .hint { font-size: 12.5px; color: var(--muted); }
+    .copy-btn {
+      font-size: 12.5px; font-weight: 600; cursor: pointer;
+      background: transparent; color: var(--accent);
+      border: 1px solid var(--border); border-radius: 8px; padding: 4px 10px;
+    }
+    .copy-btn:hover { background: var(--accent-soft); }
+
+    /* ============ Analysis panel ============ */
+    .analysis-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px;
+      margin-top: 14px;
+    }
+    .stat {
+      background: var(--accent-soft); border-radius: 10px; padding: 9px 11px;
+    }
+    .stat .k { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--accent); }
+    .stat .v { font-size: 15px; font-weight: 700; margin-top: 1px; }
+    .stat.full { grid-column: 1 / -1; background: transparent; padding: 0; }
+
+    .swatches { display: flex; gap: 6px; margin-top: 4px; }
+    .sw { width: 26px; height: 26px; border-radius: 7px; border: 1px solid rgba(0,0,0,.12); }
+
+    .section-title {
+      font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px;
+      color: var(--muted); margin: 18px 0 8px;
+    }
+
+    /* ============ Preset settings list ============ */
+    .preset-name {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-weight: 800; font-size: 16px; margin: 2px 0 2px;
+    }
+    .preset-name .file { font-size: 12px; font-weight: 600; color: var(--muted); }
+    .sliders { margin-top: 10px; }
+    .slider-row {
+      display: grid; grid-template-columns: 92px 1fr 46px; align-items: center;
+      gap: 10px; padding: 3px 0; font-size: 13px;
+    }
+    .slider-row .name { color: var(--text); }
+    .slider-row .track {
+      position: relative; height: 4px; border-radius: 999px; background: var(--border);
+    }
+    .slider-row .track .mid {
+      position: absolute; left: 50%; top: -2px; width: 1px; height: 8px; background: var(--muted); opacity: .4;
+    }
+    .slider-row .track .fill {
+      position: absolute; top: 0; height: 4px; border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    }
+    .slider-row .num { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .num.pos { color: var(--accent); }
+    .num.neg { color: var(--danger); }
+
+    .hsl-line, .curve-line {
+      font-size: 12.5px; color: var(--text); margin: 3px 0;
+    }
+    .hsl-line b, .curve-line b { color: var(--accent); }
+
+    details.howto { margin: 14px 0 6px; }
+    details.howto summary { cursor: pointer; font-weight: 650; font-size: 14px; color: var(--accent); }
+    .howto ol { margin: 10px 0 0; padding-left: 20px; font-size: 13.5px; }
+    .howto li { margin: 5px 0; }
+    .tweaks-box {
+      margin-top: 12px; padding: 12px 14px;
+      background: var(--accent-soft); border-radius: 10px;
+      font-size: 13.5px;
+    }
+    .tweaks-box .lbl { display: block; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .4px; color: var(--accent); margin-bottom: 4px; }
+
+    code { background: var(--border); padding: 1px 6px; border-radius: 5px; font-size: 0.9em; }
+    .verdict { font-size: 13px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border); }
+    .verdict b { color: var(--text); }
+
+    .foot { text-align: center; color: var(--muted); font-size: 13px; padding: 8px 0 0; }
+    .foot a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="demo-badge"><span class="pulse"></span>Demo · sample data</div>
+
+  <!-- Hero header -->
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="logo">📷</div>
+      <h1>Photo Match</h1>
+      <p class="sub">Copy any photo's look — get the shot, then match the edit.</p>
+    </div>
+  </header>
+
+  <main>
+    <!-- Which AI brain(s) to run -->
+    <div class="engine-bar">
+      <span class="engine-label">Compare with</span>
+      <label class="chip">
+        <input type="checkbox" class="engine" value="claude" checked>
+        <span class="dot claude"></span> Claude <em>paid</em>
+      </label>
+      <label class="chip">
+        <input type="checkbox" class="engine" value="gpt" checked>
+        <span class="dot gpt"></span> GPT <em>paid</em>
+      </label>
+      <label class="chip">
+        <input type="checkbox" class="engine" value="ollama" checked>
+        <span class="dot ollama"></span> Ollama <em>free</em>
+      </label>
+    </div>
+
+    <!-- STEP — Match your photo (the core experience, shown completed) -->
+    <section class="card">
+      <div class="card-head">
+        <span class="step">↔</span>
+        <div>
+          <h2>Match your photo</h2>
+          <p class="muted">Upload the reference and your own shot. Photo Match analyzes the color
+            &amp; tone, then builds a Lightroom Classic preset (<code>.xmp</code>) that matches the look.</p>
+        </div>
+      </div>
+
+      <!-- Reference + Your photo -->
+      <div class="two-up">
+        <div>
+          <div class="photo has-file">
+            <span class="label">Reference</span>
+            <div class="ref-img"></div>
+            <div class="meta">golden-hour-portrait.jpg · 3600 × 4500</div>
+          </div>
+        </div>
+        <div>
+          <div class="photo has-file">
+            <span class="label">Your photo</span>
+            <div class="mine-img"></div>
+            <div class="meta">IMG_4821.dng · 6000 × 7500 · RAW</div>
+          </div>
+        </div>
+      </div>
+
+      <a class="btn" href="#results" role="button">✓ Preset built — see the read below</a>
+
+      <!-- ===== Color / tone analysis panel ===== -->
+      <div class="section-title">Color &amp; tone analysis — reference vs. your photo</div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;">
+        <div class="analysis-grid">
+          <div class="stat"><div class="k">Temperature</div><div class="v">5400 K → 6250 K</div></div>
+          <div class="stat"><div class="k">Tint</div><div class="v">+8 → −3 (magenta)</div></div>
+          <div class="stat"><div class="k">Avg. luminance</div><div class="v">38% → 54%</div></div>
+          <div class="stat"><div class="k">Contrast (RMS)</div><div class="v">0.27 → 0.19</div></div>
+          <div class="stat"><div class="k">Black point</div><div class="v">12 / 255 → 4 / 255</div></div>
+          <div class="stat"><div class="k">Highlight clip</div><div class="v">0.4% → 2.1%</div></div>
+          <div class="stat full">
+            <div class="k" style="color:var(--muted);margin-bottom:5px;">Dominant reference palette</div>
+            <div class="swatches">
+              <span class="sw" style="background:#e7a85c" title="warm highlight"></span>
+              <span class="sw" style="background:#c97b45" title="skin / golden"></span>
+              <span class="sw" style="background:#9c5a3c" title="midtone amber"></span>
+              <span class="sw" style="background:#5e3a30" title="shadow umber"></span>
+              <span class="sw" style="background:#34211f" title="deep shadow"></span>
+              <span class="sw" style="background:#f2d9a8" title="soft cream"></span>
+            </div>
+          </div>
+        </div>
+        <p class="hint" style="margin:12px 0 0;">Your shot reads <b>cooler, brighter and flatter</b> than the reference. The match warms white balance, deepens the blacks, and recovers blown highlights to land the same golden-hour film mood.</p>
+      </div>
+
+      <!-- ===== Three-engine side-by-side comparison ===== -->
+      <div class="section-title" id="results">Three AI reads, side by side</div>
+      <div class="columns">
+
+        <!-- CLAUDE -->
+        <div class="result">
+          <div class="col-head"><span class="dot claude"></span>Claude <span class="tag paid">paid</span><span class="grow"></span><button class="copy-btn" data-copy>Copy</button></div>
+
+          <div class="preset-name">Golden Hour Film <span class="file">.xmp</span></div>
+
+          <div class="sliders">
+            <div class="slider-row"><span class="name">Exposure</span><span class="track"><span class="mid"></span><span class="fill" style="left:50%;width:6%"></span></span><span class="num pos">+0.30</span></div>
+            <div class="slider-row"><span class="name">Contrast</span><span class="track"><span class="mid"></span><span class="fill" style="left:50%;width:12%"></span></span><span class="num pos">+12</span></div>
+            <div class="slider-row"><span class="name">Highlights</span><span class="track"><span class="mid"></span><span class="fill" style="left:10%;width:40%"></span></span><span class="num neg">−40</span></div>
+            <div class="slider-row"><span class="name">Shadows</span><span class="track"><span class="mid"></span><span class="fill" style="left:50%;width:25%"></span></span><span class="num pos">+25</span></div>
+            <div class="slider-row"><span class="name">Whites</span><span class="track"><span class="mid"></span><span class="fill" style="left:32%;width:18%"></span></span><span class="num neg">−18</span></div>
+            <div class="slider-row"><span class="name">Blacks</span><span class="track"><span class="mid"></span><span class="fill" style="left:35%;width:15%"></span></span><span class="num neg">−15</span></div>
+            <div class="slider-row"><span class="name">Texture</span><span class="track"><span class="mid"></span><span class="fill" style="left:50%;width:8%"></span></span><span class="num pos">+8</span></div>
+            <div class="slider-row"><span class="name">Clarity</span><span class="track"><span class="mid"></span><span class="fill" style="left:44%;width:6%"></span></span><span class="num neg">−6</span></div>
+            <div class="slider-row"><span class="name">Vibrance</span><span class="track"><span class="mid"></span><span class="fill" style="left:50%;width:14%"></span></span><span class="num pos">+14</span></div>
+            <div class="slider-row"><span class="name">Saturation</span><span class="track"><span class="mid"></span><span class="fill" style="left:46%;width:4%"></span></span><span class="num neg">−4</span></div>
+          </div>
+
+          <div class="section-title" style="margin-top:14px;">HSL</div>
+          <p class="hsl-line"><b>Orange:</b> H −6 · S +12 · L +6 <span class="hint">(warm skin)</span></p>
+          <p class="hsl-line"><b>Yellow:</b> H −10 · S +8 · L −4</p>
+          <p class="hsl-line"><b>Blue:</b> H +4 · S −20 · L −8 <span class="hint">(mute sky)</span></p>
+
+          <div class="section-title" style="margin-top:14px;">Tone curve + grade</div>
+          <p class="curve-line"><b>Curve:</b> lifted toe (+10), gentle S, rolled-off top</p>
+          <p class="curve-line"><b>Shadows:</b> hue 42° · sat 14 &nbsp; <b>Highlights:</b> hue 48° · sat 9</p>
+          <p class="curve-line"><b>Vignette:</b> −12</p>
+
+          <div class="tweaks-box"><span class="lbl">Tweak notes</span>Push <b>Temp warmer to ~5400 K</b> and Tint +6 toward magenta — the preset can't set white balance on a RAW. Your highlights are slightly clipped; pull <b>Whites</b> a touch more if the sky still glows.</div>
+          <div class="verdict"><b>Claude:</b> reads the warm/cool gap precisely; most surgical of the three.</div>
+        </div>
+
+        <!-- GPT -->
+        <div class="result">
+          <div class="col-head"><span class="dot gpt"></span>GPT <span class="tag paid">paid</span><span class="grow"></span><button class="copy-btn" data-copy>Copy</button></div>
+
+          <div class="preset-name">Warm Golden Portrait <span class="file">.xmp</span></div>
+
+          <div class="sliders">
+            <div class="slider-row"><span class="name">Exposure</span><span class="track"><span class="mid"></span><span class="fill" style="left:46%;width:4%"></span></span><span class="num neg">−0.20</span></div>
+            <div class="slider-row"><span class="name">Contrast</span><span class="track"><span class="mid"></span><span class="fill" style="left:50%;width:18%"></span></span><span class="num pos">+18</span></div>
+            <div class="slider-row"><span class="name">Highlights</span><span class="track"><span class="mid"></span><span class="fill" style="left:15%;width:35%"></span></span><span class="num neg">−35</span></div>
+            <div class="slider-row"><span class="name">Shadows</span><span class="track"><span class="mid"></span><span class="fill" style="left:50%;width:30%"></span></span><span class="num pos">+30</span></div>
+            <div class="slider-row"><span class="name">Whites</span><span class="track"><span class="mid"></span><span class="fill" style="left:38%;width:12%"></span></span><span class="num neg">−12</span></div>
+            <div class="slider-row"><span class="name">Blacks</span><span class="track"><span class="mid"></span><span class="fill" style="left:30%;width:20%"></span></span><span class="num neg">−20</span></div>
+            <div class="slider-row"><span class="name">Texture</span><span class="track"><span class="mid"></span><span class="fill" style="left:50%;width:5%"></span></span><span class="num pos">+5</span></div>
+            <div class="slider-row"><span class="name">Clarity</span><span class="track"><span class="mid"></span><span class="fill" style="left:50%;width:0%"></span></span><span class="num">0</span></div>
+            <div class="slider-row"><span class="name">Vibrance</span><span class="track"><span class="mid"></span><span class="fill" style="left:50%;width:20%"></span></span><span class="num pos">+20</span></div>
+            <div class="slider-row"><span class="name">Saturation</span><span class="track"><span class="mid"></span><span class="fill" style="left:50%;width:6%"></span></span><span class="num pos">+6</span></div>
+          </div>
+
+          <div class="section-title" style="margin-top:14px;">HSL</div>
+          <p class="hsl-line"><b>Orange:</b> H −4 · S +16 · L +8</p>
+          <p class="hsl-line"><b>Yellow:</b> H −8 · S +10 · L 0</p>
+          <p class="hsl-line"><b>Blue:</b> H 0 · S −14 · L −6</p>
+
+          <div class="section-title" style="margin-top:14px;">Tone curve + grade</div>
+          <p class="curve-line"><b>Curve:</b> stronger S — more punch, deeper toe</p>
+          <p class="curve-line"><b>Shadows:</b> hue 38° · sat 18 &nbsp; <b>Highlights:</b> hue 50° · sat 12</p>
+          <p class="curve-line"><b>Vignette:</b> −18</p>
+
+          <div class="tweaks-box"><span class="lbl">Tweak notes</span>Set <b>Temp ~5300 K, Tint +8</b>. GPT goes a touch heavier — it pulls exposure down and pushes saturation. Great if you want the look bolder; dial back Vibrance for a subtler edit.</div>
+          <div class="verdict"><b>GPT:</b> bolder, more contrast &amp; saturation — a slightly punchier interpretation.</div>
+        </div>
+
+        <!-- OLLAMA -->
+        <div class="result">
+          <div class="col-head"><span class="dot ollama"></span>Ollama <span class="tag free">free</span><span class="grow"></span><button class="copy-btn" data-copy>Copy</button></div>
+
+          <div class="preset-name">Sunset Match <span class="file">.xmp</span></div>
+
+          <div class="sliders">
+            <div class="slider-row"><span class="name">Exposure</span><span class="track"><span class="mid"></span><span class="fill" style="left:50%;width:8%"></span></span><span class="num pos">+0.40</span></div>
+            <div class="slider-row"><span class="name">Contrast</span><span class="track"><span class="mid"></span><span class="fill" style="left:50%;width:10%"></span></span><span class="num pos">+10</span></div>
+            <div class="slider-row"><span class="name">Highlights</span><span class="track"><span class="mid"></span><span class="fill" style="left:20%;width:30%"></span></span><span class="num neg">−30</span></div>
+            <div class="slider-row"><span class="name">Shadows</span><span class="track"><span class="mid"></span><span class="fill" style="left:50%;width:20%"></span></span><span class="num pos">+20</span></div>
+            <div class="slider-row"><span class="name">Whites</span><span class="track"><span class="mid"></span><span class="fill" style="left:40%;width:10%"></span></span><span class="num neg">−10</span></div>
+            <div class="slider-row"><span class="name">Blacks</span><span class="track"><span class="mid"></span><span class="fill" style="left:40%;width:10%"></span></span><span class="num neg">−10</span></div>
+            <div class="slider-row"><span class="name">Texture</span><span class="track"><span class="mid"></span><span class="fill" style="left:50%;width:0%"></span></span><span class="num">0</span></div>
+            <div class="slider-row"><span class="name">Clarity</span><span class="track"><span class="mid"></span><span class="fill" style="left:50%;width:10%"></span></span><span class="num pos">+10</span></div>
+            <div class="slider-row"><span class="name">Vibrance</span><span class="track"><span class="mid"></span><span class="fill" style="left:50%;width:15%"></span></span><span class="num pos">+15</span></div>
+            <div class="slider-row"><span class="name">Saturation</span><span class="track"><span class="mid"></span><span class="fill" style="left:50%;width:5%"></span></span><span class="num pos">+5</span></div>
+          </div>
+
+          <div class="section-title" style="margin-top:14px;">HSL</div>
+          <p class="hsl-line"><b>Orange:</b> H 0 · S +10 · L +5</p>
+          <p class="hsl-line"><b>Yellow:</b> H −5 · S +5 · L 0</p>
+          <p class="hsl-line"><b>Blue:</b> H 0 · S −10 · L 0</p>
+
+          <div class="section-title" style="margin-top:14px;">Tone curve + grade</div>
+          <p class="curve-line"><b>Curve:</b> mild S, lifted shadows</p>
+          <p class="curve-line"><b>Shadows:</b> hue 40° · sat 10 &nbsp; <b>Highlights:</b> hue 45° · sat 8</p>
+          <p class="curve-line"><b>Vignette:</b> −8</p>
+
+          <div class="tweaks-box"><span class="lbl">Tweak notes</span>Make it <b>warmer</b> — nudge Temp up and Tint slightly magenta. Free local model: close on the overall mood but less precise on exact shadow values. Good first pass; fine-tune by eye.</div>
+          <div class="verdict"><b>Ollama:</b> runs free &amp; offline. Captures the vibe; least exact on numbers.</div>
+        </div>
+
+      </div>
+
+      <details class="howto">
+        <summary>How to use this preset</summary>
+        <ol>
+          <li>Download the <code>.xmp</code> from the engine you like best.</li>
+          <li>Lightroom Classic → <b>Develop</b> module.</li>
+          <li><b>Presets</b> panel → <b>+</b> → <b>Import Presets</b> → pick the file.</li>
+          <li>Click your photo, then click the preset (under <b>Photo Match App</b>).</li>
+          <li>Apply the tweak notes (white balance) by hand.</li>
+        </ol>
+      </details>
+    </section>
+
+    <footer class="foot">
+      Made with Claude · runs locally on your Mac &nbsp;·&nbsp; <a href="../">← portfolio</a>
+    </footer>
+  </main>
+
+  <script>
+    // Demo-only interactivity: engine chips toggle their column's visibility,
+    // and copy buttons give the little "Copied ✓" confirmation.
+    const cols = {
+      claude: document.querySelectorAll('.result')[0],
+      gpt:    document.querySelectorAll('.result')[1],
+      ollama: document.querySelectorAll('.result')[2],
+    };
+    document.querySelectorAll('.engine').forEach((box) => {
+      box.addEventListener('change', () => {
+        const col = cols[box.value];
+        if (col) col.style.display = box.checked ? '' : 'none';
+      });
+    });
+
+    document.querySelectorAll('[data-copy]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const old = btn.textContent;
+        btn.textContent = 'Copied ✓';
+        setTimeout(() => (btn.textContent = old), 1400);
+      });
+    });
+  </script>
+</body>
+</html>
