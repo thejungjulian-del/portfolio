@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Julian Jung — Portfolio</title>
+<meta name="description" content="Things I've built — a live trend-intelligence product, prediction-market research, and AI tools for fashion and photography.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#111; --bg:#fff; --muted:#6b6b6b; --faint:#9a9a9a;
+    --line:#e6e6e6; --line-strong:#111; --hover:#fafafa;
+    --serif:"Fraunces", Georgia, "Times New Roman", serif;
+    --sans:"Helvetica Neue", system-ui, -apple-system, Arial, sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 28px}
+  a{color:inherit}
+
+  /* ---------- header ---------- */
+  header{padding:84px 0 36px;border-bottom:2px solid var(--line-strong)}
+  .kicker{font-size:11px;text-transform:uppercase;letter-spacing:.22em;color:var(--muted)}
+  h1{font-family:var(--serif);font-weight:300;font-size:clamp(46px,9vw,92px);
+    line-height:.98;letter-spacing:-.02em;margin:14px 0 0}
+  .lede{font-family:var(--serif);font-weight:300;font-style:italic;
+    font-size:clamp(20px,3.2vw,30px);color:var(--ink);margin:18px 0 0;line-height:1.25}
+  .intro{max-width:620px;font-size:16.5px;color:var(--muted);margin:22px 0 0}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:26px;
+    font-size:12px;text-transform:uppercase;letter-spacing:.12em}
+  .meta a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-strong);padding-bottom:2px;transition:opacity .15s}
+  .meta a:hover{opacity:.55}
+  .meta .where{color:var(--faint);border:none}
+
+  /* ---------- filter bar ---------- */
+  .filters{position:sticky;top:0;z-index:5;background:var(--bg);
+    display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+    padding:18px 0;border-bottom:1px solid var(--line)}
+  .chip{font:inherit;font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+    background:#fff;color:var(--muted);border:1px solid var(--line);
+    padding:8px 15px;border-radius:999px;cursor:pointer;transition:all .15s}
+  .chip:hover{border-color:var(--ink);color:var(--ink)}
+  .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .count{margin-left:auto;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+
+  /* ---------- grid ---------- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(312px,1fr));
+    gap:0;margin:0 0 10px;border-top:1px solid var(--line)}
+  .proj{border-bottom:1px solid var(--line);border-right:1px solid var(--line);
+    padding:30px 28px 26px;display:flex;flex-direction:column;min-height:268px;
+    transition:background .18s}
+  .proj:hover{background:var(--hover)}
+  /* tidy right edge regardless of column count */
+  .grid{border-left:1px solid var(--line)}
+  .ptop{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+  .status{font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+    padding:4px 9px;border-radius:999px;border:1px solid var(--line-strong);color:var(--ink);white-space:nowrap}
+  .status.live{background:var(--ink);color:#fff}
+  .status.research{border-color:var(--line);color:var(--muted)}
+  .status.archived{border-color:var(--line);color:var(--faint)}
+  .pnum{font-size:11px;color:var(--faint);letter-spacing:.1em}
+  h2{font-family:var(--serif);font-weight:400;font-size:27px;letter-spacing:-.01em;
+    margin:16px 0 4px;line-height:1.1}
+  .tagline{font-size:13.5px;color:var(--muted);font-style:italic;font-family:var(--serif)}
+  .desc{font-size:14.5px;color:var(--ink);margin:14px 0 0;line-height:1.55}
+  .stack{margin-top:auto;padding-top:18px;font-size:11px;letter-spacing:.04em;color:var(--faint)}
+  .plink{display:inline-block;margin-top:12px;font-size:13px;font-weight:500;
+    text-decoration:none;border-bottom:1px solid var(--ink);padding-bottom:1px;width:max-content;transition:opacity .15s}
+  .plink:hover{opacity:.55}
+
+  /* ---------- footer ---------- */
+  footer{padding:54px 0 80px;border-top:2px solid var(--line-strong);margin-top:30px}
+  .foot-h{font-family:var(--serif);font-weight:300;font-size:28px;margin:0 0 14px}
+  .foot-links{display:flex;flex-wrap:wrap;gap:10px 24px;font-size:14px}
+  .foot-links a{text-decoration:none;border-bottom:1px solid var(--line-strong);padding-bottom:2px}
+  .foot-links a:hover{opacity:.55}
+  .colophon{margin-top:30px;font-size:12px;color:var(--faint)}
+
+  /* ---------- motion ---------- */
+  @keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  .proj{animation:up .5s cubic-bezier(.2,.7,.3,1) both}
+  header>*{animation:up .6s cubic-bezier(.2,.7,.3,1) both}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto}}
+
+  @media (max-width:640px){
+    header{padding:56px 0 28px}
+    .proj{min-height:auto;padding:26px 22px}
+    .filters{gap:6px}
+    .chip{padding:7px 12px}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="kicker">Portfolio</div>
+    <h1>Julian Jung</h1>
+    <p class="lede">Things I've built.</p>
+    <p class="intro">A live trend-intelligence product, a body of prediction-market research,
+      and a stack of AI tools for fashion and photography — eleven projects spanning markets,
+      creators, and computer vision. Most shipped solo, end to end.</p>
+    <div class="meta">
+      <a href="mailto:thejungjulian@gmail.com">thejungjulian@gmail.com</a>
+      <a href="https://github.com/thejungjulian-del" target="_blank" rel="noopener">GitHub</a>
+      <span class="where">Finland</span>
+    </div>
+  </header>
+
+  <nav class="filters" aria-label="Filter projects">
+    <button class="chip on" data-filter="all">All</button>
+    <button class="chip" data-filter="products">Products &amp; apps</button>
+    <button class="chip" data-filter="markets">Markets &amp; trading</button>
+    <span class="count" id="count"></span>
+  </nav>
+
+  <main class="grid" id="grid">
+
+    <!-- 01 Trendy -->
+    <article class="proj" data-cat="products">
+      <div class="ptop"><span class="status live">Live</span><span class="pnum">01</span></div>
+      <h2>Trendy</h2>
+      <div class="tagline">A trend-intelligence desk for creator agencies</div>
+      <p class="desc">A web app that reads each creator's niche, finds the formats and concepts
+        overperforming right now, and hands them shoot-ready briefs — plus a built-in brand-deal
+        inbox that scores incoming partnership offers and drafts the replies. Refreshes on a
+        daily AI scan.</p>
+      <div class="stack">Flask · SQLite · Claude · Apify</div>
+      <a class="plink" href="https://trendylabelhq.com" target="_blank" rel="noopener">Visit site ↗</a>
+    </article>
+
+    <!-- 02 FitCheck -->
+    <article class="proj" data-cat="products">
+      <div class="ptop"><span class="status">App</span><span class="pnum">02</span></div>
+      <h2>FitCheck</h2>
+      <div class="tagline">Virtual try-on for your wardrobe</div>
+      <p class="desc">Upload a piece of clothing and see it rendered on a model — front and back.
+        Built with swappable AI engines, so it can run on cloud models or fully on-device, with
+        caching to keep each generation cheap.</p>
+      <div class="stack">Next.js · Gemini · ComfyUI · Ollama</div>
+    </article>
+
+    <!-- 03 VideoTrends -->
+    <article class="proj" data-cat="products">
+      <div class="ptop"><span class="status">App</span><span class="pnum">03</span></div>
+      <h2>VideoTrends</h2>
+      <div class="tagline">What clothing is trending right now</div>
+      <p class="desc">Scans TikTok and Instagram for fashion posts, uses a local vision model to
+        tag the specific garments in each, ranks them by engagement, and tracks momentum and
+        forecast accuracy over time. Runs entirely on-device — no paid vision API.</p>
+      <div class="stack">Python · Local vision AI · Flask</div>
+    </article>
+
+    <!-- 04 TrendTracker -->
+    <article class="proj" data-cat="products">
+      <div class="ptop"><span class="status">App</span><span class="pnum">04</span></div>
+      <h2>TrendTracker</h2>
+      <div class="tagline">A trend dashboard that remembers</div>
+      <p class="desc">A dashboard that captures clothing and social trends over time, using Google
+        Trends as a free, reliable signal — so you can see what's actually rising, not just what's
+        loud today.</p>
+      <div class="stack">Python · Flask · Google Trends</div>
+    </article>
+
+    <!-- 05 Photo Match -->
+    <article class="proj" data-cat="products">
+      <div class="ptop"><span class="status">App</span><span class="pnum">05</span></div>
+      <h2>Photo Match</h2>
+      <div class="tagline">Match any photo's look — and get the recipe</div>
+      <p class="desc">Upload a reference photo and your own shot; it analyzes the reference's color
+        and tone and generates a Lightroom preset to match. Runs three AI engines side by side —
+        Claude, GPT, and a free local model — so you can compare their reads.</p>
+      <div class="stack">Flask · Claude · GPT · Ollama</div>
+    </article>
+
+    <!-- 06 Polymarket research -->
+    <article class="proj" data-cat="markets">
+      <div class="ptop"><span class="status research">Research</span><span class="pnum">06</span></div>
+      <h2>Prediction-Market Edge Research</h2>
+      <div class="tagline">What actually beats a prediction market?</div>
+      <p class="desc">A deep, data-driven investigation into whether retail traders can profit on
+        Polymarket. Pulled millions of on-chain trades and prices, decomposed the top traders'
+        P&amp;L, and found their edge is <em>execution</em>, not prediction — then distilled the one
+        replicable, no-speed-race edge into a paper-traded bot.</p>
+      <div class="stack">Python · Dune Analytics · Backtesting</div>
+    </article>
+
+    <!-- 07 Kalshi -->
+    <article class="proj" data-cat="markets">
+      <div class="ptop"><span class="status research">Research</span><span class="pnum">07</span></div>
+      <h2>Kalshi Bot</h2>
+      <div class="tagline">Value + arbitrage scanner for event markets</div>
+      <p class="desc">A read-only bot for the Kalshi exchange that hunts internal arbitrage and a
+        weather-forecast edge — next-day temperature markets priced against live meteorological
+        data — and cross-references Kalshi against Polymarket for divergences. Dry-run only.</p>
+      <div class="stack">Python · Kalshi API · Open-Meteo</div>
+    </article>
+
+    <!-- 08 Arb scanner -->
+    <article class="proj" data-cat="markets">
+      <div class="ptop"><span class="status research">Research</span><span class="pnum">08</span></div>
+      <h2>Cross-Venue Arbitrage Scanner</h2>
+      <div class="tagline">Hunting price gaps across prediction markets</div>
+      <p class="desc">A multi-venue scanner — Polymarket, Kalshi, Limitless — built on a pluggable
+        venue-adapter design with a sharp-bookmaker "true odds" anchor. Verified end to end; its
+        honest finding was that these markets are mostly efficient, so it only flags real gaps when
+        they briefly open.</p>
+      <div class="stack">Python · Multi-venue APIs · Arbitrage math</div>
+    </article>
+
+    <!-- 09 Polymarket LP -->
+    <article class="proj" data-cat="markets">
+      <div class="ptop"><span class="status research">Research</span><span class="pnum">09</span></div>
+      <h2>Liquidity-Provider Experiment</h2>
+      <div class="tagline">Does retail market-making actually pay?</div>
+      <p class="desc">A paper-only experiment testing whether a small liquidity provider can capture
+        real edge from Polymarket's rewards program — built as an honest measurement that models
+        reward share against live order-book depth and adverse selection.</p>
+      <div class="stack">Python · Polymarket CLOB</div>
+    </article>
+
+    <!-- 10 Signal Deck -->
+    <article class="proj" data-cat="markets">
+      <div class="ptop"><span class="status archived">Archived</span><span class="pnum">10</span></div>
+      <h2>Signal Deck</h2>
+      <div class="tagline">AI-written futures trading signals</div>
+      <p class="desc">A bot that generates structured S&amp;P 500 futures signals using a language
+        model with live web search, posting to Discord on a schedule with full market-hours
+        awareness.</p>
+      <div class="stack">Python · Claude API · Discord</div>
+    </article>
+
+    <!-- 11 Hyperliquid -->
+    <article class="proj" data-cat="markets">
+      <div class="ptop"><span class="status archived">Archived</span><span class="pnum">11</span></div>
+      <h2>Hyperliquid Data Collector</h2>
+      <div class="tagline">Building a market database for research</div>
+      <p class="desc">A read-only collector for Hyperliquid's on-chain outcome markets, snapshotting
+        prices and order books into a local database to characterize what moves them — written with
+        zero dependencies, just the standard library.</p>
+      <div class="stack">Python · Hyperliquid API · SQLite</div>
+    </article>
+
+  </main>
+
+  <footer>
+    <p class="foot-h">Let's talk.</p>
+    <div class="foot-links">
+      <a href="mailto:thejungjulian@gmail.com">thejungjulian@gmail.com</a>
+      <a href="https://github.com/thejungjulian-del" target="_blank" rel="noopener">github.com/thejungjulian-del</a>
+      <a href="https://trendylabelhq.com" target="_blank" rel="noopener">trendylabelhq.com</a>
+    </div>
+    <p class="colophon">Built in Finland. Designed and shipped by Julian Jung.</p>
+  </footer>
+</div>
+
+<script>
+  const chips = document.querySelectorAll(".chip");
+  const cards = [...document.querySelectorAll(".proj")];
+  const count = document.getElementById("count");
+
+  function apply(filter){
+    let shown = 0, i = 0;
+    cards.forEach(card => {
+      const match = filter === "all" || card.dataset.cat === filter;
+      card.style.display = match ? "" : "none";
+      if(match){ card.style.animationDelay = (i++ * 0.04) + "s"; shown++; }
+    });
+    count.textContent = shown + (shown === 1 ? " project" : " projects");
+  }
+  chips.forEach(chip => chip.addEventListener("click", () => {
+    chips.forEach(c => c.classList.remove("on"));
+    chip.classList.add("on");
+    apply(chip.dataset.filter);
+  }));
+  apply("all");
+</script>
+</body>
+</html>
