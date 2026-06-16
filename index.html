@@ -10,8 +10,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#111; --bg:#fff; --muted:#6b6b6b; --faint:#9a9a9a;
-    --line:#e6e6e6; --line-strong:#111; --hover:#fafafa;
+    --ink:#15130f; --bg:#fbfaf7; --muted:#6b6660; --faint:#9b958c;
+    --line:#e8e4db; --line-strong:#15130f; --hover:#f3f0ea; --card:#fffdfa;
     --serif:"Fraunces", Georgia, "Times New Roman", serif;
     --sans:"Helvetica Neue", system-ui, -apple-system, Arial, sans-serif;
   }
@@ -48,14 +48,13 @@
   .count{margin-left:auto;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
 
   /* ---------- grid ---------- */
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(312px,1fr));
-    gap:0;margin:0 0 10px;border-top:1px solid var(--line)}
-  .proj{border-bottom:1px solid var(--line);border-right:1px solid var(--line);
-    padding:30px 28px 26px;display:flex;flex-direction:column;min-height:268px;
-    transition:background .18s}
-  .proj:hover{background:var(--hover)}
-  /* tidy right edge regardless of column count */
-  .grid{border-left:1px solid var(--line)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:18px;margin:6px 0 10px}
+  .proj{border:1px solid var(--line);border-radius:14px;background:var(--card);
+    padding:26px 26px 24px;display:flex;flex-direction:column;min-height:256px;
+    box-shadow:0 1px 2px rgba(21,19,15,.04);
+    transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s,border-color .25s}
+  .proj:hover{transform:translateY(-5px);border-color:transparent;box-shadow:0 20px 44px -16px rgba(21,19,15,.24)}
   .ptop{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
   .status{font-size:10px;letter-spacing:.16em;text-transform:uppercase;
     padding:4px 9px;border-radius:999px;border:1px solid var(--line-strong);color:var(--ink);white-space:nowrap}
@@ -86,15 +85,17 @@
   .dh{font-family:var(--serif);font-weight:300;font-size:clamp(30px,5vw,46px);letter-spacing:-.02em;margin:12px 0 0;line-height:1}
   .dsub{color:var(--muted);margin:14px 0 30px;max-width:580px}
   .design-grid{column-count:3;column-gap:20px}
-  .dtile{break-inside:avoid;width:100%;margin:0 0 20px;border:1px solid var(--line);background:#fff;
-    overflow:hidden;cursor:pointer;display:block;text-decoration:none;color:inherit;transition:border-color .18s,transform .18s}
-  .dtile:hover{border-color:var(--line-strong);transform:translateY(-2px)}
+  .dtile{break-inside:avoid;width:100%;margin:0 0 22px;border:1px solid var(--line);border-radius:14px;background:var(--card);
+    overflow:hidden;cursor:pointer;display:block;text-decoration:none;color:inherit;
+    box-shadow:0 1px 2px rgba(21,19,15,.04);
+    transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s,border-color .25s}
+  .dtile:hover{transform:translateY(-6px);border-color:transparent;box-shadow:0 22px 48px -16px rgba(21,19,15,.28)}
   .dthumb{overflow:hidden;background:var(--hover)}
-  .dthumb img{width:100%;height:auto;display:block;transition:transform .45s ease}
-  .dtile:hover .dthumb img{transform:scale(1.035)}
-  .dtile .dcap{padding:13px 15px;border-top:1px solid var(--line)}
-  .dt{font-size:15.5px;font-weight:500}
-  .dc{font-size:13px;color:var(--muted);margin-top:2px}
+  .dthumb img{width:100%;height:auto;display:block;transition:transform .5s cubic-bezier(.2,.7,.3,1)}
+  .dtile:hover .dthumb img{transform:scale(1.04)}
+  .dtile .dcap{padding:15px 17px;border-top:1px solid var(--line)}
+  .dt{font-size:16px;font-weight:500;letter-spacing:-.01em}
+  .dc{font-size:13px;color:var(--muted);margin-top:3px}
   .dgo{display:inline-block;margin-top:10px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
     border-bottom:1px solid currentColor;padding-bottom:1px}
   .dtile:hover .dgo{opacity:.6}
@@ -128,7 +129,7 @@
     <div class="meta">
       <a href="mailto:thejungjulian@gmail.com">thejungjulian@gmail.com</a>
       <a href="https://github.com/thejungjulian-del" target="_blank" rel="noopener">GitHub</a>
-      <span class="where">Finland</span>
+      <span class="where">San Francisco</span>
     </div>
   </header>
 
@@ -295,7 +296,7 @@
         <div class="dthumb"><img src="images/bb-redesign-hifi.png" alt="Blockchain at Berkeley site redesign landing page" loading="lazy"></div>
         <div class="dcap"><div class="dt">Blockchain at Berkeley — Site Redesign</div><div class="dc">Landing page redesign</div><div class="dgo">Open prototype ↗</div></div>
       </a>
-      <a class="dtile" href="https://www.figma.com/proto/CrE36AWyrddrGa2CCIrpIB/BROOKWELL?node-id=1333-1331&amp;scaling=min-zoom&amp;content-scaling=fixed&amp;starting-point-node-id=1333%3A1415&amp;page-id=1332%3A923" target="_blank" rel="noopener">
+      <a class="dtile" href="https://www.figma.com/proto/CrE36AWyrddrGa2CCIrpIB/BROOKWELL?node-id=1384-7822&amp;scaling=scale-down&amp;content-scaling=fixed&amp;starting-point-node-id=1392%3A15505&amp;page-id=1226%3A700" target="_blank" rel="noopener">
         <div class="dthumb"><img src="images/brookwell.png" alt="Brookwell fintech app onboarding flow" loading="lazy"></div>
         <div class="dcap"><div class="dt">Brookwell</div><div class="dc">Fintech app — onboarding UX</div><div class="dgo">Open prototype ↗</div></div>
       </a>
@@ -313,7 +314,7 @@
       <a href="https://github.com/thejungjulian-del" target="_blank" rel="noopener">github.com/thejungjulian-del</a>
       <a href="https://trendylabelhq.com" target="_blank" rel="noopener">trendylabelhq.com</a>
     </div>
-    <p class="colophon">Built in Finland. Designed and shipped by Julian Jung.</p>
+    <p class="colophon">Based in San Francisco. Designed and shipped by Julian Jung.</p>
   </footer>
 </div>
 
