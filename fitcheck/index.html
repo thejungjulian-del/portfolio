@@ -2,613 +2,198 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>FitCheck — AI Virtual Try-On</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <style>
-  :root {
-    --ink: #111;
-    --bg: #fff;
-    --muted: #767676;
-    --faint: #a6a6a6;
-    --hairline: #e6e6e6;
-    --hover: #fafafa;
+  :root{
+    --ink:#111; --bg:#fff; --muted:#767676; --faint:#a6a6a6;
+    --line:#e6e6e6; --line-strong:#111; --hover:#fafafa; --matte:#efece4;
   }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.55 "Helvetica Neue",system-ui,-apple-system,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1000px;margin:0 auto;padding:30px 28px 60px}
 
-  * { box-sizing: border-box; }
+  /* header */
+  header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;
+    border-bottom:2px solid var(--ink);padding-bottom:16px;flex-wrap:wrap}
+  .brand{font-size:30px;font-weight:300;letter-spacing:-.02em;line-height:1}
+  .brand .sub{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.14em;
+    color:var(--muted);margin-top:8px;font-weight:400}
+  .badge{display:inline-flex;align-items:center;gap:7px;padding:5px 11px;border-radius:999px;
+    border:1px solid var(--ink);font-size:10px;text-transform:uppercase;letter-spacing:.12em;white-space:nowrap}
+  .badge .dot{width:5px;height:5px;border-radius:50%;background:var(--ink)}
 
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: "Helvetica Neue", system-ui, -apple-system, Arial, sans-serif;
-    background: var(--bg);
-    color: var(--ink);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+  /* studio */
+  .studio{display:flex;gap:40px;margin-top:34px;align-items:flex-start}
 
-  /* Center a full-height phone-shaped column; white shows on desktop sides. */
-  .frame {
-    min-height: 100dvh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--bg);
-  }
+  /* phone */
+  .phone{flex:0 0 auto;width:320px;background:var(--ink);border-radius:42px;padding:11px;
+    box-shadow:0 30px 60px -24px rgba(17,17,17,.45)}
+  .phone .glass{position:relative;border-radius:32px;overflow:hidden;background:var(--matte);
+    aspect-ratio:9/19.5}
+  .shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;
+    transition:opacity .3s ease}
+  .plabel{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:46px 18px 18px;
+    background:linear-gradient(to top,rgba(255,255,255,.96),rgba(255,255,255,.7) 55%,rgba(255,255,255,0));}
+  .plabel .pn{font-size:15px;font-weight:400;line-height:1.25;letter-spacing:-.01em}
+  .plabel .pf{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-top:5px}
+  .notch{position:absolute;top:9px;left:50%;transform:translateX(-50%);z-index:3;
+    width:96px;height:7px;border-radius:999px;background:rgba(17,17,17,.18)}
+  .fitting{position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;
+    flex-direction:column;gap:14px;background:rgba(255,255,255,.62);backdrop-filter:blur(2px);
+    opacity:0;pointer-events:none;transition:opacity .2s ease}
+  .fitting.show{opacity:1}
+  .spinner{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--ink);
+    animation:spin .8s linear infinite}
+  .fitting .ft{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted)}
+  @keyframes spin{to{transform:rotate(360deg)}}
 
-  /* The screen: a tall editorial card with a media stage at the top. */
-  .screen {
-    position: relative;
-    width: 100%;
-    max-width: 480px;
-    height: 100dvh;
-    overflow: hidden;
-    background: var(--bg);
-    display: flex;
-    flex-direction: column;
-    border-left: 1px solid var(--hairline);
-    border-right: 1px solid var(--hairline);
-  }
+  /* panel */
+  .panel{flex:1 1 auto;min-width:0;padding-top:4px}
+  .kick{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);
+    margin:26px 0 12px;padding-top:16px;border-top:1px solid var(--line)}
+  .kick:first-child{margin-top:0;padding-top:0;border-top:none}
 
-  /* Media stage — fills the area behind the chrome; image stays full-bleed. */
-  .model {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center top;
-    z-index: 0;
-    background: var(--bg);
-    transition: opacity 0.35s ease, filter 0.35s ease;
-  }
+  /* closet */
+  .closet{display:flex;flex-direction:column;gap:8px}
+  .item{display:flex;align-items:center;gap:14px;width:100%;text-align:left;cursor:pointer;
+    background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px;
+    font:inherit;color:inherit;transition:border-color .15s,background .15s}
+  .item:hover{background:var(--hover);border-color:var(--faint)}
+  .item.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+  .item img{width:46px;height:60px;object-fit:cover;object-position:center top;border:1px solid var(--line);flex:0 0 auto}
+  .item .nm{font-size:14px;line-height:1.3}
+  .item .mt{font-size:12px;color:var(--muted);margin-top:2px}
+  .item .chk{margin-left:auto;flex:0 0 auto;font-size:10px;text-transform:uppercase;letter-spacing:.12em;
+    color:var(--bg);background:var(--ink);padding:4px 9px;border-radius:999px;opacity:0;transition:opacity .15s}
+  .item.on .chk{opacity:1}
 
-  /* Soft white scrims top + bottom so the editorial dark-on-light UI stays legible. */
-  .scrim {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    background:
-      linear-gradient(to bottom, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0) 18%),
-      linear-gradient(to top, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.7) 30%, rgba(255,255,255,0) 52%);
-  }
+  /* segmented front/back */
+  .seg{display:inline-flex;border:1px solid var(--ink);border-radius:999px;overflow:hidden}
+  .seg button{font:inherit;font-size:11px;text-transform:uppercase;letter-spacing:.12em;
+    background:var(--bg);color:var(--ink);border:none;padding:9px 20px;cursor:pointer;transition:background .15s,color .15s}
+  .seg button.on{background:var(--ink);color:var(--bg)}
 
-  /* ---- demo badge ---- */
-  .demo-badge {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    z-index: 6;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    padding: 5px 11px;
-    border-radius: 999px;
-    background: var(--bg);
-    border: 1px solid var(--ink);
-    color: var(--ink);
-    font-size: 10px;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    pointer-events: none;
-  }
-  .demo-badge .dot {
-    width: 5px; height: 5px; border-radius: 50%;
-    background: var(--ink);
-  }
+  .fit{font-size:14px;color:var(--muted);line-height:1.5;margin-top:14px;max-width:48ch}
+  .fit .size{display:inline-block;font-size:10px;text-transform:uppercase;letter-spacing:.12em;
+    color:var(--bg);background:var(--ink);padding:3px 8px;border-radius:999px;margin-right:8px;vertical-align:1px}
 
-  /* ---- masthead ---- */
-  .topbar {
-    position: relative;
-    z-index: 3;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px 18px 14px;
-    border-bottom: 2px solid var(--ink);
-    background: var(--bg);
-  }
-  .brand {
-    color: var(--ink);
-    font-size: 26px;
-    font-weight: 300;
-    letter-spacing: -0.02em;
-  }
+  /* composer */
+  .composer{display:flex;gap:10px;align-items:center;margin-top:2px}
+  .composer input{flex:1;min-width:0;font:inherit;font-size:14px;padding:13px 16px;border-radius:999px;
+    border:1px solid var(--line);background:var(--bg);color:var(--ink);outline:none;transition:border-color .15s}
+  .composer input:focus{border-color:var(--ink)}
+  .composer input::placeholder{color:var(--faint)}
+  .try{font:inherit;font-size:11px;text-transform:uppercase;letter-spacing:.12em;
+    background:var(--ink);color:var(--bg);border:1px solid var(--ink);padding:14px 22px;border-radius:999px;
+    cursor:pointer;flex:0 0 auto;transition:opacity .15s}
+  .try:hover{opacity:.85}
+  .try:disabled{opacity:.4;cursor:default}
+  .cnote{font-size:12px;color:var(--faint);margin-top:11px;line-height:1.5}
 
-  /* Right-side action rail. */
-  .rail {
-    position: absolute;
-    right: 14px;
-    bottom: 258px;
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
-  }
-  .railbtn {
-    appearance: none;
-    background: var(--bg);
-    border: 1px solid var(--hairline);
-    border-radius: 999px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    padding: 10px 8px 8px;
-    width: 58px;
-    transition: transform 0.12s ease, border-color 0.15s ease, background 0.15s ease;
-  }
-  .railbtn:hover { background: var(--hover); border-color: var(--ink); }
-  .railbtn:active { transform: scale(0.94); }
-  .railbtn:disabled { opacity: 0.35; cursor: default; }
-  .railicon { line-height: 0; }
-  .icon { width: 22px; height: 22px; display: block; }
-  .raillabel {
-    color: var(--muted);
-    font-size: 10px;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-  }
-
-  /* Bottom overlay block: fit note, thumbs, input, button, tab bar. */
-  .bottom {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    padding: 0 18px 12px;
-  }
-
-  /* Product name + fit note. */
-  .pname {
-    color: var(--ink);
-    font-size: 22px;
-    font-weight: 300;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
-  }
-  .fitnote {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--muted);
-    font-size: 13px;
-    font-weight: 400;
-    line-height: 1.4;
-    margin-top: -2px;
-  }
-  .sizepill {
-    flex: 0 0 auto;
-    font-size: 10px;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--bg);
-    background: var(--ink);
-    padding: 4px 9px;
-    border-radius: 999px;
-  }
-
-  .thumbs {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    padding-bottom: 2px;
-    scrollbar-width: none;
-  }
-  .thumbs::-webkit-scrollbar { display: none; }
-  .thumb {
-    width: 56px;
-    height: 74px;
-    object-fit: cover;
-    object-position: center top;
-    border: 1px solid var(--hairline);
-    cursor: pointer;
-    flex: 0 0 auto;
-    background: var(--bg);
-    transition: transform 0.12s ease, border-color 0.15s ease, box-shadow 0.15s ease;
-  }
-  .thumb:hover { border-color: var(--faint); }
-  .thumb:active { transform: scale(0.96); }
-  .thumb.active { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
-
-  .composer { display: flex; gap: 10px; align-items: center; }
-  .urlinput {
-    flex: 1;
-    min-width: 0;
-    padding: 13px 16px;
-    border-radius: 999px;
-    border: 1px solid var(--hairline);
-    font-size: 14px;
-    font-family: inherit;
-    background: var(--bg);
-    color: var(--ink);
-    outline: none;
-    transition: border-color 0.15s ease;
-  }
-  .urlinput:focus { border-color: var(--ink); }
-  .urlinput::placeholder { color: var(--faint); }
-
-  .tryon {
-    appearance: none;
-    border: 1px solid var(--ink);
-    background: var(--ink);
-    color: var(--bg);
-    font-size: 11px;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    font-family: inherit;
-    padding: 14px 22px;
-    border-radius: 999px;
-    cursor: pointer;
-    flex: 0 0 auto;
-    transition: transform 0.12s ease, opacity 0.15s ease;
-  }
-  .tryon:hover { opacity: 0.85; }
-  .tryon:active { transform: scale(0.97); }
-  .tryon:disabled { opacity: 0.4; cursor: default; }
-
-  .hint {
-    color: var(--muted);
-    font-size: 12px;
-    background: var(--bg);
-    border: 1px solid var(--hairline);
-    padding: 9px 13px;
-    border-radius: 10px;
-    text-align: center;
-  }
-
-  /* Bottom tab bar. "Trending" is the reserved future slot. */
-  .tabbar {
-    display: flex;
-    margin: 6px -18px -12px;
-    padding: 14px 0 calc(14px + env(safe-area-inset-bottom));
-    background: var(--bg);
-    border-top: 1px solid var(--hairline);
-  }
-  .tab {
-    flex: 1;
-    appearance: none;
-    background: none;
-    border: none;
-    font-family: inherit;
-    color: var(--faint);
-    font-size: 11px;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-  }
-  .tab.on { color: var(--ink); }
-  .tab:disabled { cursor: default; }
-  .tab .soon {
-    font-size: 9px;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--bg);
-    background: var(--ink);
-    padding: 2px 6px;
-    border-radius: 999px;
-  }
-
-  /* Toast for the canned "Try on" action */
-  .toast {
-    position: absolute;
-    left: 50%;
-    bottom: 330px;
-    transform: translateX(-50%) translateY(8px);
-    z-index: 5;
-    background: var(--ink);
-    color: var(--bg);
-    font-size: 11px;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    padding: 11px 18px;
-    border-radius: 999px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.25s ease, transform 0.25s ease;
-    white-space: nowrap;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-  /* "Fitting…" loading overlay */
-  .fitting {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255,255,255,0.55);
-    backdrop-filter: blur(2px);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
-  }
-  .fitting.show { opacity: 1; }
-  .spinner {
-    width: 34px; height: 34px;
-    border-radius: 50%;
-    border: 2px solid var(--hairline);
-    border-top-color: var(--ink);
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  @media (max-width: 380px) {
-    .rail { bottom: 266px; }
+  @media (max-width:760px){
+    .studio{flex-direction:column;align-items:center;gap:30px}
+    .panel{width:100%}
+    .fit{max-width:none}
   }
 </style>
 </head>
 <body>
-  <main class="frame">
-    <div class="screen">
-      <div class="demo-badge"><span class="dot"></span>Demo · sample data</div>
+<div class="wrap">
+  <header>
+    <div class="brand">FitCheck<span class="sub">AI virtual try-on</span></div>
+    <span class="badge"><span class="dot"></span>Demo · sample data</span>
+  </header>
 
-      <!-- full-bleed media -->
-      <img id="media" src="model-front.jpg" alt="model" class="model" />
-      <div class="scrim"></div>
-
-      <div class="fitting" id="fitting"><div class="spinner"></div></div>
-
-      <!-- top brand -->
-      <div class="topbar"><span class="brand">FitCheck</span></div>
-
-      <!-- right action rail -->
-      <div class="rail">
-        <button class="railbtn" id="flipBtn" title="Rotate front/back">
-          <span class="railicon">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M3 12a9 9 0 0 1 15-6.7L21 8" />
-              <path d="M21 3v5h-5" />
-              <path d="M21 12a9 9 0 0 1-15 6.7L3 16" />
-              <path d="M3 21v-5h5" />
-            </svg>
-          </span>
-          <span class="raillabel" id="flipLabel">Back</span>
-        </button>
-        <button class="railbtn" id="modelBtn" title="Base model">
-          <span class="railicon">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="12" cy="8" r="4" />
-              <path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
-            </svg>
-          </span>
-          <span class="raillabel">Model</span>
-        </button>
-        <button class="railbtn" id="editBtn" title="Edit measurements">
-          <span class="railicon">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M12 20h9" />
-              <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
-            </svg>
-          </span>
-          <span class="raillabel">Edit</span>
-        </button>
-      </div>
-
-      <!-- bottom overlay -->
-      <div class="bottom">
-        <div class="pname" id="pname"></div>
-        <div class="fitnote" id="fitnote" style="display:none;"></div>
-
-        <div class="thumbs" id="thumbs"></div>
-
-        <div class="hint" id="hint" style="display:none;"></div>
-
-        <div class="composer">
-          <input class="urlinput" id="url" type="url" inputmode="url" placeholder="Paste a product link…" />
-          <button class="tryon" id="tryonBtn">Try on</button>
+  <div class="studio">
+    <!-- phone preview -->
+    <div class="phone">
+      <div class="glass">
+        <div class="notch"></div>
+        <img class="shot" id="shot" src="model-front.jpg" alt="Try-on preview" />
+        <div class="plabel">
+          <div class="pn" id="pn">Base model</div>
+          <div class="pf" id="pf">Front · your AI model</div>
         </div>
-
-        <div class="tabbar">
-          <button class="tab on">Closet</button>
-          <button class="tab" disabled>Trending <span class="soon">SOON</span></button>
-        </div>
+        <div class="fitting" id="fitting"><div class="spinner"></div><div class="ft">Fitting to your model…</div></div>
       </div>
-
-      <div class="toast" id="toast"></div>
     </div>
-  </main>
 
-  <script>
-    // ---- Canned sample data (no backend) ----
-    // The base model + the Basquiat tee are REAL renders from the app.
-    // The two extra looks reuse the model render with a subtle tonal filter
-    // so the closet rail feels populated — all sample data.
-    const MODEL = {
-      id: "model",
-      title: null,
-      front: "model-front.jpg",
-      back: "model-back.png",
-      filter: "none",
-      size: null,
-      fit: null,
-    };
+    <!-- controls -->
+    <div class="panel">
+      <div class="kick">The closet</div>
+      <div class="closet" id="closet"></div>
 
-    const LOOKS = [
-      {
-        id: "basquiat",
-        title: "PEACE FOR ALL Graphic T-Shirt · Basquiat",
-        front: "look-basquiat-front.png",
-        back: "look-basquiat-back.png",
-        filter: "none",
-        size: "L",
-        fit: "Regular fit — skims the body with a relaxed silhouette, sits just above the hip.",
-      },
-      {
-        id: "oxford",
-        title: "Uniqlo Oxford Slim-Fit Shirt · White",
-        front: "model-front.jpg",
-        back: "model-back.png",
-        filter: "saturate(0.85) brightness(1.05) contrast(0.97)",
-        size: "M",
-        fit: "Slim fit — tapers through the waist; size up for a roomier layering shirt.",
-      },
-      {
-        id: "heattech",
-        title: "HEATTECH Mock Neck Long-Sleeve · Charcoal",
-        front: "model-front.jpg",
-        back: "model-back.png",
-        filter: "saturate(0.6) brightness(0.78) contrast(1.06) sepia(0.06)",
-        size: "S",
-        fit: "Snug base layer — stretches to follow the body; true to size.",
-      },
-    ];
+      <div class="kick">View</div>
+      <div class="seg" id="seg">
+        <button data-face="front" class="on">Front</button>
+        <button data-face="back">Back</button>
+      </div>
+      <div class="fit" id="fit"></div>
 
-    // ---- State ----
-    const media = document.getElementById("media");
-    const fitting = document.getElementById("fitting");
-    const pname = document.getElementById("pname");
-    const fitnote = document.getElementById("fitnote");
-    const thumbsEl = document.getElementById("thumbs");
-    const flipBtn = document.getElementById("flipBtn");
-    const flipLabel = document.getElementById("flipLabel");
-    const modelBtn = document.getElementById("modelBtn");
-    const editBtn = document.getElementById("editBtn");
-    const tryonBtn = document.getElementById("tryonBtn");
-    const urlInput = document.getElementById("url");
-    const hint = document.getElementById("hint");
-    const toast = document.getElementById("toast");
+      <div class="kick">Try another</div>
+      <div class="composer">
+        <input id="url" type="url" placeholder="Paste a product link…" />
+        <button class="try" id="tryBtn">Try on</button>
+      </div>
+      <div class="cnote">Paste any product URL — FitCheck renders the garment onto your model, front and back. (Live generation is disabled in this demo.)</div>
+    </div>
+  </div>
+</div>
 
-    let active = null;     // null => base model
-    let face = "front";    // "front" | "back"
+<script>
+  // Real renders from the app: a base AI model and one real try-on (Basquiat tee), front + back.
+  const LOOKS = [
+    { id:"model", name:"Base model", meta:"No garment", front:"model-front.jpg", back:"model-back.png",
+      size:null, fit:"Your AI-generated model — the canvas every garment gets rendered onto." },
+    { id:"basquiat", name:"PEACE FOR ALL Graphic Tee", meta:"Uniqlo × Basquiat", front:"look-basquiat-front.png", back:"look-basquiat-back.png",
+      size:"L", fit:"Regular fit — skims the body with a relaxed silhouette and sits just above the hip." },
+  ];
 
-    function current() { return active || MODEL; }
+  const shot=document.getElementById("shot"), pn=document.getElementById("pn"), pf=document.getElementById("pf"),
+        fitEl=document.getElementById("fit"), closetEl=document.getElementById("closet"),
+        seg=document.getElementById("seg"), fitting=document.getElementById("fitting"),
+        tryBtn=document.getElementById("tryBtn"), url=document.getElementById("url");
 
-    function render() {
-      const c = current();
-      const src = face === "back" ? c.back : c.front;
-      media.style.filter = c.filter || "none";
-      // brief crossfade
-      media.style.opacity = "0.45";
-      const img = new Image();
-      img.onload = () => { media.src = src; media.style.opacity = "1"; };
-      img.src = src;
-      if (img.complete) { media.src = src; media.style.opacity = "1"; }
+  let activeId="model", face="front";
+  const look=()=>LOOKS.find(l=>l.id===activeId);
 
-      flipLabel.textContent = face === "front" ? "Back" : "Front";
+  function render(){
+    const l=look(), src=face==="back"?l.back:l.front;
+    shot.style.opacity="0.4";
+    const im=new Image(); im.onload=()=>{shot.src=src;shot.style.opacity="1";}; im.src=src;
+    if(im.complete){shot.src=src;shot.style.opacity="1";}
+    pn.textContent=l.name;
+    pf.textContent=(face==="front"?"Front":"Back")+" · "+(l.id==="model"?"your AI model":l.meta);
+    fitEl.innerHTML=(l.size?'<span class="size">Size '+l.size+'</span>':'')+l.fit;
+    [...closetEl.children].forEach(c=>c.classList.toggle("on",c.dataset.id===activeId));
+    [...seg.children].forEach(b=>b.classList.toggle("on",b.dataset.face===face));
+  }
 
-      // product name + fit note (only for a look)
-      if (active) {
-        pname.textContent = active.title;
-        pname.style.display = "block";
-        if (active.fit) {
-          fitnote.innerHTML = '<span class="sizepill">Size ' + active.size + '</span>' + active.fit;
-          fitnote.style.display = "flex";
-        } else {
-          fitnote.style.display = "none";
-        }
-      } else {
-        pname.style.display = "none";
-        fitnote.style.display = "none";
-      }
+  LOOKS.forEach(l=>{
+    const b=document.createElement("button");
+    b.className="item"; b.dataset.id=l.id;
+    b.innerHTML='<img src="'+l.front+'" alt=""><div><div class="nm">'+l.name+'</div><div class="mt">'+l.meta+'</div></div><span class="chk">On</span>';
+    b.addEventListener("click",()=>{activeId=l.id;face="front";render();});
+    closetEl.appendChild(b);
+  });
+  seg.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;face=b.dataset.face;render();});
 
-      // thumbs active state
-      [...thumbsEl.children].forEach((t) => {
-        const id = t.dataset.id;
-        const on = (active === null && id === "model") || (active && active.id === id);
-        t.classList.toggle("active", on);
-      });
-    }
+  let busy=false;
+  tryBtn.addEventListener("click",()=>{
+    if(busy)return; busy=true;
+    tryBtn.textContent="Fitting…"; tryBtn.disabled=true; fitting.classList.add("show");
+    setTimeout(()=>{
+      fitting.classList.remove("show"); tryBtn.textContent="Try on"; tryBtn.disabled=false; busy=false;
+      url.value=""; activeId="basquiat"; face="front"; render();
+    },1500);
+  });
+  url.addEventListener("keydown",e=>{if(e.key==="Enter")tryBtn.click();});
 
-    function buildThumbs() {
-      const items = [MODEL, ...LOOKS];
-      items.forEach((it) => {
-        const t = document.createElement("img");
-        t.className = "thumb";
-        t.src = it.front;
-        t.style.filter = it.filter || "none";
-        t.alt = it.title || "Base model";
-        t.dataset.id = it.id;
-        t.addEventListener("click", () => showLook(it.id === "model" ? null : it));
-        thumbsEl.appendChild(t);
-      });
-    }
-
-    function showLook(look) {
-      active = look;
-      face = "front";
-      hint.style.display = "none";
-      render();
-    }
-
-    flipBtn.addEventListener("click", () => {
-      face = face === "front" ? "back" : "front";
-      render();
-    });
-    modelBtn.addEventListener("click", () => showLook(null));
-
-    editBtn.addEventListener("click", () => {
-      showToast("Measurements are read-only in this demo");
-    });
-
-    let toastTimer = null;
-    function showToast(msg) {
-      toast.textContent = msg;
-      toast.classList.add("show");
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
-    }
-
-    // Canned "Try on": shows the fitting spinner, then lands on a look.
-    let busy = false;
-    function tryOn() {
-      const val = urlInput.value.trim();
-      if (busy) return;
-      // pick a look to "generate": if the URL mentions uniqlo/oxford/heattech, match it;
-      // otherwise rotate to the next look not currently shown.
-      let target = LOOKS[0];
-      const lc = val.toLowerCase();
-      if (lc.includes("oxford") || lc.includes("shirt")) target = LOOKS[1];
-      else if (lc.includes("heattech") || lc.includes("mock")) target = LOOKS[2];
-      else if (lc.includes("basquiat") || lc.includes("peace")) target = LOOKS[0];
-      else {
-        const order = LOOKS.filter((l) => !active || l.id !== active.id);
-        target = order[Math.floor(Math.random() * order.length)] || LOOKS[0];
-      }
-
-      busy = true;
-      tryonBtn.textContent = "Fitting…";
-      tryonBtn.disabled = true;
-      fitting.classList.add("show");
-      showToast("Fitting " + target.title.split("·")[0].trim() + " to your model…");
-
-      setTimeout(() => {
-        fitting.classList.remove("show");
-        tryonBtn.textContent = "Try on";
-        tryonBtn.disabled = false;
-        busy = false;
-        urlInput.value = "";
-        showLook(target);
-      }, 1500);
-    }
-
-    tryonBtn.addEventListener("click", tryOn);
-    urlInput.addEventListener("keydown", (e) => { if (e.key === "Enter") tryOn(); });
-
-    // ---- init ----
-    buildThumbs();
-    render();
-  </script>
+  render();
+</script>
 </body>
 </html>
