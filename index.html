@@ -2,165 +2,62 @@
 <title>Julian Jung</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
-/* Landing: the two portfolios side by side, paper and its inverse.
-   One wordmark spans the seam in difference blend, so it flips with the ground. */
+/* Landing: two words, one screen. Pointing at a portfolio turns the whole page
+   its colour: paper for research, ink for products and design. */
 :root{
   --paper:#f5f5f3;
   --ink:#0b0b0c;
-  --pad:clamp(18px,3.4vw,44px);
+  --bg:var(--paper);
+  --fg:var(--ink);
+  --pad:clamp(20px,3.4vw,44px);
   --gl:max(var(--pad),env(safe-area-inset-left,0px));
   --gr:max(var(--pad),env(safe-area-inset-right,0px));
   --mono:"SF Mono",ui-monospace,"Roboto Mono",Menlo,monospace;
   --grot:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ease:cubic-bezier(.65,0,.35,1);
   color-scheme:light;
 }
+:root.dark{--bg:var(--ink);--fg:var(--paper);color-scheme:dark}
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%}
-body{background:var(--ink);font-family:var(--grot);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-.split{position:relative;display:flex;min-height:100svh}
-.half{--fg:var(--ink);--bg:var(--paper);--rule:rgba(11,11,12,.07);--dim:rgba(11,11,12,.5);
-  position:relative;flex:1 1 0;min-width:0;overflow:hidden;background:var(--bg);color:var(--fg);text-decoration:none;
-  display:flex;flex-direction:column;justify-content:space-between;
-  padding-top:calc(var(--pad) + env(safe-area-inset-top,0px));padding-bottom:var(--pad);
-  transition:flex-grow 1.2s cubic-bezier(.65,0,.35,1)}
-.half.dark{--fg:var(--paper);--bg:var(--ink);--rule:rgba(245,245,243,.08);--dim:rgba(245,245,243,.5)}
-.half.light{padding-left:var(--gl);padding-right:var(--pad)}
-.half.dark{padding-left:var(--pad);padding-right:var(--gr)}
-@media(hover:hover){.split:hover .half{flex-grow:.8}.split .half:hover{flex-grow:1.25}}
-.half::before{content:"";position:absolute;inset:0;pointer-events:none;
-  background-image:linear-gradient(to right,var(--rule) 0 1px,transparent 1px);background-size:calc(100% / 4.5) 100%}
-.half::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.3;mix-blend-mode:multiply;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E")}
-.half.dark::after{mix-blend-mode:screen;opacity:.12}
-#one{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;pointer-events:none}
-.top,.bot{position:relative;z-index:2}
-.top{display:flex;justify-content:space-between;gap:16px;font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim)}
-.top b{font-weight:400;color:var(--fg)}
-.bot{display:flex;flex-direction:column;gap:14px;width:min(36ch,38vw)}
-/* fixed-width copy pinned to the outer edge: when a half grows, only the split moves, nothing re-wraps */
-.light .bot{align-self:flex-start}
-.dark .bot{align-self:flex-end}
-.word{font-weight:700;font-size:clamp(42px,min(8vw,11vh),128px);letter-spacing:-.055em;line-height:.88}
-.bot p{font-size:14px;line-height:1.6;color:var(--dim)}
-/* both paragraphs hold three lines, so every row lines up across the split */
-@media(min-width:761px){.bot p{min-height:calc(1.6em * 3)}}
-.meta{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);line-height:1.9}
-.go{display:inline-flex;align-self:flex-start;gap:10px;font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--bg);background:var(--fg);padding:13px 18px;transition:gap .3s}
-.half:hover .go{gap:16px}
-.half:focus-visible{outline:1.5px solid var(--fg);outline-offset:-8px}
-.dark .top,.dark .bot{text-align:right;align-items:flex-end}
-.dark .go{align-self:flex-end}
-.name{position:absolute;z-index:5;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;pointer-events:none;
-  color:#fff;mix-blend-mode:difference;font-weight:700;font-size:min(12.4vw,168px,17vh);letter-spacing:-.05em;line-height:.9;white-space:nowrap}
-.foot{position:absolute;z-index:5;left:0;right:0;bottom:calc(var(--pad) + 4px);text-align:center;pointer-events:none;color:#fff;mix-blend-mode:difference;
-  font-family:var(--mono);font-size:9px;letter-spacing:.24em;text-transform:uppercase}
-.foot span{pointer-events:auto;user-select:all}
-@media(max-width:760px){
-  .split{flex-direction:column}
-  .half{min-height:50svh;flex:none}
-  .half.light,.half.dark{padding-left:var(--gl);padding-right:var(--gr)}
-  /* room on both sides of the seam for the shape and the wordmark */
-  .half.light{padding-bottom:calc(var(--pad) + 20vw)}
-  .half.dark{padding-top:calc(var(--pad) + 20vw)}
-  .dark .top,.dark .bot{text-align:left;align-items:flex-start}
-  .dark .go{align-self:flex-start}
-  .bot,.light .bot,.dark .bot{width:auto;align-self:stretch}
-  .foot{display:none}
-}
+body{background:var(--bg);color:var(--fg);font-family:var(--grot);-webkit-font-smoothing:antialiased;
+  transition:background-color 1s var(--ease),color 1s var(--ease)}
+::selection{background:var(--fg);color:var(--bg)}
+.top{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;gap:16px;
+  padding:calc(var(--pad) + env(safe-area-inset-top,0px)) var(--gr) 0 var(--gl);
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase}
+.top b{font-family:var(--grot);font-size:14px;letter-spacing:-.01em;text-transform:none;font-weight:700}
+.top span{opacity:.5}
+.pick{min-height:100svh;display:flex;align-items:center;justify-content:center;gap:clamp(48px,9vw,160px);
+  padding-block:calc(var(--pad) * 3);padding-left:var(--gl);padding-right:var(--gr)}
+.opt{display:flex;flex-direction:column;gap:18px;color:inherit;text-decoration:none;transition:opacity .7s var(--ease)}
+.w{font-weight:700;font-size:clamp(64px,11vw,190px);letter-spacing:-.06em;line-height:.85}
+.c{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;display:flex;gap:10px;opacity:.55;
+  transition:gap .5s var(--ease),opacity .5s var(--ease)}
+.opt:hover .c,.opt:focus-visible .c{gap:16px;opacity:1}
+.c i{font-style:normal}
+@media(hover:hover){.pick:hover .opt{opacity:.22}.pick .opt:hover{opacity:1}}
+.opt:focus-visible{outline:1.5px solid currentColor;outline-offset:14px}
+@media(max-width:700px){.pick{flex-direction:column;align-items:flex-start;justify-content:center;gap:56px}}
 @media (prefers-reduced-motion:reduce){*{transition-duration:.001ms!important}}
 </style>
 
-<main class="split">
-  <a class="half light" href="research/index.html" aria-label="Research and engineering portfolio">
-    <div class="top"><b>01 — Research &amp; engineering</b><span>Analytical</span></div>
-    <div class="bot">
-      <div class="word">Tested.</div>
-      <p>Trading systems, data products and the tests that break them. Each one had to hold up on data it had never seen.</p>
-      <div class="meta">14 systems · findings · method · bug ledger</div>
-      <span class="go">Enter <span>→</span></span>
-    </div>
+<header class="top"><b>Julian Jung</b><span>UC Berkeley · 2026</span></header>
+<nav class="pick" aria-label="Choose a portfolio">
+  <a class="opt" data-tone="light" href="research/index.html">
+    <span class="w">Tested.</span>
+    <span class="c">01 — Research &amp; engineering <i>→</i></span>
   </a>
-  <a class="half dark" href="works/index.html" aria-label="Products and design portfolio">
-    <div class="top"><span>Creative</span><b>02 — Products &amp; design</b></div>
-    <div class="bot">
-      <div class="word">Made.</div>
-      <p>Apps people can use, brands that are live, and the 3D films made for them.</p>
-      <div class="meta">6 products · 3 brands &amp; sites · 2 films</div>
-      <span class="go">Enter <span>→</span></span>
-    </div>
+  <a class="opt" data-tone="dark" href="works/index.html">
+    <span class="w">Made.</span>
+    <span class="c">02 — Products &amp; design <i>→</i></span>
   </a>
-  <canvas id="one" aria-hidden="true"></canvas>
-  <h1 class="name" id="name">Julian Jung</h1>
-  <div class="foot">UC Berkeley · <span>thejungjulian@gmail.com</span></div>
-</main>
+</nav>
 
 <script>
-(function(){
-"use strict";
-var reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
-/* the same chrome renderer as the portfolios, trimmed to the hero object */
-function icosa(r){var t=(1+Math.sqrt(5))/2,v=[];
-  [[-1,t,0],[1,t,0],[-1,-t,0],[1,-t,0],[0,-1,t],[0,1,t],[0,-1,-t],[0,1,-t],[t,0,-1],[t,0,1],[-t,0,-1],[-t,0,1]]
-    .forEach(function(p){var l=Math.hypot(p[0],p[1],p[2]);v.push([p[0]/l*r,p[1]/l*r,p[2]/l*r]);});
-  return {v:v,f:[[0,11,5],[0,5,1],[0,1,7],[0,7,10],[0,10,11],[1,5,9],[5,11,4],[11,10,2],[10,7,6],[7,1,8],
-    [3,9,4],[3,4,2],[3,2,6],[3,6,8],[3,8,9],[4,9,5],[2,4,11],[6,2,10],[8,6,7],[9,8,1]]};}
-function torus(R,r,maj,min){var v=[],f=[],i,j;
-  for(i=0;i<maj;i++){var u=i/maj*6.2832,cu=Math.cos(u),su=Math.sin(u);
-    for(j=0;j<min;j++){var t=j/min*6.2832,rr=R+r*Math.cos(t);v.push([cu*rr,r*Math.sin(t),su*rr]);}}
-  for(i=0;i<maj;i++)for(j=0;j<min;j++)f.push([i*min+j,i*min+(j+1)%min,((i+1)%maj)*min+(j+1)%min,((i+1)%maj)*min+j]);
-  return {v:v,f:f,R:R};}
-function rot(p,rx,ry){var x=p[0],y=p[1],z=p[2],c1=Math.cos(rx),s1=Math.sin(rx),y1=y*c1-z*s1,z1=y*s1+z*c1,c2=Math.cos(ry),s2=Math.sin(ry);
-  return [x*c2+z1*s2,y1,-x*s2+z1*c2];}
-function sub(a,b){return [a[0]-b[0],a[1]-b[1],a[2]-b[2]];}
-function cross(a,b){return [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];}
-function dot(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];}
-function norm(a){var l=Math.hypot(a[0],a[1],a[2])||1;return [a[0]/l,a[1]/l,a[2]/l];}
-function prep(m){m.nrm=m.f.map(function(f){var c=[0,0,0];f.forEach(function(i){c[0]+=m.v[i][0];c[1]+=m.v[i][1];c[2]+=m.v[i][2];});
-  c=[c[0]/f.length,c[1]/f.length,c[2]/f.length];
-  var n=norm(cross(sub(m.v[f[1]],m.v[f[0]]),sub(m.v[f[2]],m.v[f[0]]))),ref=c;
-  if(m.R){var l=Math.hypot(c[0],c[2])||1;ref=[c[0]-m.R*c[0]/l,c[1],c[2]-m.R*c[2]/l];}
-  return dot(n,ref)<0?[-n[0],-n[1],-n[2]]:n;});return m;}
-var ENV=[[0,[34,36,38]],[.20,[70,73,75]],[.38,[142,145,145]],[.48,[194,196,194]],[.53,[199,200,198]],[.62,[164,166,166]],[.74,[100,103,105]],[.88,[150,152,152]],[1,[178,180,178]]];
-function env(u){u=u<0?0:u>1?1:u;for(var i=1;i<ENV.length;i++)if(u<=ENV[i][0]){var a=ENV[i-1],b=ENV[i],t=(u-a[0])/(b[0]-a[0]);
-  return [0,1,2].map(function(k){return a[1][k]+(b[1][k]-a[1][k])*t;});}return ENV[ENV.length-1][1];}
-var LIGHT=norm([-.42,.74,.52]);
-function shade(n,lift){var c=env(.5+.5*n[1]*.98+n[2]*.1),s=Math.pow(Math.max(0,dot(n,LIGHT)),26)*130,cap=lift?236:212;
-  return 'rgb('+c.map(function(v){v+=s;return Math.min(cap,(lift?v*.8+50:v)|0);}).join(',')+')';}
-function scene(x,W,H,items,lift){var F=[],k;
-  items.forEach(function(it){var m=it.m,o=it.o,D=4.2,pv=m.v.map(function(p){return rot(p,o.rx,o.ry);});
-    m.f.forEach(function(f,j){var n=rot(m.nrm[j],o.rx,o.ry);if(n[2]<=0)return;var pts=[],z=0;
-      f.forEach(function(i){var p=pv[i],s=D/(D+p[2]);pts.push([W/2+o.ox+p[0]*s*o.scale,H/2+o.oy-p[1]*s*o.scale]);z+=p[2];});
-      F.push({p:pts,n:n,z:z/f.length});});});
-  F.sort(function(a,b){return b.z-a.z;});
-  F.forEach(function(fc){var c=shade(fc.n,lift);x.beginPath();x.moveTo(fc.p[0][0],fc.p[0][1]);
-    for(k=1;k<fc.p.length;k++)x.lineTo(fc.p[k][0],fc.p[k][1]);x.closePath();x.fillStyle=c;x.fill();x.strokeStyle=c;x.lineWidth=1;x.stroke();});}
-function contact(x,cx,cy,w,h,s,rgb){var g=x.createRadialGradient(cx,cy,1,cx,cy,w);
-  g.addColorStop(0,'rgba('+rgb+','+s+')');g.addColorStop(.45,'rgba('+rgb+','+s*.42+')');g.addColorStop(1,'rgba('+rgb+',0)');
-  x.save();x.translate(cx,cy);x.scale(1,h/w);x.translate(-cx,-cy);x.fillStyle=g;x.beginPath();x.arc(cx,cy,w,0,6.2832);x.fill();x.restore();}
-
-/* ONE shape, sitting on the seam. Each side of the seam renders it for its own ground:
-   paper chrome with a shadow on the left, lifted chrome with a glow on the right. The seam
-   moves when a half grows on hover, and the split moves with it. */
-var SOLID=prep(icosa(1.05)),RING=prep(torus(1.66,.085,64,14)),cv=document.getElementById('one'),x=cv.getContext('2d'),
-    light=document.querySelector('.half.light'),name=document.getElementById('name'),stackedQ=matchMedia('(max-width:760px)'),
-    t=0,CW=0,CH=0;
-function draw(){
-  var d=Math.min(devicePixelRatio||1,2),W=cv.clientWidth,H=cv.clientHeight;
-  if(W!==CW||H!==CH){CW=W;CH=H;cv.width=Math.round(W*d);cv.height=Math.round(H*d);x.setTransform(d,0,0,d,0,0);}
-  var st=stackedQ.matches,seam=st?light.offsetHeight:light.offsetWidth;
-  name.style.top=st?seam+'px':'';
-  var sc=st?W*.12:Math.min(W*.095,H*.15),cx=st?W/2:seam,cy=st?seam:H*.28,ox=cx-W/2,oy=cy-H/2,rx=-.2,ry=t*2;
-  x.clearRect(0,0,W,H);
-  [[0,'11,11,12'],[1,'245,245,243']].forEach(function(s){
-    x.save();x.beginPath();
-    if(st)x.rect(0,s[0]?seam:0,W,s[0]?H-seam:seam);else x.rect(s[0]?seam:0,0,s[0]?W-seam:seam,H);
-    x.clip();
-    contact(x,cx,cy+sc*1.28,sc*1.12,sc*.14,.22,s[1]);
-    scene(x,W,H,[{m:RING,o:{rx:rx+.52,ry:ry*1.5,scale:sc,ox:ox,oy:oy}},{m:SOLID,o:{rx:rx,ry:ry,scale:sc,ox:ox,oy:oy}}],s[0]);
-    x.restore();});
-}
-/* clock-based spin: the same speed on 60Hz and 120Hz screens */
-(function loop(now){if(!reduce&&now)t=now*.00024;draw();requestAnimationFrame(loop);})();
-})();
+/* the page takes the colour of whichever portfolio you point at, and keeps it until you point at the other */
+document.querySelectorAll('.opt').forEach(function(a){
+  function tone(){document.documentElement.classList.toggle('dark',a.dataset.tone==='dark');}
+  a.addEventListener('mouseenter',tone);a.addEventListener('focus',tone);a.addEventListener('touchstart',tone,{passive:true});
+});
 </script>
