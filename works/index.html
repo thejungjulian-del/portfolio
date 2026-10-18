@@ -119,16 +119,16 @@ var FIGMA_UHNOTHER="https://www.figma.com/proto/FSUlxSOY0CVDNE1fbWoIgJ/uhnother-
 var PROJECTS=[
 /* ---------------- products ---------------- */
 {id:"desk",g:"products",no:"01",name:"JS Entertainment Desk",dis:"Creator trends · live web app",st:"Live",live:true,shape:"icosa",
- kpi:["Daily","scan of every watched creator"],
+ kpi:["30","latest posts read per watched account"],
  tx:"A private trend desk for a creator agency. It watches chosen creators, surfaces what’s overperforming in their niche, turns it into shoot-ready briefs and runs a brand-deal inbox.",
  tk:"Flask · SQLite · Apify · Claude API · Hetzner",
  lede:"A trend desk for a creator agency, live on its own server. It reads each creator’s niche, finds what’s overperforming right now and turns it into shoot-ready briefs, with a brand-deal inbox built in.",
- meta:[["Status","Live, in daily use"],["Period","Jun 2026 – now"],["Built with","Flask, SQLite, Apify, Claude API"],["Runs on","Hetzner, Caddy, Cloudflare"]],
- kpis:[["$0.30","per 1,000 posts scraped"],["7.7×","cheaper than the official scraper"],["Daily","scan of every watched creator"]],
+ meta:[["Status","Live"],["Period","Jun 2026 – now"],["Built with","Flask, SQLite, Apify, Claude API"],["Runs on","Hetzner, Caddy, Cloudflare"]],
+ kpis:[["$0.30","per 1,000 posts scraped"],["7.7×","cheaper than the official scraper"],["30","latest posts read per watched account"]],
  rows:[
   ["The brief","Tell a creator what to film next, based on what’s working in their niche today, and handle the brand deals that come in."],
   ["What it does",[
-   "Keeps watch lists of specific creators and scans them every day.",
+   "Keeps watch lists of specific creators and reads their latest 30 posts on each scan.",
    "Ranks the top posts and reels per niche, with swipeable carousels and an in-site viewer.",
    "Finds new creators from real collaborations and tags, then screens them with a vision pass so brands, photographers and off-niche accounts drop out.",
    "Suggests when to post and writes captions and hashtags.",
@@ -136,7 +136,7 @@ var PROJECTS=[
   ["How it’s built",[
    "Flask and SQLite behind Caddy on a Hetzner server, with Cloudflare DNS and email routing.",
    "systemd services plus a timer for database backups.",
-   "Overlapping watch lists are scraped once and shared, which keeps scraping at about $0.30 per 1,000 posts."]],
+   "Overlapping watch lists are scraped once and shared, and the scraper I chose costs about $0.30 per 1,000 posts."]],
   ["Access","The live link opens a creator’s view. The admin side stays private because it manages real creators’ accounts; I’m happy to walk through it."],
   ["Links",{links:[["Try the live demo","dashboard.html#d-desk"],["Creator view, live","https://desk.jsentertainment.org/me/48",1]]}]]},
 
@@ -157,7 +157,7 @@ var PROJECTS=[
   ["How it’s built",[
    "Next.js 15 and React 19, with image generation behind one provider interface.",
    "Switched the image model from Gemini 3 Pro Image (about $0.134 an image) to Gemini 2.5 Flash Image (about $0.039).",
-   "An on-device path: Ollama for the text reasoning, and a ComfyUI provider running Flux.1 Kontext for images."]],
+   "An on-device path: Ollama does the text reasoning, and the base model can be generated locally with Flux.1 Kontext in ComfyUI. Try-ons stay on Gemini, because a local try-on took about 25 minutes an image."]],
   ["Gallery",{figs:[{type:"gallery",items:[
    ["img/fitcheck-app.jpg","The app · demo data",1],
    ["img/fitcheck-model.jpg","Generated base model · AI-generated person"],
@@ -175,7 +175,7 @@ var PROJECTS=[
  rows:[
   ["The brief","When I like a photo’s look, I want to know how it was shot and how to get my own photo there, without guessing at sliders."],
   ["How it works",[
-   "Upload a reference: get detailed shooting instructions for light, lens and composition.",
+   "Upload a reference: get detailed instructions for how it was shot.",
    "Upload your shot: get a match analysis and a Lightroom Classic preset (basic panel, HSL, colour grading, vignette).",
    "Optional AI re-edit of your photo toward the reference with OpenAI’s image model.",
    "Pick any of three engines (Claude, GPT-4o, or Llama 3.2 Vision running locally) and compare their reads side by side."]],
@@ -222,7 +222,7 @@ var PROJECTS=[
   ["The brief","Clipping your own stream by hand means scrubbing, cropping and captioning every highlight. OBS already keeps the last few minutes in memory, so the rest could be automatic."],
   ["How it works",[
    "OBS’s replay buffer saves the last moments when I press a key.",
-   "A watcher picks up each save and crops it to 9:16 with a layout tuned to my stream.",
+   "A watcher picks up each save and crops it to 9:16. Tuning the framing to my own stream layout is the next step.",
    "Short-form captions go on in a bold one-to-three-word style.",
    "The finished clip lands in a ready folder and I get a notification.",
    "A separate VOD tool ranks the best moments of a long stream before downloading anything; on a 3.9-hour VOD it made five captioned 36-second clips."]],
@@ -247,7 +247,7 @@ var PROJECTS=[
    "A house market maker that bids 5% under model value.",
    "Quarterly reports split by source (sponsors, ads, merch, subscriptions, other) that pay holders.",
    "A shared database so invited friends trade against each other, with six fictional example creators."]],
-  ["Market check","GigaStar already runs a real-money version for YouTube ad revenue (about 37 offerings, $6.9M raised) but doesn’t cover sponsors. Fantex tried athlete stocks in 2013–16 and closed to retail after lawsuits. Real money would need a registered funding portal."],
+  ["Market check","GigaStar already runs a real-money version for YouTube ad revenue (about 37 offerings, $6.9M raised) but doesn’t cover sponsors. Fantex tried athlete stocks in 2013–16, closed to retail in 2016, and then faced lawsuits from athletes. Real money would need a registered funding portal."],
   ["Links",{links:[["Try the live demo","dashboard.html#d-exchange"]]}]]},
 
 /* ---------------- brand & web ---------------- */

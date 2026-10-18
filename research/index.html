@@ -59,10 +59,10 @@
 <section class="hr" aria-label="Headline numbers">
   <div class="stats">
     <div class="stat"><b>12</b><span>Systems built and tested</span></div>
-    <div class="stat"><b>19,191</b><span>Kalshi contracts priced</span></div>
+    <div class="stat"><b>19,191</b><span>Kalshi contracts tested</span></div>
     <div class="stat"><b>38,274</b><span>Football matches modeled</span></div>
     <div class="stat"><b>1 / 260</b><span>Mined trading rules that survived</span></div>
-    <div class="stat"><b>9</b><span>Bugs caught that changed a verdict</span></div>
+    <div class="stat"><b>9</b><span>Bugs caught in my own results</span></div>
   </div>
 </section>
 
@@ -161,7 +161,7 @@
 <section class="hr" id="ledger">
   <div class="head">
     <h2>The bug ledger</h2>
-    <div class="sub">9 errors in my own code<br>Each one changed a verdict</div>
+    <div class="sub">9 errors in my own code<br>Each one bent a result I would have reported</div>
   </div>
   <div class="tablewrap">
     <table class="ledger">
@@ -169,11 +169,11 @@
       <tbody>
         <tr><td>01</td><td class="sys"><a href="#v-polymarket">Polymarket dip bot</a></td><td>Bought at the bid, sold at the ask, and assumed every order filled</td><td class="was">+1.29¢ a trade</td><td class="is">−0.34¢ mid to mid (t −0.48)</td></tr>
         <tr><td>02</td><td class="sys"><a href="#v-polymarket">Polymarket market maker</a></td><td>No settlement handling, so worthless positions stayed at cost</td><td class="was">−18%</td><td class="is">−53.8%</td></tr>
-        <tr><td>03</td><td class="sys"><a href="#v-polymarket">Polymarket dip bot</a></td><td>Delisted markets dropped out of the stats without a trace</td><td class="was">16% of positions missing</td><td class="is">55 restored, 41 settled at $0</td></tr>
+        <tr><td>03</td><td class="sys"><a href="#v-polymarket">Polymarket dip bot</a></td><td>Delisted markets dropped out of the stats without a trace</td><td class="was">16% of positions missing</td><td class="is">All 55 settled: 41 at $0</td></tr>
         <tr><td>04</td><td class="sys"><a href="#v-overnight">Overnight study</a></td><td>The VIX filter read the same night’s closing VIX, a look-ahead</td><td class="was">~12% a year</td><td class="is">3.6% a year; filter dropped</td></tr>
         <tr><td>05</td><td class="sys"><a href="#v-course">Day-trading test</a></td><td>Swept highs and lows were never marked used, so one level fired every bar</td><td class="was">312 sweeps on DIA vs 28 on SPY</td><td class="is">Trades 52 → 25, t 1.55 → 1.23</td></tr>
         <tr><td>06</td><td class="sys"><a href="#v-fed">Fed day study</a></td><td>Scanning an 11-day window for the best day is a multiple-testing trap</td><td class="was">Day −4, t = 2.41</td><td class="is">14.4% of random sets beat it</td></tr>
-        <tr><td>07</td><td class="sys"><a href="#v-kalshi">Kalshi weather</a></td><td>Scored at the mid price instead of the ask plus Kalshi’s fee</td><td class="was">+3.0 to +3.9¢ gross</td><td class="is">≈ 0 net (−0.05¢ / −0.52¢)</td></tr>
+        <tr><td>07</td><td class="sys"><a href="#v-kalshi">Kalshi weather</a></td><td>Scored at the mid price instead of the ask plus Kalshi’s fee</td><td class="was">+3.2¢ gross, pooled</td><td class="is">≈ 0 net (−0.05¢ / −0.52¢)</td></tr>
         <tr><td>08</td><td class="sys"><a href="#v-polymarket">Polymarket LP bot</a></td><td>High-reward sports markets returned a stale placeholder price</td><td class="was">Mid 0.48</td><td class="is">Live mid 0.11</td></tr>
         <tr><td>09</td><td class="sys"><a href="#v-clips">Clip campaign ranker</a></td><td>Read the API’s successRate field as an approval rate</td><td class="was">EV = CPM × successRate</td><td class="is">Rank on money paid out</td></tr>
       </tbody>
@@ -227,10 +227,10 @@ var PROJECTS=[
 /* ---------------- trading ---------------- */
 {id:"formula-lab",g:"trading",no:"01",name:"Formula Lab",dis:"US equities · overnight",st:"Running",live:true,shape:"stack",
  kpi:["+7.7%","a year expected, real fills and costs"],
- tx:"Picks ten S&P 500 stocks each afternoon, buys at 15:59 ET and sells at the next open in an Alpaca paper account, on its own schedule. The daytime leg kept only 17% of its edge at real fill times, so I paused it.",
+ tx:"Picks ten S&P 500 stocks each afternoon to hold from 15:59 ET to the next open, and simulates every night on its own, with one-click orders to an Alpaca paper account. The daytime leg kept only 17% of its edge at real fill times, so I paused it.",
  tk:"Python · yfinance · Alpaca API · launchd",
- lede:"A stock-formula lab that turned into a small automated trading desk. Every afternoon it ranks S&P 500 stocks, picks ten for the overnight session and follows the plan in an Alpaca paper account without me touching it.",
- meta:[["Status","Running, paper only"],["Period","Oct 2026 – now"],["Built with","Python, yfinance, Alpaca API"],["Runs on","My Mac, on launchd timers"]],
+ lede:"A stock-formula lab that turned into a small automated trading desk. Every afternoon it ranks S&P 500 stocks and picks ten for the overnight session; a simulator trades every plan on its own, and one click sends it to an Alpaca paper account.",
+ meta:[["Status","Running in simulation"],["Period","Oct 2026 – now"],["Built with","Python, yfinance, Alpaca API"],["Runs on","My Mac, on launchd timers"]],
  kpis:[["+7.7%","expected a year, 2023+, real fills"],["51%","winning days"],["72%","chance of being ahead after a year"],["17%","of the day-trade edge left at real fills"]],
  rows:[
   ["The question","Can a $100 account follow a daily stock plan with no clicks, and how much of a backtested edge is left at the prices you can actually trade at?"],
@@ -359,8 +359,8 @@ var PROJECTS=[
    {type:"pairs",title:"Dip bot by month, cents per trade",a:"What it reported",b:"Real price move (mid to mid)",min:-2,max:2,
     rows:[["June",1.47,.04,"+1.47¢ → +0.04¢"],["July",1.60,-.15,"+1.60¢ → −0.15¢"],["August",.15,-1.73,"+0.15¢ → −1.73¢"]],
     ticks:[[-2,"−2¢"],[-1,"−1"],[0,"0"],[1,"+1"],[2,"+2¢"]]},
-   {type:"table",title:"Market maker, 26 days of trading",num:1,head:["Item","Value"],hi:5,
-    rows:[["Starting cash","$250.00"],["Fills","146"],["Realized P&L","−$45.32"],["Inventory at cost","$201.31"],["Inventory after settlement","$97.37"],["True equity","$115.39"]]}]}],
+   {type:"table",title:"Market maker, 26 days of trading",num:1,head:["Item","Value"],hi:4,
+    rows:[["Starting cash","$250.00"],["Fills","146"],["Realized P&L","−$45.32"],["Positions that settled at $0","7 of 11"],["True equity after settlement","$115.39"]]}]}],
   ["What I found",[
    "The simulator bought at the bid and sold at the ask with every fill assumed, so it paid itself the spread. Trades with spreads of 3¢ or more showed +3.85¢ and moved 0.00¢.",
    "Iran alone was 44% of all trades. Clustered by theme, the 278 trades are about 14 independent bets, and nothing is significant.",
@@ -370,7 +370,7 @@ var PROJECTS=[
   ["Verdict","Both doors closed on evidence, and I didn’t go live. On Polymarket the money goes to whoever provides liquidity well, not to whoever predicts direction."]]},
 
 {id:"kalshi",g:"trading",no:"06",name:"Kalshi Weather",dis:"Daily highs and lows · 13 US cities",st:"Closed",shape:"drop",
- kpi:["19,191","contracts priced across three tests"],
+ kpi:["19,191","contracts tested across three studies"],
  tx:"The market beat the National Blend of Models forecast (Brier 0.098 vs 0.121). A favorite-longshot pattern made +14¢ a contract in-sample, then flipped to −4.2¢ net on new dates.",
  tk:"Python · Kalshi API · NOAA NBM",
  lede:"Kalshi lists daily high and low temperature contracts for 13 US cities. I tested two ways to beat them: a better forecast, and a pricing bias.",
@@ -392,7 +392,7 @@ var PROJECTS=[
    "The market beat the model in every subgroup, and by the most where they disagreed by more than 15 points.",
    "Even a perfect forecast would come up about 2× short of covering costs, because liquid buckets are calibrated to within a point.",
    "The strongest in-sample cell (+14.03¢) came back at −4.18¢ net. It inverted rather than decayed.",
-   "Gross at the mid looks positive everywhere (+3.0 to +3.9¢). That’s the market’s overround; buying at the ask and paying fees erases it."]],
+   "Gross at the mid looked positive (+3.2¢ pooled). That’s the market’s overround: buying at the ask and paying fees erases it."]],
   ["Verdict","Closed on both branches. The lesson I keep: never evaluate a taker strategy at the mid."],
   ["Links",{links:[["Kalshi","https://kalshi.com/",1],["NOAA National Blend of Models","https://vlab.noaa.gov/web/mdl/nbm",1]]}]]},
 
@@ -453,13 +453,13 @@ var PROJECTS=[
  tk:"Python · Playwright · Ollama (Qwen2.5-VL) · launchd",
  lede:"A fashion trend recognizer: it looks at popular Instagram outfit posts, names the exact garments with a vision model running on my laptop, and tracks which pieces are rising.",
  meta:[["Status","Built, scans paused"],["Period","Jun 2026"],["Built with","Python, Playwright, Ollama, Flask"],["Runs on","M3 Pro laptop, launchd"]],
- kpis:[["$0","vision API cost"],["~30 s","per post, on-device"],["500","posts per scan, 12 hashtags"],["100k","likes to count as vetted"]],
+ kpis:[["$0","vision API cost"],["7B","vision model, run on a laptop"],["500","posts per scan, 12 hashtags"],["100k","likes to count as vetted"]],
  rows:[
   ["The question","Can a free, local pipeline tell you which specific clothing items are trending, and prove its calls were right?"],
   ["What I built",[
    "A browser scraper for Instagram photo posts across fashion hashtags (reels skipped).",
    "A clothing-relevance score from captions and the source hashtag, with exclusions, so off-topic posts never reach the database.",
-   "A funnel: only the top posts go to the vision model (Qwen2.5-VL 7B through Ollama), about 30 seconds each.",
+   "A funnel: only the top posts go to the vision model (Qwen2.5-VL 7B through Ollama), because local vision is slow.",
    "Likes-weighted ranking with velocity and momentum per garment.",
    "A forecast-accuracy tracker that records each scan’s trend calls and checks them later.",
    "launchd jobs for an always-on dashboard and scheduled scans."]],
@@ -491,7 +491,7 @@ var PROJECTS=[
   ["What I found",[
    "A high advertised CPM was a mild warning sign: 34 campaigns averaging $2.96 had paid out $79 combined.",
    "I first ranked on CPM × successRate, then found successRate isn’t an approval rate and retracted the formula.",
-   "The free public listing beat a paid Discord information hub by about 3× ($2.50 vs $0.75 CPM)."]],
+   "The free public listing beat a Discord information hub’s rates by about 3× ($2.50 vs $0.75 CPM)."]],
   ["Verdict","The daily ranking still runs. It answers where to post; posting stays manual."]]},
 
 {id:"radar",g:"data",no:"11",name:"Potential Radar",dis:"Music · Spotify",st:"Demo",shape:"cone",
