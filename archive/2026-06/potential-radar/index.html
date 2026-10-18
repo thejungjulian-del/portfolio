@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Potential Radar — Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+  :root{
+    --ink:#111; --bg:#fff; --muted:#767676; --faint:#a6a6a6;
+    --hairline:#e6e6e6; --strong:#111;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:"Helvetica Neue", system-ui, Arial, sans-serif;
+    -webkit-font-smoothing:antialiased; font-weight:400; line-height:1.4;
+  }
+  .wrap{max-width:880px; margin:0 auto; padding:48px 28px 96px; position:relative;}
+
+  .label{
+    font-size:11px; text-transform:uppercase; letter-spacing:.14em;
+    color:var(--muted); font-weight:500;
+  }
+
+  /* demo badge */
+  .demobadge{
+    position:absolute; top:48px; right:28px;
+    font-size:11px; text-transform:uppercase; letter-spacing:.12em;
+    color:var(--muted); border:1px solid var(--hairline);
+    border-radius:999px; padding:6px 13px; background:#fafafa;
+  }
+
+  /* masthead */
+  .masthead h1{
+    font-weight:300; font-size:46px; letter-spacing:-.02em; margin:0;
+  }
+  .masthead .sub{ color:var(--muted); font-size:14px; margin-top:6px; }
+  .note{ color:var(--faint); font-size:12px; margin-top:10px; max-width:560px; }
+  .rule{ border:0; border-top:1px solid var(--hairline); margin:28px 0; }
+
+  /* status bar */
+  .statusbar{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:16px; flex-wrap:wrap; margin-bottom:8px;
+  }
+  .status{ display:flex; align-items:center; gap:10px; }
+  .dot{ width:7px; height:7px; border-radius:999px; background:var(--faint); }
+  .dot.live{ background:var(--ink); }
+  .status .txt{ font-size:13px; color:var(--muted); }
+
+  .pill{
+    display:inline-flex; align-items:center; gap:7px;
+    border:1px solid var(--ink); border-radius:999px;
+    padding:9px 18px; font-size:12px; letter-spacing:.04em;
+    background:var(--ink); color:#fff; cursor:pointer;
+    text-transform:uppercase; font-weight:500;
+  }
+  .pill:hover{ opacity:.85; }
+  .pill:disabled{ opacity:.4; cursor:default; }
+
+  /* list */
+  .list{ margin-top:24px; }
+  .row{
+    display:grid;
+    grid-template-columns:34px 1fr auto;
+    gap:18px; align-items:center;
+    padding:22px 0; border-top:1px solid var(--hairline);
+    transition:opacity .25s ease;
+  }
+  .row:last-child{ border-bottom:1px solid var(--hairline); }
+  .idx{ font-size:13px; color:var(--faint); font-weight:300; }
+
+  .name{ font-size:20px; font-weight:300; letter-spacing:-.01em; }
+  .meta{ margin-top:7px; display:flex; gap:8px; flex-wrap:wrap; }
+  .gtag{
+    font-size:11px; color:var(--muted); border:1px solid var(--hairline);
+    border-radius:999px; padding:3px 10px; letter-spacing:.02em;
+  }
+  .stats{ margin-top:9px; font-size:12px; color:var(--muted); }
+  .stats b{ color:var(--ink); font-weight:500; }
+  .mom{ color:var(--ink); }
+  .mom .arrow{ font-size:11px; }
+  .open{
+    display:inline-block; margin-top:9px; font-size:12px;
+    color:var(--ink); text-decoration:none; border-bottom:1px solid var(--ink);
+    padding-bottom:1px;
+  }
+  .open:hover{ color:var(--muted); border-color:var(--muted); }
+
+  .scorewrap{ text-align:right; min-width:92px; }
+  .score{ font-size:40px; font-weight:300; line-height:1; letter-spacing:-.02em; }
+  .scorelbl{ margin-top:6px; }
+
+  .empty{ color:var(--muted); font-size:14px; padding:40px 0; }
+
+  /* scanning shimmer */
+  .list.scanning .row{ opacity:.35; }
+  .shimmer{
+    height:1px; width:100%; margin-top:0;
+    background:linear-gradient(90deg, transparent, var(--ink), transparent);
+    background-size:200% 100%;
+    animation:sweep 1s linear infinite;
+    opacity:0; transition:opacity .2s;
+  }
+  .shimmer.on{ opacity:1; }
+  @keyframes sweep{
+    0%{ background-position:200% 0; }
+    100%{ background-position:-200% 0; }
+  }
+
+  @media (max-width:560px){
+    .masthead h1{ font-size:36px; }
+    .row{ grid-template-columns:24px 1fr auto; gap:12px; }
+    .score{ font-size:32px; }
+    .wrap{ padding:32px 18px 72px; }
+    .demobadge{ top:18px; right:18px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="demobadge">Demo · sample data</div>
+
+  <div class="masthead">
+    <div class="label">Potential Radar</div>
+    <h1>Potential Radar</h1>
+    <div class="sub">rising-artist radar · Spotify</div>
+    <div class="note">
+      Portfolio demo with sample data baked in. The live app pulls emerging
+      artists from the Spotify API and ranks them by breakout potential.
+    </div>
+  </div>
+
+  <hr class="rule">
+
+  <div class="statusbar">
+    <div class="status">
+      <span class="dot" id="dot"></span>
+      <span class="txt" id="statustxt">Loading…</span>
+    </div>
+    <button class="pill" id="scanbtn" onclick="scan()">Scan now</button>
+  </div>
+
+  <div class="shimmer" id="shimmer"></div>
+
+  <div class="list" id="list">
+    <div class="empty">Loading the radar…</div>
+  </div>
+
+</div>
+
+<script>
+// --- Sample data (baked in — mirrors the real app's mock.py SAMPLE) ---
+var SAMPLE = [
+  { id:"mock01", name:"Velour Tide",        followers:1840,   popularity:41, score:88, momentum:71, genres:["bedroom pop","indie pop"],       url:"#" },
+  { id:"mock02", name:"Kosi Bloom",         followers:6120,   popularity:47, score:84, momentum:63, genres:["afrobeats","alte"],             url:"#" },
+  { id:"mock03", name:"Static Lullaby Club",followers:980,    popularity:33, score:79, momentum:0,  genres:["hyperpop","glitch pop"],        url:"#" },
+  { id:"mock04", name:"Marlowe Saint",      followers:14200,  popularity:52, score:76, momentum:44, genres:["r&b","alt r&b"],                url:"#" },
+  { id:"mock05", name:"Neon Cassette",      followers:3300,   popularity:38, score:72, momentum:29, genres:["synthpop","electronic"],        url:"#" },
+  { id:"mock06", name:"Juno & the Quiet",   followers:27800,  popularity:55, score:67, momentum:31, genres:["indie folk","indie pop"],       url:"#" },
+  { id:"mock07", name:"Ravi Mandala",       followers:9400,   popularity:44, score:64, momentum:18, genres:["hip hop","lo-fi hip hop"],      url:"#" },
+  { id:"mock08", name:"Halcyon Drift",      followers:51000,  popularity:60, score:58, momentum:22, genres:["electronic","future bass"],     url:"#" },
+  { id:"mock09", name:"Paper Lions Co.",    followers:720,    popularity:24, score:55, momentum:0,  genres:["indie rock","garage"],          url:"#" },
+  { id:"mock10", name:"Sable West",         followers:118000, popularity:64, score:49, momentum:12, genres:["pop","dance pop"],              url:"#" }
+];
+
+function fmt(n){ return Number(n||0).toLocaleString("en-US"); }
+
+function render(data){
+  var dot = document.getElementById("dot");
+  var statustxt = document.getElementById("statustxt");
+  // demo mode: dot stays faint
+  dot.classList.remove("live");
+  statustxt.textContent = "Demo · sample data — add a Spotify key to go live";
+
+  var list = document.getElementById("list");
+  var arts = (data.artists || []).slice().sort(function(a,b){
+    return (b.score||0) - (a.score||0);
+  });
+
+  if(!arts.length){
+    list.innerHTML = '<div class="empty">No artists yet. Hit “Scan now”.</div>';
+    return;
+  }
+
+  var html = "";
+  arts.forEach(function(a, i){
+    var genres = (a.genres || []).slice(0,3).map(function(g){
+      return '<span class="gtag">'+g+'</span>';
+    }).join("");
+
+    var rising = (a.momentum || 0) > 0;
+    var mom = rising
+      ? '<span class="mom"><span class="arrow">▲</span> rising · ' + a.momentum + '</span>'
+      : '<span class="mom"><span class="arrow">–</span> steady</span>';
+
+    // sample urls are "#": render as inert link styled like the real app
+    var url = a.url && a.url !== "#"
+      ? '<a class="open" href="'+a.url+'" target="_blank" rel="noopener">Open in Spotify ↗</a>'
+      : '<span class="open" style="border:0;color:#a6a6a6;cursor:default">Open in Spotify ↗</span>';
+
+    html += ''
+      + '<div class="row">'
+      +   '<div class="idx">'+String(i+1).padStart(2,"0")+'</div>'
+      +   '<div>'
+      +     '<div class="name">'+a.name+'</div>'
+      +     '<div class="meta">'+genres+'</div>'
+      +     '<div class="stats"><b>'+fmt(a.followers)+'</b> followers · popularity <b>'
+      +        (a.popularity||0)+'</b> · '+mom+'</div>'
+      +     url
+      +   '</div>'
+      +   '<div class="scorewrap">'
+      +     '<div class="score">'+(a.score||0)+'</div>'
+      +     '<div class="label scorelbl">Potential</div>'
+      +   '</div>'
+      + '</div>';
+  });
+  list.innerHTML = html;
+}
+
+function scan(){
+  var btn = document.getElementById("scanbtn");
+  var list = document.getElementById("list");
+  var shimmer = document.getElementById("shimmer");
+  btn.disabled = true; btn.textContent = "Scanning…";
+  shimmer.classList.add("on");
+  list.classList.add("scanning");
+  // canned: no network. Brief shimmer, then settle on the same sample data.
+  setTimeout(function(){
+    render({ artists: SAMPLE });
+    shimmer.classList.remove("on");
+    list.classList.remove("scanning");
+    btn.disabled = false; btn.textContent = "Scan now";
+  }, 1100);
+}
+
+// initial load from baked-in sample
+render({ artists: SAMPLE });
+</script>
+</body>
+</html>

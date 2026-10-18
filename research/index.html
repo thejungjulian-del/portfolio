@@ -1,0 +1,588 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Julian Jung Research</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="engine.css">
+
+<div class="grid" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="bar" id="bar">
+  <a href="#top" class="lock">
+    <div class="a">Julian Jung</div>
+    <div class="b">Markets &amp; data research</div>
+  </a>
+  <nav class="nav" aria-label="Sections">
+    <a href="#trading" data-sec="trading">Trading</a>
+    <a href="#data" data-sec="data">Data</a>
+    <a href="#findings" data-sec="findings">Findings</a>
+    <a href="#method" data-sec="method">Method</a>
+    <a href="#ledger" data-sec="ledger">Ledger</a>
+    <a href="#notes" data-sec="notes">Notes</a>
+  </nav>
+  <button class="ixbtn" id="ixbtn" aria-expanded="false" aria-controls="menu"><i></i>Index</button>
+</header>
+<div class="menu" id="menu" hidden></div>
+
+<div id="home">
+<main class="hero" id="top">
+  <canvas id="stage" aria-hidden="true"></canvas>
+  <div class="crop" aria-hidden="true">
+    <i class="v" style="left:33.333%"></i><i class="v" style="left:66.666%"></i>
+    <i class="h" style="top:30%"></i><i class="h" style="top:76%"></i>
+  </div>
+  <div class="marg tr">
+    Quant research<br>Prediction markets<br>Market data<br>Trend analytics
+    <div style="height:15px"></div>
+    UC Berkeley · 2026
+  </div>
+  <div class="logo" aria-hidden="true"><h1>Julian Jung</h1></div>
+  <div class="logo front" aria-hidden="true"><h1>Julian Jung</h1></div>
+  <h1 class="sr">Julian Jung, trading systems and data research</h1>
+  <div class="under">I build trading systems, then try to break them</div>
+  <div class="marg bl"><span class="big">14</span><span>Systems<br>built</span></div>
+  <div class="marg br">
+    Index
+    <a href="#trading">Trading</a>
+    <a href="#data">Data</a>
+    <a href="#ledger">Bug ledger</a>
+  </div>
+</main>
+
+<div class="band">
+  <div class="word">Tested.</div>
+  <div class="cap">
+    <p>Fourteen systems since May 2026. Each one had to hold up on data it had never seen, priced at the fills it would really get. Most didn't. I kept the ones that did, and I kept the receipts on the ones that didn't.</p>
+    <div>Fig. 01 — the house rule</div>
+  </div>
+</div>
+
+<section class="hr" aria-label="Headline numbers">
+  <div class="stats">
+    <div class="stat"><b>14</b><span>Systems built and tested</span></div>
+    <div class="stat"><b>19,191</b><span>Kalshi contracts priced</span></div>
+    <div class="stat"><b>38,274</b><span>Football matches modeled</span></div>
+    <div class="stat"><b>1 / 260</b><span>Mined trading rules that survived</span></div>
+    <div class="stat"><b>9</b><span>Bugs caught that changed a verdict</span></div>
+  </div>
+</section>
+
+<section class="hr" id="trading">
+  <div class="head">
+    <h2>Trading systems</h2>
+    <div class="sub">8 systems · equities, prediction markets, sport<br>Open any card for the full case</div>
+  </div>
+  <div class="rgrid" id="grid-trading"></div>
+</section>
+
+<section class="hr" id="data">
+  <div class="head">
+    <h2>Data products</h2>
+    <div class="sub">6 tools · creators, fashion, music<br>Scrapers, scoring models, dashboards</div>
+  </div>
+  <div class="rgrid three" id="grid-data"></div>
+</section>
+
+<section class="hr" id="findings">
+  <div class="head">
+    <h2>Findings</h2>
+    <div class="sub">Two charts that sum up the work<br>Backtests include costs</div>
+  </div>
+  <div class="figs">
+    <figure>
+      <h3>Almost everything looks good in-sample</h3>
+      <p class="lede">Share of strategy settings or mined rules that looked good on the data they were built on, then on data they had never seen.</p>
+      <div class="key"><span><i class="dot-o"></i>Built on</span><span><i class="dot-f"></i>Unseen data</span></div>
+      <div class="dumb">
+        <div class="dr"><div class="dl"><b>Day-trading course</b><span>288/288 → 113/288 profitable</span></div>
+          <div class="dt"><i class="ln" style="left:39.2%;width:60.8%"></i><i class="p dot-o" style="left:100%"></i><i class="p dot-f" style="left:39.2%"></i></div></div>
+        <div class="dr"><div class="dl"><b>Order-block variant</b><span>54/54 → 0/54 profitable</span></div>
+          <div class="dt"><i class="ln" style="left:0;width:100%"></i><i class="p dot-o" style="left:100%"></i><i class="p dot-f" style="left:0"></i></div></div>
+        <div class="dr"><div class="dl"><b>Daily rule miner</b><span>12/92 → 1/92 passed</span></div>
+          <div class="dt"><i class="ln" style="left:1.1%;width:11.9%"></i><i class="p dot-o" style="left:13%"></i><i class="p dot-f" style="left:1.1%"></i></div></div>
+        <div class="dr"><div class="dl"><b>Futures rule miner</b><span>6/168 → 0/168 passed</span></div>
+          <div class="dt"><i class="ln" style="left:0;width:3.6%"></i><i class="p dot-o" style="left:3.6%"></i><i class="p dot-f" style="left:0"></i></div></div>
+      </div>
+      <div class="dax"><span></span><div><s style="left:0">0%</s><s style="left:25%">25</s><s style="left:50%">50</s><s style="left:75%">75</s><s style="left:100%">100%</s></div></div>
+      <figcaption>Fig. 05 — in-sample vs out-of-sample, same rules, frozen before the test</figcaption>
+    </figure>
+    <figure>
+      <h3>The one rule that held: overnight, above trend</h3>
+      <p class="lede">QQQ held only from the close to the next open, 1999–2026. The 200-day filter sits out bear markets, where overnight returns turn bad.</p>
+      <div class="tablewrap">
+        <table class="sh">
+          <thead><tr><th>Strategy</th><th>CAGR</th><th class="barcell">Sharpe</th><th>Max drawdown</th></tr></thead>
+          <tbody>
+            <tr><td>Buy and hold</td><td>+10.1%</td><td><div class="sb"><span class="track"><i style="width:49%"></i></span><s>0.49</s></div></td><td>−83%</td></tr>
+            <tr><td>Overnight only, 1×</td><td>+7.7%</td><td><div class="sb"><span class="track"><i style="width:59%"></i></span><s>0.59</s></div></td><td>−39%</td></tr>
+            <tr><td>Overnight, 2×</td><td>+17.1%</td><td><div class="sb"><span class="track"><i style="width:70%"></i></span><s>0.70</s></div></td><td>−64%</td></tr>
+            <tr><td>2×, above 200-day</td><td>+14.7%</td><td><div class="sb"><span class="track"><i style="width:85%"></i></span><s>0.85</s></div></td><td>−46%</td></tr>
+            <tr class="hi"><td>3×, above 200-day</td><td>+21.3%</td><td><div class="sb"><span class="track"><i style="width:85%"></i></span><s>0.85</s></div></td><td>−62%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <figcaption>Fig. 06 — Sharpe bars on a 0–1.0 scale · leverage via futures at ~0.7bp a side · overnight gaps can’t be stopped out</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="hr" id="method">
+  <div class="head">
+    <h2>Method</h2>
+    <div class="sub">Three rules every result has to pass<br>Written down before the test, not after</div>
+  </div>
+  <div class="pillars">
+    <div class="pil">
+      <div class="txt">
+        <div class="ix">.01 Split</div>
+        <h3>Freeze the rules first.</h3>
+        <p>Before I open the test data, the rules and the pass mark are written down and don’t move. 260 trading rules went through training, validation and an untouched final period. One survived. Each holdout file can only be used once.</p>
+      </div>
+      <div class="art"><canvas data-fig="split"></canvas><div class="cap">Fig. 02 — rules in, survivors out</div></div>
+    </div>
+    <div class="pil flip">
+      <div class="txt">
+        <div class="ix">.02 Fill</div>
+        <h3>Pay the real price.</h3>
+        <p>Buy at the ask, sell at the bid, pay the fee, and only count a resting order as filled when the market trades through it. That one change turned my Polymarket bot’s $750 a month into zero.</p>
+      </div>
+      <div class="art"><canvas data-fig="spread" data-mirror="1"></canvas><div class="cap">Fig. 03 — the round trip pays the spread</div></div>
+    </div>
+    <div class="pil">
+      <div class="txt">
+        <div class="ix">.03 Control</div>
+        <h3>Beat random dates.</h3>
+        <p>Every event result gets compared with the same test on random dates. On Fed days a t of 2.41 looked great until 14.4% of random date sets matched it. Volatility, at t = 3.87, cleared the bar. Direction never did.</p>
+      </div>
+      <div class="art"><canvas data-fig="control"></canvas><div class="cap">Fig. 04 — Fed-day volatility vs the random-date 95th percentile (2.79) · cloud is illustrative</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="hr" id="ledger">
+  <div class="head">
+    <h2>The bug ledger</h2>
+    <div class="sub">9 errors in my own code<br>Each one changed a verdict</div>
+  </div>
+  <div class="tablewrap">
+    <table class="ledger">
+      <thead><tr><th>No.</th><th>System</th><th>What was wrong</th><th>It showed</th><th>The truth</th></tr></thead>
+      <tbody>
+        <tr><td>01</td><td class="sys"><a href="#v-polymarket">Polymarket dip bot</a></td><td>Bought at the bid, sold at the ask, and assumed every order filled</td><td class="was">+1.29¢ a trade</td><td class="is">−0.34¢ mid to mid (t −0.48)</td></tr>
+        <tr><td>02</td><td class="sys"><a href="#v-polymarket">Polymarket market maker</a></td><td>No settlement handling, so worthless positions stayed at cost</td><td class="was">−18%</td><td class="is">−53.8%</td></tr>
+        <tr><td>03</td><td class="sys"><a href="#v-polymarket">Polymarket dip bot</a></td><td>Delisted markets dropped out of the stats without a trace</td><td class="was">16% of positions missing</td><td class="is">55 restored, 41 settled at $0</td></tr>
+        <tr><td>04</td><td class="sys"><a href="#v-overnight">Overnight study</a></td><td>The VIX filter read the same night’s closing VIX, a look-ahead</td><td class="was">~12% a year</td><td class="is">3.6% a year; filter dropped</td></tr>
+        <tr><td>05</td><td class="sys"><a href="#v-course">Day-trading test</a></td><td>Swept highs and lows were never marked used, so one level fired every bar</td><td class="was">312 sweeps on DIA vs 28 on SPY</td><td class="is">Trades 52 → 25, t 1.55 → 1.23</td></tr>
+        <tr><td>06</td><td class="sys"><a href="#v-fed">Fed day study</a></td><td>Scanning an 11-day window for the best day is a multiple-testing trap</td><td class="was">Day −4, t = 2.41</td><td class="is">14.4% of random sets beat it</td></tr>
+        <tr><td>07</td><td class="sys"><a href="#v-kalshi">Kalshi weather</a></td><td>Scored at the mid price instead of the ask plus Kalshi’s fee</td><td class="was">+3.0 to +3.9¢ gross</td><td class="is">≈ 0 net (−0.05¢ / −0.52¢)</td></tr>
+        <tr><td>08</td><td class="sys"><a href="#v-polymarket">Polymarket LP bot</a></td><td>High-reward sports markets returned a stale placeholder price</td><td class="was">Mid 0.48</td><td class="is">Live mid 0.11</td></tr>
+        <tr><td>09</td><td class="sys"><a href="#v-clips">Clip campaign ranker</a></td><td>Read the API’s successRate field as an approval rate</td><td class="was">EV = CPM × successRate</td><td class="is">Rank on money paid out</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="hr" id="notes">
+  <div class="head">
+    <h2>Research notes</h2>
+    <div class="sub">Shorter questions, measured answers<br>Public APIs and published data</div>
+  </div>
+  <div class="notes">
+    <dl>
+      <div class="note"><dt>AI benchmark markets</dt><dd>The edge was reading which leaderboard settles the market. The same model scored anywhere from 44% to 64% across boards, and only Scale’s official board counted.</dd></div>
+      <div class="note"><dt>Hyperliquid</dt><dd>Built a SQLite collector for HIP-4 markets, which record forward because the API drops history on delisting. Measured the HLP vault falling from +101% a year in 2023 to +8% so far in 2026.</dd></div>
+      <div class="note"><dt>Crypto trend rules</dt><dd>A BTC 20-day trend rule fell from Sharpe 1.52 to 0.57 out-of-sample, barely above holding (0.48). The 200-day filter from the overnight study did carry over: BTC 0.98 → 1.15.</dd></div>
+      <div class="note"><dt>Futures signals</dt><dd>Signal Deck: the Claude API with live web search writing MES/ES futures setups to a Discord channel. Shelved before it went live.</dd></div>
+    </dl>
+    <dl>
+      <div class="note"><dt>Copy-trading</dt><dd>Top Polymarket wallets make their money by posting orders, not by picking winners, so copying their picks doesn’t copy the edge.</dd></div>
+      <div class="note"><dt>Memecoins</dt><dd>Published on-chain data: buying at pump.fun graduation averaged −60.7% within an hour across 41k tokens. The roles that reliably profit are insiders and same-block snipers.</dd></div>
+      <div class="note"><dt>Capital math</dt><dd>At the best edge that held (about 21% a year), $100 a trading day takes roughly $118k. Every asset class I tested gave the same answer: the limiting factor is capital.</dd></div>
+      <div class="note"><dt>Quant factors</dt><dd>The factors that last (momentum, value, low risk) work across many stocks over weeks to months. So Formula Lab ranks a basket instead of guessing one stock tomorrow.</dd></div>
+    </dl>
+  </div>
+</section>
+</div>
+
+<div id="views"></div>
+
+<footer>
+  <div class="f-top">
+    <div class="f-mark">Julian Jung</div>
+    <div class="f-line">Trading systems &amp; data research<br>UC Berkeley · 2026</div>
+  </div>
+  <div class="f-cols">
+    <div class="f-col"><div class="f-h">Code &amp; data</div><span>Python</span><span>SQLite</span><span>Flask</span><span>JavaScript</span><span>Playwright</span></div>
+    <div class="f-col"><div class="f-h">Market APIs</div><span>Alpaca</span><span>Polymarket CLOB</span><span>Kalshi (RSA-PSS)</span><span>Hyperliquid</span><span>Dune</span></div>
+    <div class="f-col"><div class="f-h">Infrastructure</div><span>launchd &amp; cron</span><span>systemd on Hetzner</span><span>Caddy + Cloudflare</span><span>Ollama local vision</span><span>Claude API</span></div>
+    <div class="f-col"><div class="f-h">Contact</div><span class="mail">thejungjulian@gmail.com</span><a href="../index.html" target="_blank" rel="noopener">All my work ↗</a><a href="https://github.com/thejungjulian-del" target="_blank" rel="noopener">GitHub ↗</a><span>Berkeley, CA</span></div>
+  </div>
+  <div class="f-base"><span>© 2026 Julian Jung</span><span>All results are paper trading or backtests · not investment advice</span></div>
+</footer>
+
+<script>
+var SECTIONS=[["trading","Trading systems"],["data","Data products"],["findings","Findings"],["method","Method"],["ledger","Bug ledger"],["notes","Research notes"]];
+var GROUPS=[{id:"trading",label:"Trading systems",grid:"grid-trading"},{id:"data",label:"Data products",grid:"grid-data"}];
+var ELSEWHERE=[["All my work","../index.html"],["GitHub","https://github.com/thejungjulian-del"]];
+var PROJECTS=[
+/* ---------------- trading ---------------- */
+{id:"formula-lab",g:"trading",no:"01",name:"Formula Lab",dis:"US equities · overnight",st:"Running",live:true,shape:"stack",
+ kpi:["+7.7%","a year expected, real fills and costs"],
+ tx:"Picks ten S&P 500 stocks each afternoon, buys at 15:59 ET and sells at the next open in an Alpaca paper account, on its own schedule. The daytime leg kept only 17% of its edge at real fill times, so I paused it.",
+ tk:"Python · yfinance · Alpaca API · launchd",
+ lede:"A stock-formula lab that turned into a small automated trading desk. Every afternoon it ranks S&P 500 stocks, picks ten for the overnight session and follows the plan in an Alpaca paper account without me touching it.",
+ meta:[["Status","Running, paper only"],["Period","Oct 2026 – now"],["Built with","Python, yfinance, Alpaca API"],["Runs on","My Mac, on launchd timers"]],
+ kpis:[["+7.7%","expected a year, 2023+, real fills"],["51%","winning days"],["72%","chance of being ahead after a year"],["17%","of the day-trade edge left at real fills"]],
+ rows:[
+  ["The question","Can a $100 account follow a daily stock plan with no clicks, and how much of a backtested edge is left at the prices you can actually trade at?"],
+  ["What I built",[
+   "A formula builder with baseline variables for every ticker, plus formulas I can write and backtest.",
+   "planner.py: each night, ten S&P 500 names at 10% each, bought at 15:59 ET and sold at the next open.",
+   "broker.py: follows the plan on Alpaca with the rules a $100 account needs (fractional market orders, $1 minimum, no shorts, late entries skipped).",
+   "A health gate that blocks new entries when data is stale, while exits always go through.",
+   "sim.py: replays each plan at broker times on 5-minute prices with 0.05% costs and writes a trade journal.",
+   "launchd schedules for three scans, the picks, the simulator, a broker check every minute and a watchdog. Tests: test_vars.py and test_broker.py."]],
+  ["Results",{figs:[
+   {type:"bars",title:"Share of the backtested edge kept at real fill times",min:0,max:100,
+    rows:[["Overnight leg, buy at 15:59",77,"77%",1],["Day leg, buy at 9:35",17,"17%"]],
+    note:"Measured by re-running the picks at the times the broker can actually trade. The day leg needs the opening gap, which is gone by 9:35."},
+   {type:"shot",src:"img/formulalab.jpg",cap:"Plan page · live · simulated $100 account"}]}],
+  ["What I found",[
+   "Minute-level trading didn’t work at any horizon I tried, and neither did copy trading, news signals or a sector cap.",
+   "A wider universe of liquid stocks kept only 25–29% of its edge at real fill times (+0.7% a year vs +5.5%), so the live plan stays on the S&P 500.",
+   "The research behind the formula says durable factors work across many stocks over weeks to months, so it ranks a basket instead of guessing one stock."]],
+  ["Verdict","Running in paper. The expected edge is small, about $0.03 a day on $100, and probably optimistic because the 2023+ period was reused while building it."],
+  ["Next","Review four weeks of simulated nights around November 16 and stop if they’re clearly worse than expected."],
+  ["Links",{links:[["Alpaca paper trading","https://alpaca.markets/",1]]}]]},
+
+{id:"overnight",g:"trading",no:"02",name:"Overnight Premium",dis:"Nasdaq-100 · 1999–2026",st:"Held up",live:true,shape:"moon",
+ kpi:["1 of 260","mined rules that passed all three test periods"],
+ tx:"Hold QQQ only overnight, and only while it trades above its 200-day average. At 3× that returned +21.3% a year at a Sharpe of 0.85, against 0.49 for buy-and-hold. The same filter improved BTC, ETH and SOL.",
+ tk:"Python · 27 years daily data · walk-forward",
+ lede:"The one trading rule that survived everything I threw at it. Holding the Nasdaq-100 only overnight, and only while it’s above its 200-day average, beat buy-and-hold on risk-adjusted return across 27 years.",
+ meta:[["Status","Validated, daily signal on cron"],["Period","Aug 2026"],["Built with","Python, yfinance, futures cost model"],["Data","QQQ daily, 1999–2026"]],
+ kpis:[["+21.3%","CAGR at 3×, above the 200-day"],["0.85","Sharpe, vs 0.49 buy-and-hold"],["−46%","max drawdown at 2×, vs −83%"],["1 of 260","mined rules that survived"]],
+ rows:[
+  ["The question","After mining 260 candidate rules from 27 years of data, does anything hold up on a period it never saw?"],
+  ["What I built",[
+   "A daily rule miner (92 rules) and a futures rule miner (168 rules), each split into training, validation and an untouched test period.",
+   "nightowl.py: the overnight backtest with per-side costs and leverage through futures.",
+   "A forward collector for dealer gamma (GEX) on a cron, plus SqueezeMetrics history, to test it as a risk dial.",
+   "A 15:45 ET daily signal that prints whether QQQ is above its 200-day average."]],
+  ["Results",{figs:[
+   {type:"table",title:"QQQ, 1999–2026, costs included",num:1,head:["Strategy","CAGR","Sharpe","Max drawdown"],hi:4,
+    rows:[["Buy and hold","+10.1%","0.49","−83%"],["Overnight only, 1×","+7.7%","0.59","−39%"],["Overnight, 2×","+17.1%","0.70","−64%"],["2×, above 200-day","+14.7%","0.85","−46%"],["3×, above 200-day","+21.3%","0.85","−62%"]]},
+   {type:"bars",title:"t-stat of the 200-day rule in each period",min:0,max:5,
+    rows:[["Training",4.18,"4.18"],["Validation (+3.8bp a night)",1.85,"1.85"],["Untouched test (+4.6bp a night)",2.11,"2.11",1]],
+    note:"Positive in all three periods. Futures miner: 6 of 168 passed training, 0 survived validation."},
+   {type:"pairs",title:"Same filter on crypto, Sharpe before → after",a:"Buy and hold",b:"Above 200-day only",min:0,max:1.5,
+    rows:[["BTC",.98,1.15,"0.98 → 1.15 · max DD −83% → −70%"],["ETH",.70,.89,"0.70 → 0.89 · max DD −94% → −71%"],["SOL",1.20,1.34,"1.20 → 1.34 · max DD −96% → −64%"]],
+    ticks:[[0,"0"],[.5,"0.5"],[1,"1.0"],[1.5,"1.5"]]}]}],
+  ["What I found",[
+   "The overnight premium is positive in every equity sector and ordered by risk (semiconductors +5.5bp a night, staples +1.3bp), while gold doesn’t care and bonds invert. That looks like a real risk premium, not a quirk.",
+   "Costs decide it: unleveraged overnight returns 10.4% a year at 0.5bp a side, and 7.7% at 1bp.",
+   "Low dealer gamma predicts a bigger next-day range and +9.8bp (t = 6.17), but sizing by it didn’t beat constant leverage.",
+   "A scalper-fade test on 3,934 trades was about zero before costs and −11bp after. Short-term reversal exists, but it lives inside the spread."]],
+  ["Verdict","The only robust rule I found, and it’s a slow filter, not a day trade. Leverage can’t be stopped out over an overnight gap."],
+  ["Next","$100 a trading day at this edge needs about $118k. The variable is capital."]]},
+
+{id:"fed",g:"trading",no:"03",name:"Fed Day Study",dis:"S&P 500 · 132 FOMC days",st:"Finding",live:true,shape:"column",
+ kpi:["1.37×","the normal intraday range on Fed days (t = 3.87)"],
+ tx:"Fed announcements don’t move the market in a predictable direction (t = −0.46), and the famous pre-FOMC drift has faded since it was published. They do reliably widen the day’s range, for about three days.",
+ tk:"Python · Fed calendar scraper · random-date control",
+ lede:"An event-study harness for scheduled news. Dates published in advance can’t leak hindsight into a test, so I started with the Fed.",
+ meta:[["Status","Finding, not yet tradeable"],["Period","Aug 2026"],["Built with","Python, scraped Fed calendar"],["Sample","132 announcements, 2010–2026"]],
+ kpis:[["1.37×","range on announcement day"],["t = 3.87","vs a random-date p95 of 2.79"],["−6.1bp","direction on the day (t = −0.46)"],["250,189","8-K filings tested, nothing found"]],
+ rows:[
+  ["The question","Do Fed announcements move the market in a predictable way, and does the effect beat the same test run on random dates?"],
+  ["What I built",[
+   "eventstudy.py: an event-agnostic harness that measures abnormal return and range around any list of dates, with t-stats.",
+   "A random-date control that runs random 132-date sets through the identical code, to measure how often chance produces a result.",
+   "events.py: an FOMC calendar scraped from Fed press-release URLs."]],
+  ["Results",{figs:[
+   {type:"bars",title:"SPY intraday range vs its baseline (112bp)",min:0,max:1.5,
+    rows:[["Day −1",1.07,"1.07×"],["Announcement day",1.37,"1.37×",1],["Day +1",1.28,"1.28×"],["Day +2",1.20,"1.20×"]],
+    note:"Volatility doesn’t build in advance. It arrives on the day (t = 3.87) and fades over about three days."},
+   {type:"table",title:"Direction around the announcement",num:1,head:["Day","Mean abnormal return","t"],hi:1,
+    rows:[["Day −1","+4.4bp","0.35"],["Announcement day","−6.1bp","−0.46"],["Day +1","−13.7bp","−0.94"]]}]}],
+  ["What I found",[
+   "Direction is priced. The pre-FOMC drift (Lucca & Moench, 2015) is absent in 2010–2026.",
+   "Day −4 printed t = 2.41, but 14.4% of random date sets beat that somewhere in an 11-day window. Without the control I’d have traded it.",
+   "8-K corporate filings: nothing across 250,189 events (max |t| 1.87)."]],
+  ["Verdict","Real, but not proven tradeable: higher realized volatility says nothing about whether options already price it. Practical use today is sizing: on Fed day you carry about 1.37× your usual risk at the same stop."],
+  ["Next","Compare implied and realized volatility with options data, then run CPI and jobs reports through the same harness."],
+  ["Links",{links:[["Fed meeting calendar","https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",1]]}]]},
+
+{id:"arb",g:"trading",no:"04",name:"Arbitrage Scanner",dis:"Polymarket × Kalshi",st:"Built",live:true,shape:"links",
+ kpi:["92 of 128","legs had no seller in a basket that summed to $0.962"],
+ tx:"Looks for baskets that pay $1 for less than $1 after fees, within and across both venues, and only counts one if every leg can really be bought. Most apparent arbitrage was outcomes nobody was selling.",
+ tk:"Python · venue adapters · Discord alerts",
+ lede:"A scanner for sure-thing trades on prediction markets: the same event priced differently on two exchanges, or a set of outcomes you can buy for less than $1 in total.",
+ meta:[["Status","Built, read-only"],["Period","Jun 2026"],["Built with","Python, Polymarket + Kalshi APIs"],["Execution","Deliberately disarmed"]],
+ kpis:[["$0.962","what the 2028 President basket seemed to cost"],["92 of 128","legs with nobody selling"],["≈ $1.001","a typical binary YES + NO"]],
+ rows:[
+  ["The question","Do real, fillable arbitrage baskets exist on prediction markets after fees?"],
+  ["What I built",[
+   "venues.py: one adapter per exchange, so adding a venue is one class. The Kalshi side reuses my RSA-PSS signed client.",
+   "arb.py: fee-aware math for cross-venue pairs and buy-every-outcome baskets, with capital locked per venue and an annualized return.",
+   "match.py: fuzzy title matching that writes candidate pairs for a person to check against each market’s resolution rules.",
+   "both_sides.py: scans binary and multi-outcome markets and only reports a basket when every leg has a seller.",
+   "execution.py: an order path left disarmed on purpose, with a go-live checklist."]],
+  ["Results",{figs:[
+   {type:"bars",title:"2028 US President basket, 128 outcomes",min:0,max:128,
+    rows:[["Legs you could buy",36,"36"],["Legs with no seller",92,"92",1]],
+    note:"The basket only looked cheap because the long-shot outcomes had no asks. Fully fillable baskets summed to $1 or more."},
+   {type:"table",title:"Synthetic check of the math",head:["Input","Result"],
+    rows:[["5¢ cross-venue edge","$120 locked on Polymarket + $165 on Kalshi"],["Annualized return","22%"]]}]}],
+  ["What I found",[
+   "Most apparent arbitrage is a mirage: cheap outcomes look cheap because nobody is selling them.",
+   "At rest the scanner correctly finds about zero clean arbs. Real capture would need a loop that catches the brief moments after news when a fillable basket dips under $1.",
+   "Published research ranks internal Polymarket arbitrage as the best-evidenced edge (about $40M realized, mostly around the 2024 election), now shrinking and speed-sensitive."]],
+  ["Verdict","Works as a scanner. The markets are mostly efficient at rest, so execution stays off."],
+  ["Links",{links:[["Arbitrage study, arXiv 2508.03474","https://arxiv.org/abs/2508.03474",1]]}]]},
+
+{id:"polymarket",g:"trading",no:"05",name:"Polymarket Bots",dis:"Prediction markets · 67 days paper",st:"Closed",shape:"coin",
+ kpi:["−0.34¢","per trade once the spread is taken out"],
+ tx:"My dip-buying bot showed about $750 a month on paper. The audit found it bought at the bid, sold at the ask and assumed every order filled. The market-making bot, once settled positions were counted, was down 53.8%.",
+ tk:"Python · Polymarket CLOB · systemd on a VPS",
+ lede:"My main project for three months: copy-trading bots, then a dip-buying bot and a market-making bot, all paper-traded on a server. The headline was +$750 a month. My own audit took it to zero.",
+ meta:[["Status","Closed on evidence"],["Period","May – Aug 2026"],["Built with","Python, Polymarket CLOB, Dune"],["Ran on","Linux VPS, cron + systemd"]],
+ kpis:[["−0.34¢","per trade, mid to mid (t = −0.48)"],["≈ 14","independent bets, not 278"],["−53.8%","market maker, settled ($250 → $115.39)"],["30%","of its round trips won"]],
+ rows:[
+  ["The question","Is there a repeatable edge on Polymarket for a small account, and does it survive honest fills?"],
+  ["What I built",[
+   "Copy-trading bots with on-chain trader vetting and an A/B test, later retired.",
+   "dip_scanner.py: buys geopolitics and politics dips and flips them after 12 hours, paper-traded every 5 minutes.",
+   "spread_mm.py: a long-shot market maker whose orders only fill when the market trades through them.",
+   "A paper liquidity-provider bot that models reward share from real order-book depth.",
+   "A dashboard service on the server, and an audit kit: spread decomposition, theme clustering and settlement of every open position."]],
+  ["Results",{figs:[
+   {type:"pairs",title:"Dip bot by month, cents per trade",a:"What it reported",b:"Real price move (mid to mid)",min:-2,max:2,
+    rows:[["June",1.47,.04,"+1.47¢ → +0.04¢"],["July",1.60,-.15,"+1.60¢ → −0.15¢"],["August",.15,-1.73,"+0.15¢ → −1.73¢"]],
+    ticks:[[-2,"−2¢"],[-1,"−1"],[0,"0"],[1,"+1"],[2,"+2¢"]]},
+   {type:"table",title:"Market maker, 26 days of trading",num:1,head:["Item","Value"],hi:5,
+    rows:[["Starting cash","$250.00"],["Fills","146"],["Realized P&L","−$45.32"],["Inventory at cost","$201.31"],["Inventory after settlement","$97.37"],["True equity","$115.39"]]}]}],
+  ["What I found",[
+   "The simulator bought at the bid and sold at the ask with every fill assumed, so it paid itself the spread. Trades with spreads of 3¢ or more showed +3.85¢ and moved 0.00¢.",
+   "Iran alone was 44% of all trades. Clustered by theme, the 278 trades are about 14 independent bets, and nothing is significant.",
+   "16% of positions vanished from the stats when markets delisted; 41 of those 55 settled at $0.",
+   "The market maker only filled when price ran through it, which is adverse selection by construction. It got stuck holding 7 positions that went to zero.",
+   "The maker rebate would have recovered $3.94 of a $134.61 loss."]],
+  ["Verdict","Both doors closed on evidence, and I didn’t go live. On Polymarket the money goes to whoever provides liquidity well, not to whoever predicts direction."]]},
+
+{id:"kalshi",g:"trading",no:"06",name:"Kalshi Weather",dis:"Daily highs and lows · 13 US cities",st:"Closed",shape:"drop",
+ kpi:["19,191","contracts priced across three tests"],
+ tx:"The market beat the National Blend of Models forecast (Brier 0.098 vs 0.121). A favorite-longshot pattern made +14¢ a contract in-sample, then flipped to −4.2¢ net on new dates.",
+ tk:"Python · Kalshi API · NOAA NBM",
+ lede:"Kalshi lists daily high and low temperature contracts for 13 US cities. I tested two ways to beat them: a better forecast, and a pricing bias.",
+ meta:[["Status","Closed on both branches"],["Period","Jul – Oct 2026"],["Built with","Python, Kalshi API, NOAA NBM"],["Sample","19,191 contracts"]],
+ kpis:[["0.098","market Brier score, vs 0.121 for the model"],["1.41 pts","market calibration error, vs a 2.70-pt cost"],["0 of 13","test cells that passed"]],
+ rows:[
+  ["The question","Can a public forecast model, or a price-level pattern, beat Kalshi’s weather markets after fees?"],
+  ["What I built",[
+   "A pipeline that turns NOAA’s National Blend of Models percentiles into a probability for every temperature bucket.",
+   "A price collector for every contract at 13:00 UTC on the event day, with retries and printed error counts (one run absorbed 5,642 rate-limit responses).",
+   "Pre-registered out-of-sample tests priced at the ask with Kalshi’s real fee, 0.07 × P × (1 − P), and a pass mark of station-clustered t > 2."]],
+  ["Results",{figs:[
+   {type:"table",title:"Forecast model vs market, 2,180 contracts (lower is better)",num:1,head:["Score","Forecast model","Market"],
+    rows:[["Brier","0.1208","0.0978"],["Log loss","0.3806","0.3078"]]},
+   {type:"bars",title:"Out-of-sample, net cents per contract at the ask plus fees",min:-5,max:2,
+    rows:[["High temp, buy YES at 60¢+",-4.18,"−4.18¢",1],["High temp, buy NO at 20–30¢",.81,"+0.81¢"],["Low temp, buy YES at 60¢+",.55,"+0.55¢"],["Low temp, buy NO at 20–30¢",-2.64,"−2.64¢"]],
+    note:"8,275 contracts across 26 series. None reached t > 2. A third test on new dates (8,736 contracts) failed all 9 cells."}]}],
+  ["What I found",[
+   "The market beat the model in every subgroup, and by the most where they disagreed by more than 15 points.",
+   "Even a perfect forecast would come up about 2× short of covering costs, because liquid buckets are calibrated to within a point.",
+   "The strongest in-sample cell (+14.03¢) came back at −4.18¢ net. It inverted rather than decayed.",
+   "Gross at the mid looks positive everywhere (+3.0 to +3.9¢). That’s the market’s overround; buying at the ask and paying fees erases it."]],
+  ["Verdict","Closed on both branches. The lesson I keep: never evaluate a taker strategy at the mid."],
+  ["Links",{links:[["Kalshi","https://kalshi.com/",1],["NOAA National Blend of Models","https://vlab.noaa.gov/web/mdl/nbm",1]]}]]},
+
+{id:"course",g:"trading",no:"07",name:"Day-Trading Course Test",dis:"Index ETFs · 5-minute bars",st:"Closed",shape:"candle",
+ kpi:["0 of 288","settings significant on unseen data"],
+ tx:"I turned a 6-hour YouTube day-trading course into exact rules. All 288 settings made money in-sample; the held-out month’s median was −0.145R. A second video’s order-block version went 54 for 54, then 0 for 54.",
+ tk:"Python · 4 ETFs · grid sweep",
+ lede:"A popular 6-hour course states its model as literal steps: sweep a high or low, break structure, retrace into a gap, enter on a 1-minute break. That made it testable.",
+ meta:[["Status","Closed"],["Period","Aug 2026"],["Built with","Python, yfinance 5-minute bars"],["Sample","59 days × QQQ, SPY, IWM, DIA"]],
+ kpis:[["+0.881R","in-sample median"],["−0.145R","out-of-sample median"],["0 of 288","significant out-of-sample"],["~1,300","settings tested across 3 videos"]],
+ rows:[
+  ["The question","Does a well-known day-trading strategy make money on data it wasn’t tuned on?"],
+  ["What I built",[
+   "The four steps coded exactly. The two choices the video never defines (what counts as a significant high, and which target) are swept as a grid and reported as a distribution, never the best cell.",
+   "59 days of 5-minute bars on four index ETFs, the free-data ceiling, split at a fixed date.",
+   "Day-clustered standard errors and pass marks written down before the run.",
+   "A second video’s order-block zones, coded with causality tests and run head to head."]],
+  ["Results",{figs:[
+   {type:"bars",title:"Median result per trade, in R (risk units)",min:-1,max:1,
+    rows:[["Course model, in-sample",.881,"+0.881R"],["Course model, out-of-sample",-.145,"−0.145R",1],["Order-block model, out-of-sample",-.735,"−0.735R",1]],
+    note:"In-sample all 288 settings were profitable. Out-of-sample 113 were positive and none cleared t > 2."}]}],
+  ["What I found",[
+   "Everything good in-sample and nothing out-of-sample is what fitting one market regime looks like. June carried every result; July and August were negative.",
+   "Bug: swept levels were never consumed, so a trending day re-fired a sweep every bar (DIA 312 sweeps vs SPY 28). Fixing it cut trades from 52 to 25. A chart-script version of this strategy probably has the same bug.",
+   "The order-block version was worse: 54 of 54 in-sample, 0 of 54 after.",
+   "The out-of-sample window is one month with about 8 trades per setting, so this is no evidence of an edge rather than proof it’s dead."]],
+  ["Verdict","Two strategies, three videos, about 1,300 settings, zero out-of-sample edge. The project moved on to event studies (see the Fed Day Study)."],
+  ["Next","Two years of 1-minute data would give a 6-month test window and about 300 out-of-sample trades, enough to settle it."]]},
+
+{id:"soccer",g:"trading",no:"08",name:"Soccer Model",dis:"Football · 20 leagues",st:"Closed",shape:"ball",
+ kpi:["38,274","matches modeled, walk-forward"],
+ tx:"Poisson attack and defence ratings scored against Pinnacle’s closing odds. On 16,330 exam matches the model lost (log loss 1.014 vs 0.990), and none of 13 matchup factors survived the holdout season.",
+ tk:"Python · football-data.co.uk · pre-registered splits",
+ lede:"A stats-first model for football betting markets, built to follow specific teams and price their matches from everything known about the matchup.",
+ meta:[["Status","Closed"],["Period","Oct 2026"],["Built with","Python, football-data.co.uk"],["Sample","38,274 matches, 2021/22–2026/27"]],
+ kpis:[["1.0135","model log loss"],["0.9903","Pinnacle closing log loss"],["0.00","best weight on the model in a blend"],["16,330","exam matches"]],
+ rows:[
+  ["The question","Can public match statistics beat the sharpest bookmaker’s closing odds?"],
+  ["What I built",[
+   "fetch.py: 38,274 matches from 20 leagues with shots, shots on target, corners, fouls and cards.",
+   "model.py: online Poisson attack and defence ratings blending goals and shots on target, walk-forward with fixed warm-up, tuning and exam seasons.",
+   "factors.py: 13 matchup factors (rest, form, venue split, head-to-head, promoted teams and more) tested against the market’s misses.",
+   "totals.py and early.py: over/under 2.5 goals, and a version against early prices."]],
+  ["Results",{figs:[
+   {type:"table",title:"Exam seasons 2023/24 – 2025/26",head:["Test","Result"],hi:1,
+    rows:[["Model log loss","1.0135"],["Pinnacle closing log loss","0.9903"],["Value bets at closing odds","−10% to −17% ROI"],["13 factors combined, holdout","−10% to −16%"],["Long shots under 20%","lose 10–35% at the close"],["Favourites at 70–80%","+1.8% (t = 0.8)"]]}]}],
+  ["What I found",[
+   "Value bets lost more as the required edge grew: the edges were model error.",
+   "Team mispricing doesn’t carry from one season to the next (slope −0.04, t = −1.2).",
+   "Bugs caught: average odds were silently mixed into the confirmation set, and an uncentered bet rule bet on 96% of games."]],
+  ["Verdict","Public stats are priced in. The one open idea is whether Kalshi or Polymarket soccer prices lean toward popular teams compared with Pinnacle."],
+  ["Links",{links:[["football-data.co.uk","https://www.football-data.co.uk/",1]]}]]},
+
+/* ---------------- data ---------------- */
+{id:"desk",g:"data",no:"09",name:"JS Entertainment Desk",dis:"Creator trends · live",st:"Live",live:true,shape:"icosa",
+ kpi:["$0.30","per 1,000 posts scraped, vs $2.30 for the official scraper"],
+ tx:"A private trend desk for a creator agency. It watches chosen Instagram creators, surfaces their top posts and reels, screens new creators with a vision pass, and suggests when to post and what to caption.",
+ tk:"Flask · SQLite · Apify · Claude API · Hetzner + Caddy",
+ lede:"A trend desk for a creator agency, live on its own server. It reads each creator’s niche, finds what’s overperforming right now and turns it into shoot-ready briefs, with a brand-deal inbox built in.",
+ meta:[["Status","Live, in daily use"],["Period","Jun 2026 – now"],["Built with","Flask, SQLite, Apify, Claude API"],["Runs on","Hetzner, Caddy, Cloudflare, systemd"]],
+ kpis:[["$0.30","per 1,000 posts scraped"],["7.7×","cheaper than the official scraper"],["Daily","scan of every watched creator"]],
+ rows:[
+  ["The question","Can one screen tell a creator what to film next, based on what’s working in their niche today?"],
+  ["What it does",[
+   "Keeps watch lists of specific creators and scans them daily through Apify.",
+   "Ranks the top posts and reels per niche, with swipeable carousels and an in-site viewer.",
+   "Finds new creators from real collaborations and tags, then screens them with a vision pass so brands, photographers and off-niche accounts drop out.",
+   "Suggests when to post and writes captions and hashtags.",
+   "Runs a brand-deal inbox on its own domain that scores incoming offers and drafts replies."]],
+  ["How it’s built",[
+   "Flask and SQLite behind Caddy on a Hetzner server, with Cloudflare DNS and email routing.",
+   "systemd services plus a timer for database backups.",
+   "Scan cost is driven by distinct watched accounts, so overlapping watch lists are scraped once and shared."]],
+  ["What I learned",[
+   "An LLM-suggested creator list invented usernames for small niches. Mining real collaborations from seed accounts fixed discovery.",
+   "Text-only niche checks let a women’s clothing brand into a menswear watch list. Looking at their actual posts caught it."]],
+  ["Links",{links:[["Creator view, live","https://desk.jsentertainment.org/me/48"],["JS Entertainment","https://jsentertainment.org/",1]]}]]},
+
+{id:"videotrends",g:"data",no:"10",name:"VideoTrends",dis:"Fashion · Instagram",st:"Paused",shape:"frame",
+ kpi:["100k","likes before a look counts as vetted"],
+ tx:"Pulls fashion posts, has a local vision model name the exact garments, weights each by likes and tracks which items are gaining. It also scores its own past forecasts, so you can check whether it’s right.",
+ tk:"Python · Playwright · Ollama (Qwen2.5-VL) · launchd",
+ lede:"A fashion trend recognizer: it looks at popular Instagram outfit posts, names the exact garments with a vision model running on my laptop, and tracks which pieces are rising.",
+ meta:[["Status","Built, scans paused"],["Period","Jun 2026"],["Built with","Python, Playwright, Ollama, Flask"],["Runs on","M3 Pro laptop, launchd"]],
+ kpis:[["$0","vision API cost"],["~30 s","per post, on-device"],["500","posts per scan, 12 hashtags"],["100k","likes to count as vetted"]],
+ rows:[
+  ["The question","Can a free, local pipeline tell you which specific clothing items are trending, and prove its calls were right?"],
+  ["What I built",[
+   "A browser scraper for Instagram photo posts across fashion hashtags (reels skipped).",
+   "A clothing-relevance score from captions and the source hashtag, with exclusions, so off-topic posts never reach the database.",
+   "A funnel: only the top posts go to the vision model (Qwen2.5-VL 7B through Ollama), about 30 seconds each.",
+   "Likes-weighted ranking with velocity and momentum per garment.",
+   "A forecast-accuracy tracker that records each scan’s trend calls and checks them later.",
+   "launchd jobs for an always-on dashboard and scheduled scans."]],
+  ["Interface",{figs:[{type:"shot",src:"img/videotrends.jpg",cap:"Trend Radar dashboard · demo data"}]}],
+  ["What I learned",[
+   "Captions alone weren’t specific enough, so I moved from Llama 3.2 Vision to Qwen2.5-VL with a structured prompt.",
+   "A 1,000-post config ran 45+ minutes a scan and locked the dashboard. 500 posts and 12 hashtags kept it responsive.",
+   "TikTok’s free trend endpoint and Instagram’s Graph API were dead ends (signed tokens, app review)."]],
+  ["Verdict","Built and working; scheduled scans are paused. It’s the clearest demo I have of a zero-cost vision pipeline."],
+  ["Links",{links:[["Open the demo","demos/videotrends.html"]]}]]},
+
+{id:"clips",g:"data",no:"11",name:"Clip Campaign Ranker",dis:"Paid clipping · 292 campaigns",st:"Daily",live:true,shape:"steps",
+ kpi:["$79","paid out by 34 campaigns showing $106k available"],
+ tx:"Ranks public pay-per-view clipping campaigns by money that has actually moved instead of the advertised rate. A high advertised CPM turned out to be a mild warning sign. Snapshots track each campaign’s burn rate.",
+ tk:"Python · SQLite · daily cron",
+ lede:"Clipping platforms pay per view for short clips of streamers. They advertise rates loudly and payouts quietly, so I ranked every public campaign on money that had actually moved.",
+ meta:[["Status","Runs daily"],["Period","Aug 2026"],["Built with","Python, SQLite"],["Runs on","My Mac, daily cron"]],
+ kpis:[["292","campaigns tracked"],["$79","paid by 34 campaigns showing $106k"],["63","clean campaigns, $197,372 unspent"]],
+ rows:[
+  ["The question","Which clipping campaigns actually pay?"],
+  ["What I built",[
+   "campaigns.py: pulls every public pay-per-view campaign and stores a snapshot of budget spent, total budget and rate on each fetch.",
+   "A burn-rate view from those snapshots, so runway is measured instead of guessed.",
+   "A daily job that refreshes the top five and sends a notification."]],
+  ["Results",{figs:[
+   {type:"bars",title:"The 292 campaigns",min:0,max:220,
+    rows:[["Clipping",213,"213"],["UGC briefs",76,"76"],["Clean set after filters",63,"63",1]],
+    note:"Filters: clipping only, no gambling, supplements, politics or trading, at least 50% acceptance, under 85% spent, $500+ left."}]}],
+  ["What I found",[
+   "A high advertised CPM was a mild warning sign: 34 campaigns averaging $2.96 had paid out $79 combined.",
+   "I first ranked on CPM × successRate, then found successRate isn’t an approval rate and retracted the formula.",
+   "The free public listing beat a paid Discord information hub by about 3× ($2.50 vs $0.75 CPM)."]],
+  ["Verdict","The daily ranking still runs. It answers where to post; posting stays manual."]]},
+
+{id:"exchange",g:"data",no:"12",name:"Creator Exchange",dis:"Fintech · play money",st:"Prototype",live:true,shape:"torus",
+ kpi:["0.5%","fee per trade to the exchange"],
+ tx:"A stock market for creators. Shares pay out a slice of revenue (sponsors, ads, merch) every quarter, trading on a real limit-order book with price-time priority and a house market maker.",
+ tk:"JavaScript · matching engine · shared database",
+ lede:"A play-money stock market for creators. Creators IPO, shares pay out a slice of their revenue each quarter, and the exchange earns a fee on every trade.",
+ meta:[["Status","Working prototype"],["Period","Oct 2026"],["Built with","JavaScript, shared database"],["Money","Play money only"]],
+ kpis:[["0.5%","taker fee to the exchange"],["20%","discount rate in the valuation"],["5","revenue sources per quarterly report"]],
+ rows:[
+  ["The question","What would it take to trade creators like stocks, with sponsor income included?"],
+  ["What I built",[
+   "A limit-order book with price-time priority, matched in the page under a per-stock lease so two traders can’t fill the same order.",
+   "A valuation model: a share is a fixed-term slice of revenue, priced as discounted payouts at 20% a year, which also sets the IPO price.",
+   "A house market maker that bids 5% under model value.",
+   "Quarterly reports split by source (sponsors, ads, merch, subscriptions, other) that pay holders.",
+   "A shared database so invited friends trade against each other, with six fictional example creators."]],
+  ["What I found",[
+   "GigaStar already runs a real-money version for YouTube ad revenue: about 37 offerings and $6.9M raised. It doesn’t cover sponsors, which is the gap.",
+   "Fantex tried athlete income stocks in 2013–16 and closed to retail after lawsuits."]],
+  ["Verdict","A working prototype. Real money would need a registered funding portal."],
+  ["Links",{links:[["Open the exchange","https://claude.ai/artifact/8fUmEedDAcb7EFDzj9UoZo"]]}]]},
+
+{id:"radar",g:"data",no:"13",name:"Potential Radar",dis:"Music · Spotify",st:"Demo",shape:"cone",
+ kpi:["0–100","breakout score per emerging artist"],
+ tx:"Finds artists under 250k followers and ranks them on momentum, how popular they are for their size, and raw buzz. Each scan adds a snapshot, so growth builds into a history. Runs on sample data until a Spotify key is added.",
+ tk:"Flask · Spotify API · SQLite",
+ lede:"A radar for emerging artists that ranks them by breakout potential instead of current size.",
+ meta:[["Status","Demo mode"],["Period","Jun 2026"],["Built with","Flask, Spotify API, SQLite"],["Needs","A free Spotify key"]],
+ kpis:[["0–100","potential score"],["250k","follower ceiling"],["3","signals blended"]],
+ rows:[
+  ["The question","Can public Spotify data flag artists before they break out?"],
+  ["What I built",[
+   "discovery.py: candidates from new releases, Fresh Finds playlists and genre searches, kept under 250k followers.",
+   "scoring.py: a 0–100 score from momentum, how popular an artist is for their follower count, and raw popularity.",
+   "A snapshot of followers, popularity and score on every scan, so momentum builds over time.",
+   "A Flask dashboard with a demo mode on sample artists."]],
+  ["Results",{figs:[
+   {type:"bars",title:"Score weights once history exists",min:0,max:50,
+    rows:[["Momentum (growth per day)",42,"42%",1],["Underrated (popularity for size)",34,"34%"],["Buzz (raw popularity)",24,"24%"]],
+    note:"Before there’s history: 62% underrated, 38% buzz."},
+   {type:"shot",src:"img/potential-radar.jpg",cap:"Dashboard · demo data"}]}],
+  ["What I learned",[
+   "Spotify’s API gives followers and popularity but not monthly listeners, so momentum has to come from my own snapshots.",
+   "Fresh Finds playlist IDs rotate, so new releases and genre search are the reliable fallback."]],
+  ["Verdict","Built and waiting on a Spotify key to leave demo mode."],
+  ["Links",{links:[["Open the demo","demos/potential-radar.html"]]}]]},
+
+{id:"trendtracker",g:"data",no:"14",name:"TrendTracker",dis:"Fashion · search trends",st:"Shelved",shape:"octa",
+ kpi:["Daily","snapshots, rising vs last capture"],
+ tx:"My first trend tool. TikTok’s free endpoint now needs a signed token and Instagram has no public trending feed, so it runs on Google Trends, flags the fashion terms, and takes TikTok and IG finds by hand.",
+ tk:"Flask · SQLite · Google Trends RSS",
+ lede:"My first trend tool: a dashboard that captures clothing and social trends every day, so you can see what’s rising instead of what’s loud today.",
+ meta:[["Status","Shelved"],["Period","Jun 2026"],["Built with","Flask, SQLite"],["Data","Google Trends RSS, manual log"]],
+ kpis:[["Free","no keys needed"],["Daily","snapshots with momentum"]],
+ rows:[
+  ["The question","What can you track about fashion trends for free?"],
+  ["What I built",[
+   "collector.py: the daily Google Trends feed with fashion terms flagged by keyword.",
+   "A best-effort TikTok Creative Center pull, and a form for logging TikTok and Instagram finds by hand.",
+   "Daily snapshots with a rising-vs-last-capture panel."]],
+  ["Interface",{figs:[{type:"shot",src:"img/trendtracker.jpg",cap:"Dashboard · demo data"}]}],
+  ["What I learned",[
+   "TikTok’s free hashtag endpoint now answers with code 40101, no permission, and Instagram has no public trending feed.",
+   "Google Trends was the one free, reliable signal. Those limits shaped VideoTrends and the JS Entertainment desk."]],
+  ["Verdict","Shelved. VideoTrends and the desk replaced it."],
+  ["Links",{links:[["Open the demo","demos/trendtracker.html"]]}]]}
+];
+</script>
+<script src="engine.js"></script>

@@ -1,365 +1,346 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Julian Jung — Portfolio</title>
-<meta name="description" content="Things I've built — a live trend-intelligence product, prediction-market research, and AI tools for fashion and photography.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --ink:#15130f; --bg:#fbfaf7; --muted:#6b6660; --faint:#9b958c;
-    --line:#e8e4db; --line-strong:#15130f; --hover:#f3f0ea; --card:#fffdfa;
-    --serif:"Fraunces", Georgia, "Times New Roman", serif;
-    --sans:"Helvetica Neue", system-ui, -apple-system, Arial, sans-serif;
-  }
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{margin:0;background:var(--bg);color:var(--ink);
-    font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-  .wrap{max-width:1080px;margin:0 auto;padding:0 28px}
-  a{color:inherit}
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Julian Jung Works</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="engine.css">
 
-  /* ---------- header ---------- */
-  header{padding:84px 0 36px;border-bottom:2px solid var(--line-strong)}
-  .kicker{font-size:11px;text-transform:uppercase;letter-spacing:.22em;color:var(--muted)}
-  h1{font-family:var(--serif);font-weight:300;font-size:clamp(46px,9vw,92px);
-    line-height:.98;letter-spacing:-.02em;margin:14px 0 0}
-  .lede{font-family:var(--serif);font-weight:300;font-style:italic;
-    font-size:clamp(20px,3.2vw,30px);color:var(--ink);margin:18px 0 0;line-height:1.25}
-  .intro{max-width:620px;font-size:16.5px;color:var(--muted);margin:22px 0 0}
-  .meta{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:26px;
-    font-size:12px;text-transform:uppercase;letter-spacing:.12em}
-  .meta a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-strong);padding-bottom:2px;transition:opacity .15s}
-  .meta a:hover{opacity:.55}
-  .meta .where{color:var(--faint);border:none}
+<div class="grid" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
 
-  /* ---------- filter bar ---------- */
-  .filters{position:sticky;top:0;z-index:5;background:var(--bg);
-    display:flex;flex-wrap:wrap;gap:8px;align-items:center;
-    padding:18px 0;border-bottom:1px solid var(--line)}
-  .chip{font:inherit;font-size:12px;letter-spacing:.08em;text-transform:uppercase;
-    background:#fff;color:var(--muted);border:1px solid var(--line);
-    padding:8px 15px;border-radius:999px;cursor:pointer;transition:all .15s}
-  .chip:hover{border-color:var(--ink);color:var(--ink)}
-  .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-  .count{margin-left:auto;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
-
-  /* ---------- grid ---------- */
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
-    gap:18px;margin:6px 0 10px}
-  .proj{border:1px solid var(--line);border-radius:14px;background:var(--card);
-    padding:26px 26px 24px;display:flex;flex-direction:column;min-height:256px;
-    box-shadow:0 1px 2px rgba(21,19,15,.04);
-    transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s,border-color .25s}
-  .proj:hover{transform:translateY(-5px);border-color:transparent;box-shadow:0 20px 44px -16px rgba(21,19,15,.24)}
-  .ptop{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-  .status{font-size:10px;letter-spacing:.16em;text-transform:uppercase;
-    padding:4px 9px;border-radius:999px;border:1px solid var(--line-strong);color:var(--ink);white-space:nowrap}
-  .status.live{background:var(--ink);color:#fff}
-  .status.research{border-color:var(--line);color:var(--muted)}
-  .status.archived{border-color:var(--line);color:var(--faint)}
-  .pnum{font-size:11px;color:var(--faint);letter-spacing:.1em}
-  h2{font-family:var(--serif);font-weight:400;font-size:27px;letter-spacing:-.01em;
-    margin:16px 0 4px;line-height:1.1}
-  .tagline{font-size:13.5px;color:var(--muted);font-style:italic;font-family:var(--serif)}
-  .desc{font-size:14.5px;color:var(--ink);margin:14px 0 0;line-height:1.55}
-  .stack{margin-top:auto;padding-top:18px;font-size:11px;letter-spacing:.04em;color:var(--faint)}
-  .plink{display:inline-block;margin-top:12px;font-size:13px;font-weight:500;
-    text-decoration:none;border-bottom:1px solid var(--ink);padding-bottom:1px;width:max-content;transition:opacity .15s}
-  .plink:hover{opacity:.55}
-
-  /* ---------- footer ---------- */
-  footer{padding:54px 0 80px;border-top:2px solid var(--line-strong);margin-top:30px}
-  .foot-h{font-family:var(--serif);font-weight:300;font-size:28px;margin:0 0 14px}
-  .foot-links{display:flex;flex-wrap:wrap;gap:10px 24px;font-size:14px}
-  .foot-links a{text-decoration:none;border-bottom:1px solid var(--line-strong);padding-bottom:2px}
-  .foot-links a:hover{opacity:.55}
-  .colophon{margin-top:30px;font-size:12px;color:var(--faint)}
-
-  /* ---------- design gallery ---------- */
-  .design{padding-top:8px}
-  .design .section-head{border-top:2px solid var(--line-strong);padding-top:40px;margin-top:24px}
-  .dh{font-family:var(--serif);font-weight:300;font-size:clamp(30px,5vw,46px);letter-spacing:-.02em;margin:12px 0 0;line-height:1}
-  .dsub{color:var(--muted);margin:14px 0 30px;max-width:580px}
-  .design-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
-  .dtile{border:1px solid var(--line);border-radius:14px;background:var(--card);
-    overflow:hidden;cursor:pointer;display:block;text-decoration:none;color:inherit;
-    box-shadow:0 1px 2px rgba(21,19,15,.04);
-    transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s,border-color .25s}
-  .dtile:hover{transform:translateY(-6px);border-color:transparent;box-shadow:0 22px 48px -16px rgba(21,19,15,.28)}
-  .dthumb{aspect-ratio:16/10;overflow:hidden;background:#efece4;
-    display:flex;align-items:center;justify-content:center;padding:22px}
-  .dthumb img{max-width:100%;max-height:100%;width:auto;height:auto;display:block;border-radius:6px;
-    box-shadow:0 10px 26px -10px rgba(21,19,15,.34);transition:transform .5s cubic-bezier(.2,.7,.3,1)}
-  .dtile:hover .dthumb img{transform:scale(1.03)}
-  .dtile .dcap{padding:15px 17px;border-top:1px solid var(--line)}
-  .dt{font-size:16px;font-weight:500;letter-spacing:-.01em}
-  .dc{font-size:13px;color:var(--muted);margin-top:3px}
-  .dgo{display:inline-block;margin-top:10px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
-    border-bottom:1px solid currentColor;padding-bottom:1px}
-  .dtile:hover .dgo{opacity:.6}
-  @media (max-width:600px){.design-grid{grid-template-columns:1fr}}
-
-  /* ---------- motion ---------- */
-  @keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-  .proj{animation:up .5s cubic-bezier(.2,.7,.3,1) both}
-  header>*{animation:up .6s cubic-bezier(.2,.7,.3,1) both}
-  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto}}
-
-  @media (max-width:640px){
-    header{padding:56px 0 28px}
-    .proj{min-height:auto;padding:26px 22px}
-    .filters{gap:6px}
-    .chip{padding:7px 12px}
-  }
-</style>
-</head>
-<body>
-
-<div class="wrap">
-  <header>
-    <div class="kicker">Portfolio</div>
-    <h1>Julian Jung</h1>
-    <p class="lede">Things I've built.</p>
-    <p class="intro">A live trend-intelligence product, a body of prediction-market research,
-      and a stack of AI tools for fashion, music, and photography — thirteen projects spanning markets,
-      creators, computer vision, and the odd field guide. Most shipped solo, end to end.</p>
-    <div class="meta">
-      <a href="mailto:thejungjulian@gmail.com">thejungjulian@gmail.com</a>
-      <a href="https://github.com/thejungjulian-del" target="_blank" rel="noopener">GitHub</a>
-      <span class="where">San Francisco</span>
-    </div>
-  </header>
-
-  <nav class="filters" aria-label="Filter projects">
-    <button class="chip on" data-filter="all">All</button>
-    <button class="chip" data-filter="products">Products &amp; apps</button>
-    <button class="chip" data-filter="markets">Markets &amp; trading</button>
-    <span class="count" id="count"></span>
+<header class="bar" id="bar">
+  <a href="#top" class="lock">
+    <div class="a">Julian Jung</div>
+    <div class="b">Markets, products &amp; design</div>
+  </a>
+  <nav class="nav" aria-label="Sections">
+    <a href="#markets" data-sec="markets">Markets &amp; data</a>
+    <a href="#products" data-sec="products">Products</a>
+    <a href="#brand" data-sec="brand">Brand &amp; web</a>
+    <a href="#film" data-sec="film">Film</a>
   </nav>
+  <button class="ixbtn" id="ixbtn" aria-expanded="false" aria-controls="menu"><i></i>Index</button>
+</header>
+<div class="menu" id="menu" hidden></div>
 
-  <main class="grid" id="grid">
+<div id="home">
+<main class="hero" id="top">
+  <canvas id="stage" aria-hidden="true"></canvas>
+  <div class="crop" aria-hidden="true">
+    <i class="v" style="left:33.333%"></i><i class="v" style="left:66.666%"></i>
+    <i class="h" style="top:30%"></i><i class="h" style="top:76%"></i>
+  </div>
+  <div class="marg tr">
+    Markets &amp; data<br>Products<br>Brand &amp; web<br>Film &amp; motion
+    <div style="height:15px"></div>
+    UC Berkeley · 2026
+  </div>
+  <div class="logo" aria-hidden="true"><h1>Julian Jung</h1></div>
+  <div class="logo front" aria-hidden="true"><h1>Julian Jung</h1></div>
+  <h1 class="sr">Julian Jung, markets, products and design</h1>
+  <div class="under">Markets, products and brands, built end to end</div>
+  <div class="marg bl"><span class="big">11</span><span>Works<br>shown</span></div>
+  <div class="marg br">
+    Index
+    <a href="#markets">Markets &amp; data</a>
+    <a href="#products">Products</a>
+    <a href="#brand">Brand &amp; web</a>
+  </div>
+</main>
 
-    <!-- 01 Trendy -->
-    <article class="proj" data-cat="products">
-      <div class="ptop"><span class="status live">Live</span><span class="pnum">01</span></div>
-      <h2>Trendy</h2>
-      <div class="tagline">A trend-intelligence desk for creator agencies</div>
-      <p class="desc">A web app that reads each creator's niche, finds the formats and concepts
-        overperforming right now, and hands them shoot-ready briefs — plus a built-in brand-deal
-        inbox that scores incoming partnership offers and drafts the replies. Refreshes on a
-        daily AI scan.</p>
-      <div class="stack">Flask · SQLite · Claude · Apify</div>
-      <a class="plink" href="https://trendylabelhq.com" target="_blank" rel="noopener">Visit site ↗</a>
-    </article>
-
-    <!-- 02 FitCheck -->
-    <article class="proj" data-cat="products">
-      <div class="ptop"><span class="status">App</span><span class="pnum">02</span></div>
-      <h2>FitCheck</h2>
-      <div class="tagline">Virtual try-on for your wardrobe</div>
-      <p class="desc">Upload a piece of clothing and see it rendered on a model — front and back.
-        Built with swappable AI engines, so it can run on cloud models or fully on-device, with
-        caching to keep each generation cheap.</p>
-      <div class="stack">Next.js · Gemini · ComfyUI · Ollama</div>
-      <a class="plink" href="fitcheck/index.html" target="_blank" rel="noopener">View demo ↗</a>
-    </article>
-
-    <!-- 03 VideoTrends -->
-    <article class="proj" data-cat="products">
-      <div class="ptop"><span class="status">App</span><span class="pnum">03</span></div>
-      <h2>VideoTrends</h2>
-      <div class="tagline">What clothing is trending right now</div>
-      <p class="desc">Scans TikTok and Instagram for fashion posts, uses a local vision model to
-        tag the specific garments in each, ranks them by engagement, and tracks momentum and
-        forecast accuracy over time. Runs entirely on-device — no paid vision API.</p>
-      <div class="stack">Python · Local vision AI · Flask</div>
-      <a class="plink" href="videotrends/index.html" target="_blank" rel="noopener">View demo ↗</a>
-    </article>
-
-    <!-- 04 TrendTracker -->
-    <article class="proj" data-cat="products">
-      <div class="ptop"><span class="status">App</span><span class="pnum">04</span></div>
-      <h2>TrendTracker</h2>
-      <div class="tagline">A trend dashboard that remembers</div>
-      <p class="desc">A dashboard that captures clothing and social trends over time, using Google
-        Trends as a free, reliable signal — so you can see what's actually rising, not just what's
-        loud today.</p>
-      <div class="stack">Python · Flask · Google Trends</div>
-      <a class="plink" href="trendtracker/index.html" target="_blank" rel="noopener">View demo ↗</a>
-    </article>
-
-    <!-- 05 Photo Match -->
-    <article class="proj" data-cat="products">
-      <div class="ptop"><span class="status">App</span><span class="pnum">05</span></div>
-      <h2>Photo Match</h2>
-      <div class="tagline">Match any photo's look — and get the recipe</div>
-      <p class="desc">Upload a reference photo and your own shot; it analyzes the reference's color
-        and tone and generates a Lightroom preset to match. Runs three AI engines side by side —
-        Claude, GPT, and a free local model — so you can compare their reads.</p>
-      <div class="stack">Flask · Claude · GPT · Ollama</div>
-      <a class="plink" href="photomatch/index.html" target="_blank" rel="noopener">View demo ↗</a>
-    </article>
-
-    <!-- 06 LA Spots -->
-    <article class="proj" data-cat="products">
-      <div class="ptop"><span class="status">Site</span><span class="pnum">06</span></div>
-      <h2>LA Spots</h2>
-      <div class="tagline">A field guide to LA, for the stylish</div>
-      <p class="desc">A hand-built, single-page field guide to Los Angeles — curated neighborhoods
-        and spots, designed and coded from scratch. Opens right here in the browser, no install.</p>
-      <div class="stack">HTML · CSS · JavaScript</div>
-      <a class="plink" href="la-spots/index.html" target="_blank" rel="noopener">View site ↗</a>
-    </article>
-
-    <!-- 07 Potential Radar -->
-    <article class="proj" data-cat="products">
-      <div class="ptop"><span class="status">App</span><span class="pnum">07</span></div>
-      <h2>Potential Radar</h2>
-      <div class="tagline">A Spotify radar for breakout artists</div>
-      <p class="desc">Surfaces up-and-coming musicians from the Spotify catalog and ranks them by a
-        "potential" score — how underrated, buzzing, and fast-growing they are — so you can spot
-        artists before they break out. Tracks their growth over time.</p>
-      <div class="stack">Python · Spotify API · Flask · SQLite</div>
-      <a class="plink" href="potential-radar/index.html" target="_blank" rel="noopener">View demo ↗</a>
-    </article>
-
-    <!-- 08 Polymarket research -->
-    <article class="proj" data-cat="markets">
-      <div class="ptop"><span class="status research">Research</span><span class="pnum">08</span></div>
-      <h2>Prediction-Market Edge Research</h2>
-      <div class="tagline">What actually beats a prediction market?</div>
-      <p class="desc">A deep, data-driven investigation into whether retail traders can profit on
-        Polymarket. Pulled millions of on-chain trades and prices, decomposed the top traders'
-        P&amp;L, and found their edge is <em>execution</em>, not prediction — then distilled the one
-        replicable, no-speed-race edge into a paper-traded bot.</p>
-      <div class="stack">Python · Dune Analytics · Backtesting</div>
-      <a class="plink" href="polymarket/index.html" target="_blank" rel="noopener">View dashboard ↗</a>
-    </article>
-
-    <!-- 07 Kalshi -->
-    <article class="proj" data-cat="markets">
-      <div class="ptop"><span class="status research">Research</span><span class="pnum">09</span></div>
-      <h2>Kalshi Bot</h2>
-      <div class="tagline">Value + arbitrage scanner for event markets</div>
-      <p class="desc">A read-only bot for the Kalshi exchange that hunts internal arbitrage and a
-        weather-forecast edge — next-day temperature markets priced against live meteorological
-        data — and cross-references Kalshi against Polymarket for divergences. Dry-run only.</p>
-      <div class="stack">Python · Kalshi API · Open-Meteo</div>
-      <a class="plink" href="kalshi/index.html" target="_blank" rel="noopener">View dashboard ↗</a>
-    </article>
-
-    <!-- 08 Arb scanner -->
-    <article class="proj" data-cat="markets">
-      <div class="ptop"><span class="status research">Research</span><span class="pnum">10</span></div>
-      <h2>Cross-Venue Arbitrage Scanner</h2>
-      <div class="tagline">Hunting price gaps across prediction markets</div>
-      <p class="desc">A multi-venue scanner — Polymarket, Kalshi, Limitless — built on a pluggable
-        venue-adapter design with a sharp-bookmaker "true odds" anchor. Verified end to end; its
-        honest finding was that these markets are mostly efficient, so it only flags real gaps when
-        they briefly open.</p>
-      <div class="stack">Python · Multi-venue APIs · Arbitrage math</div>
-      <a class="plink" href="arb/index.html" target="_blank" rel="noopener">View dashboard ↗</a>
-    </article>
-
-    <!-- 09 Polymarket LP -->
-    <article class="proj" data-cat="markets">
-      <div class="ptop"><span class="status research">Research</span><span class="pnum">11</span></div>
-      <h2>Liquidity-Provider Experiment</h2>
-      <div class="tagline">Does retail market-making actually pay?</div>
-      <p class="desc">A paper-only experiment testing whether a small liquidity provider can capture
-        real edge from Polymarket's rewards program — built as an honest measurement that models
-        reward share against live order-book depth and adverse selection.</p>
-      <div class="stack">Python · Polymarket CLOB</div>
-      <a class="plink" href="lp/index.html" target="_blank" rel="noopener">View dashboard ↗</a>
-    </article>
-
-    <!-- 10 Signal Deck -->
-    <article class="proj" data-cat="markets">
-      <div class="ptop"><span class="status archived">Archived</span><span class="pnum">12</span></div>
-      <h2>Signal Deck</h2>
-      <div class="tagline">AI-written futures trading signals</div>
-      <p class="desc">A bot that generates structured S&amp;P 500 futures signals using a language
-        model with live web search, posting to Discord on a schedule with full market-hours
-        awareness.</p>
-      <div class="stack">Python · Claude API · Discord</div>
-      <a class="plink" href="signaldeck/index.html" target="_blank" rel="noopener">View dashboard ↗</a>
-    </article>
-
-    <!-- 11 Hyperliquid -->
-    <article class="proj" data-cat="markets">
-      <div class="ptop"><span class="status archived">Archived</span><span class="pnum">13</span></div>
-      <h2>Hyperliquid Data Collector</h2>
-      <div class="tagline">Building a market database for research</div>
-      <p class="desc">A read-only collector for Hyperliquid's on-chain outcome markets, snapshotting
-        prices and order books into a local database to characterize what moves them — written with
-        zero dependencies, just the standard library.</p>
-      <div class="stack">Python · Hyperliquid API · SQLite</div>
-      <a class="plink" href="hyperliquid/index.html" target="_blank" rel="noopener">View dashboard ↗</a>
-    </article>
-
-  </main>
-
-  <section class="design">
-    <div class="section-head">
-      <div class="kicker">Selected design work</div>
-      <div class="dh">UI/UX &amp; brand design</div>
-      <p class="dsub">Interfaces, landing pages, and brand concepts — designed in Figma. Click any to enlarge.</p>
-    </div>
-    <div class="design-grid">
-      <a class="dtile" href="https://www.figma.com/proto/FSUlxSOY0CVDNE1fbWoIgJ/uhnother-website?node-id=1-424&amp;scaling=scale-down&amp;content-scaling=fixed&amp;starting-point-node-id=1%3A479&amp;page-id=0%3A1" target="_blank" rel="noopener">
-        <div class="dthumb"><img src="images/uhnother.png" alt="uhnother fashion e-commerce design" loading="lazy"></div>
-        <div class="dcap"><div class="dt">uhnother</div><div class="dc">Fashion e-commerce concept</div><div class="dgo">Open prototype ↗</div></div>
-      </a>
-      <a class="dtile" href="https://www.figma.com/proto/uDntkLCNx69hB3RPezXqKF/Julian-Jung-HW?node-id=27-467&amp;scaling=scale-down&amp;content-scaling=fixed&amp;page-id=0%3A1" target="_blank" rel="noopener">
-        <div class="dthumb"><img src="images/porsche-speed.png" alt="Porsche Speed landing page design" loading="lazy"></div>
-        <div class="dcap"><div class="dt">Porsche — Speed</div><div class="dc">Automotive landing page</div><div class="dgo">Open prototype ↗</div></div>
-      </a>
-      <a class="dtile" href="https://blockchain.studentorg.berkeley.edu/" target="_blank" rel="noopener">
-        <div class="dthumb"><img src="images/bb-portfolio.png" alt="Blockchain at Berkeley brand graphic design" loading="lazy"></div>
-        <div class="dcap"><div class="dt">Blockchain at Berkeley</div><div class="dc">Web &amp; brand design · live site</div><div class="dgo">Visit live site ↗</div></div>
-      </a>
-      <a class="dtile" href="https://www.figma.com/proto/CrE36AWyrddrGa2CCIrpIB/BROOKWELL?node-id=1384-7822&amp;scaling=scale-down&amp;content-scaling=fixed&amp;starting-point-node-id=1392%3A15505&amp;page-id=1226%3A700" target="_blank" rel="noopener">
-        <div class="dthumb"><img src="images/brookwell.png" alt="Brookwell fintech app onboarding flow" loading="lazy"></div>
-        <div class="dcap"><div class="dt">Brookwell</div><div class="dc">Fintech app — onboarding UX</div><div class="dgo">Open prototype ↗</div></div>
-      </a>
-    </div>
-  </section>
-
-  <footer>
-    <p class="foot-h">Let's talk.</p>
-    <div class="foot-links">
-      <a href="mailto:thejungjulian@gmail.com">thejungjulian@gmail.com</a>
-      <a href="https://github.com/thejungjulian-del" target="_blank" rel="noopener">github.com/thejungjulian-del</a>
-      <a href="https://trendylabelhq.com" target="_blank" rel="noopener">trendylabelhq.com</a>
-    </div>
-    <p class="colophon">Based in San Francisco. Designed and shipped by Julian Jung.</p>
-  </footer>
+<div class="band">
+  <div class="word">Made.</div>
+  <div class="cap">
+    <p>Trading systems tested on data they had never seen, apps people can use, brands that are live and 3D films made for them. Mostly solo, from the first sketch to the server it runs on. Open any piece for the full story.</p>
+    <div>Fig. 01 — the body of work</div>
+  </div>
 </div>
 
-<script>
-  const chips = document.querySelectorAll(".chip");
-  const cards = [...document.querySelectorAll(".proj")];
-  const count = document.getElementById("count");
+<section class="hr" aria-label="Headline numbers">
+  <div class="stats">
+    <div class="stat"><b>14</b><span>Trading and data systems</span></div>
+    <div class="stat"><b>6</b><span>Products and tools</span></div>
+    <div class="stat"><b>3</b><span>Brands and sites</span></div>
+    <div class="stat"><b>2</b><span>3D films</span></div>
+    <div class="stat"><b>3</b><span>Live websites</span></div>
+  </div>
+</section>
 
-  function apply(filter){
-    let shown = 0, i = 0;
-    cards.forEach(card => {
-      const match = filter === "all" || card.dataset.cat === filter;
-      card.style.display = match ? "" : "none";
-      if(match){ card.style.animationDelay = (i++ * 0.04) + "s"; shown++; }
-    });
-    count.textContent = shown + (shown === 1 ? " project" : " projects");
-  }
-  chips.forEach(chip => chip.addEventListener("click", () => {
-    chips.forEach(c => c.classList.remove("on"));
-    chip.classList.add("on");
-    apply(chip.dataset.filter);
-  }));
-  apply("all");
+<section class="hr" id="markets">
+  <div class="head">
+    <h2>Markets &amp; data</h2>
+    <div class="sub">14 systems · its own portfolio<br>Trading research and data products</div>
+  </div>
+  <div class="xlink">
+    <div>
+      <p>I build trading systems and then try to break them: overnight equities, prediction markets, weather contracts, football odds and creator data. Each one had to hold up on data it had never seen, at the prices it would really get. One rule survived 27 years of Nasdaq data; most ideas didn’t, and the bug ledger shows why.</p>
+      <a class="btn" href="research/index.html" target="_blank" rel="noopener">Open the research portfolio <span>↗</span></a>
+    </div>
+    <div class="xlist" id="xlist"></div>
+  </div>
+</section>
+
+<section class="hr" id="products">
+  <div class="head">
+    <h2>Products</h2>
+    <div class="sub">6 apps and tools · photo, video, creators<br>Open any card for the full case</div>
+  </div>
+  <div class="rgrid three" id="grid-products"></div>
+</section>
+
+<section class="hr" id="brand">
+  <div class="head">
+    <h2>Brand &amp; web</h2>
+    <div class="sub">3 brands and sites<br>Two of them live</div>
+  </div>
+  <div class="rgrid three" id="grid-brand"></div>
+</section>
+
+<section class="hr" id="film">
+  <div class="head">
+    <h2>Film &amp; motion</h2>
+    <div class="sub">2 films · 3D, made in Blender<br>For the Redline website</div>
+  </div>
+  <div class="rgrid two" id="grid-film"></div>
+</section>
+</div>
+
+<div id="views"></div>
+
+<footer>
+  <div class="f-top">
+    <div class="f-mark">Julian Jung</div>
+    <div class="f-line">Markets, products &amp; design<br>UC Berkeley · 2026</div>
+  </div>
+  <div class="f-cols">
+    <div class="f-col"><div class="f-h">Build</div><span>Python &amp; Flask</span><span>Next.js &amp; React</span><span>JavaScript</span><span>ffmpeg</span><span>Claude, Gemini, Ollama</span></div>
+    <div class="f-col"><div class="f-h">Design &amp; film</div><span>Figma</span><span>Blender</span><span>After Effects</span><span>Lightroom</span></div>
+    <div class="f-col"><div class="f-h">Live</div><a href="https://redlineatberkeley.com/" target="_blank" rel="noopener">redlineatberkeley.com ↗</a><a href="https://jsentertainment.org/" target="_blank" rel="noopener">jsentertainment.org ↗</a><a href="https://desk.jsentertainment.org/me/48" target="_blank" rel="noopener">JS Entertainment desk ↗</a></div>
+    <div class="f-col"><div class="f-h">Contact</div><span class="mail">thejungjulian@gmail.com</span><a href="research/index.html" target="_blank" rel="noopener">Research portfolio ↗</a><a href="https://github.com/thejungjulian-del" target="_blank" rel="noopener">GitHub ↗</a><span>Berkeley, CA</span></div>
+  </div>
+  <div class="f-base"><span>© 2026 Julian Jung</span><span>Demo pages use sample data · AI-generated people are labeled</span></div>
+</footer>
+
+<script>
+var RESEARCH="research/index.html";
+var SECTIONS=[["markets","Markets & data"],["products","Products"],["brand","Brand & web"],["film","Film & motion"]];
+var GROUPS=[{id:"products",label:"Products",grid:"grid-products"},{id:"brand",label:"Brand & web",grid:"grid-brand"},
+            {id:"film",label:"Film & motion",grid:"grid-film"}];
+var ELSEWHERE=[["Research portfolio",RESEARCH],["redlineatberkeley.com","https://redlineatberkeley.com/"],["jsentertainment.org","https://jsentertainment.org/"],["GitHub","https://github.com/thejungjulian-del"]];
+var FIGMA_UHNOTHER="https://www.figma.com/proto/FSUlxSOY0CVDNE1fbWoIgJ/uhnother-website?node-id=1-424&scaling=scale-down&content-scaling=fixed&starting-point-node-id=1%3A479&page-id=0%3A1";
+var PROJECTS=[
+/* ---------------- products ---------------- */
+{id:"desk",g:"products",no:"01",name:"JS Entertainment Desk",dis:"Creator trends · live web app",st:"Live",live:true,shape:"icosa",
+ kpi:["Daily","scan of every watched creator"],
+ tx:"A private trend desk for a creator agency. It watches chosen creators, surfaces what’s overperforming in their niche, turns it into shoot-ready briefs and runs a brand-deal inbox.",
+ tk:"Flask · SQLite · Apify · Claude API · Hetzner",
+ lede:"A trend desk for a creator agency, live on its own server. It reads each creator’s niche, finds what’s overperforming right now and turns it into shoot-ready briefs, with a brand-deal inbox built in.",
+ meta:[["Status","Live, in daily use"],["Period","Jun 2026 – now"],["Built with","Flask, SQLite, Apify, Claude API"],["Runs on","Hetzner, Caddy, Cloudflare"]],
+ kpis:[["$0.30","per 1,000 posts scraped"],["7.7×","cheaper than the official scraper"],["Daily","scan of every watched creator"]],
+ rows:[
+  ["The brief","Tell a creator what to film next, based on what’s working in their niche today, and handle the brand deals that come in."],
+  ["What it does",[
+   "Keeps watch lists of specific creators and scans them every day.",
+   "Ranks the top posts and reels per niche, with swipeable carousels and an in-site viewer.",
+   "Finds new creators from real collaborations and tags, then screens them with a vision pass so brands, photographers and off-niche accounts drop out.",
+   "Suggests when to post and writes captions and hashtags.",
+   "Runs a brand-deal inbox on its own domain that scores incoming offers and drafts replies."]],
+  ["How it’s built",[
+   "Flask and SQLite behind Caddy on a Hetzner server, with Cloudflare DNS and email routing.",
+   "systemd services plus a timer for database backups.",
+   "Overlapping watch lists are scraped once and shared, which keeps scraping at about $0.30 per 1,000 posts."]],
+  ["Access","The live link opens a creator’s view. The admin side stays private because it manages real creators’ accounts; I’m happy to walk through it."],
+  ["Links",{links:[["Creator view, live","https://desk.jsentertainment.org/me/48"],["Data case study",RESEARCH+"#v-desk",1]]}]]},
+
+{id:"fitcheck",g:"products",no:"02",name:"FitCheck",dis:"Virtual try-on · web app",st:"Demo",shape:"form",
+ kpi:["2","angles per look, front and back"],
+ tx:"Paste a product link and see the piece on a model generated to your measurements, front and back. Swappable AI engines, with caching so each look is only paid for once.",
+ tk:"Next.js · React · Gemini · ComfyUI · Ollama",
+ lede:"Virtual try-on for your wardrobe. Enter your measurements, paste a link to any piece of clothing, and see it on a model built to your fit, from the front and the back.",
+ meta:[["Status","Working, demo online"],["Period","Jun 2026"],["Built with","Next.js 15, React 19, Gemini"],["Runs on","Local, cloud or on-device engines"]],
+ kpis:[["2","angles per look"],["3.4×","cheaper per image after a model switch"],["1 link","product page in, try-on out"]],
+ rows:[
+  ["The brief","See a piece of clothing on a body like yours before you buy it, from nothing more than the product link."],
+  ["How it works",[
+   "Enter body measurements and optional reference photos; it generates a model to your fit on an off-white studio backdrop.",
+   "Paste a product link. The app reads the page, reasons about size and fit, and renders the model wearing the piece.",
+   "Flip shows a back view, so every look comes as a front and back pair.",
+   "Results are cached by product link, body and prompt version, so repeating a look costs nothing."]],
+  ["How it’s built",[
+   "Next.js 15 and React 19, with image generation behind one provider interface.",
+   "Switched the image model from Gemini 3 Pro Image (about $0.134 an image) to Gemini 2.5 Flash Image (about $0.039).",
+   "An on-device path: Ollama for the text reasoning, and a ComfyUI provider running Flux.1 Kontext for images."]],
+  ["Gallery",{figs:[{type:"gallery",items:[
+   ["img/fitcheck-app.jpg","The app · demo data",1],
+   ["img/fitcheck-model.jpg","Generated base model · AI-generated person"],
+   ["img/fitcheck-front.jpg","A look, front · AI-generated person"],
+   ["img/fitcheck-back.jpg","The same look, back · AI-generated person"]]}]}],
+  ["Links",{links:[["Open the demo","fitcheck/index.html"]]}]]},
+
+{id:"photomatch",g:"products",no:"03",name:"Photo Match",dis:"Photo look matching · web app",st:"Demo",shape:"lens",
+ kpi:["3","AI engines compared side by side"],
+ tx:"Upload a reference photo and your own shot. It reads the reference’s colour and tone and writes a Lightroom preset to match, with Claude, GPT and a free local model side by side.",
+ tk:"Flask · Claude · GPT-4o · Ollama · Lightroom .xmp",
+ lede:"Copy any photo’s look. Upload a reference to learn how it was shot, then upload your own photo and get a Lightroom preset that matches it.",
+ meta:[["Status","Working, demo online"],["Period","May – Jun 2026"],["Built with","Flask, Claude, GPT-4o, Ollama"],["Output","Lightroom Classic .xmp preset"]],
+ kpis:[["3","AI engines side by side"],[".xmp","Lightroom preset out"],["$0","to run on the local model"]],
+ rows:[
+  ["The brief","When I like a photo’s look, I want to know how it was shot and how to get my own photo there, without guessing at sliders."],
+  ["How it works",[
+   "Upload a reference: get detailed shooting instructions for light, lens and composition.",
+   "Upload your shot: get a match analysis and a Lightroom Classic preset (basic panel, HSL, colour grading, vignette).",
+   "Optional AI re-edit of your photo toward the reference with OpenAI’s image model.",
+   "Pick any of three engines (Claude, GPT-4o, or Llama 3.2 Vision running locally) and compare their reads side by side."]],
+  ["How it’s built",[
+   "A Flask backend with analyze, match and edit endpoints, each engine wrapped so the app runs with whichever ones are set up.",
+   "preset.py writes the .xmp file from slider values.",
+   "The local model takes one image per message, so the app stitches the reference and your photo side by side for it.",
+   "White balance is left out of the preset on purpose, because RAW and JPEG files differ; it comes as written notes instead."]],
+  ["Interface",{figs:[{type:"shot",src:"img/photomatch.jpg",cap:"Match your photo · demo data"}]}],
+  ["Links",{links:[["Open the demo","photomatch.html"]]}]]},
+
+{id:"editforge",g:"products",no:"04",name:"EditForge",dis:"Edit copying · video tool",st:"Built",shape:"reel",
+ kpi:["9","test suites passing"],
+ tx:"Paste a TikTok edit and drop in your clips. It reads the edit’s cut rhythm, beat grid, energy and grade, then rebuilds it with your footage as an After Effects project.",
+ tk:"Python · Flask · ffmpeg · After Effects scripting",
+ lede:"Paste a TikTok edit and drop in your clips. EditForge reads the edit’s cut rhythm, beat grid, energy and colour, then rebuilds it with your footage as an After Effects project.",
+ meta:[["Status","Working locally"],["Period","Jul 2026"],["Built with","Python, Flask, ffmpeg"],["Output","After Effects .jsx project"]],
+ kpis:[["9","test suites passing"],[".jsx","After Effects project out"],["ProRes 422","the fix that made AE read every clip"]],
+ rows:[
+  ["The brief","Recreating an edit you like by hand means counting cuts, matching beats and regrading every clip. I wanted that in one step."],
+  ["How it works",[
+   "Analyzes the reference for cuts, beat grid, energy and grade.",
+   "Finds which of your clips look most like each reference shot.",
+   "Refines every cut point, including face angle, and makes the end loop back seamlessly.",
+   "Spots when the reference splices one source shot several times, and does the same with one of your clips.",
+   "Writes an After Effects script that builds the whole comp with your footage, transitions, flashes, speed ramps and slow motion."]],
+  ["How it’s built",[
+   "Python and Flask for the app, ffmpeg for analysis and transcoding.",
+   "After Effects showed every clip as Media Offline: it can’t reliably decode ffmpeg’s H.264. Transcoding to ProRes 422 fixed it, confirmed in AE.",
+   "The script de-duplicates imports, timestamps each comp and reports any footage AE can’t read.",
+   "Nine test suites cover cut points, source grouping, face angle, colour, flashes and content matching."]],
+  ["Interface",{figs:[{type:"shot",src:"img/editforge.jpg",cap:"Paste a link, drop your clips"}]}],
+  ["Next","CapCut draft output and a chat front end, so you can describe an edit and get a finished video back."]]},
+
+{id:"selfclip",g:"products",no:"05",name:"SelfClip",dis:"Stream clipping · automation",st:"Running",live:true,shape:"phone",
+ kpi:["9:16","vertical, captioned, automatic"],
+ tx:"Every time I save a moment on stream, it becomes a captioned vertical clip on its own. A watcher picks up each save, crops it, captions it and pings me.",
+ tk:"Python · ffmpeg · OBS · launchd",
+ lede:"Every time I save a moment on stream, it turns into a captioned vertical clip on its own, ready to post.",
+ meta:[["Status","Running"],["Period","Aug 2026"],["Built with","Python, ffmpeg, OBS"],["Runs on","My Mac, launchd"]],
+ kpis:[["9:16","vertical, captioned"],["< 5 min","from save to ready clip"],["0","clicks after setup"]],
+ rows:[
+  ["The brief","Clipping your own stream by hand means scrubbing, cropping and captioning every highlight. OBS already keeps the last few minutes in memory, so the rest could be automatic."],
+  ["How it works",[
+   "OBS’s replay buffer saves the last moments when I press a key.",
+   "A watcher picks up each save and crops it to 9:16 with a layout tuned to my stream.",
+   "Short-form captions go on in a bold one-to-three-word style.",
+   "The finished clip lands in a ready folder and I get a notification.",
+   "A separate VOD tool ranks the best moments of a long stream before downloading anything; on a 3.9-hour VOD it made five captioned 36-second clips."]],
+  ["How it’s built",[
+   "Python and ffmpeg; launchd keeps the watcher alive across restarts.",
+   "A caption writer adds a hook line and hashtags.",
+   "Posting stays manual on purpose, because automated posting gets accounts banned."]]]},
+
+{id:"exchange",g:"products",no:"06",name:"Creator Exchange",dis:"Fintech · play money",st:"Prototype",live:true,shape:"torus",
+ kpi:["0.5%","fee per trade to the exchange"],
+ tx:"A stock market for creators. Shares pay out a slice of revenue (sponsors, ads, merch) every quarter, trading on a real limit-order book with a house market maker.",
+ tk:"JavaScript · matching engine · shared database",
+ lede:"A play-money stock market for creators. Creators IPO, shares pay out a slice of their revenue each quarter, and the exchange earns a fee on every trade.",
+ meta:[["Status","Working prototype"],["Period","Oct 2026"],["Built with","JavaScript, shared database"],["Money","Play money only"]],
+ kpis:[["0.5%","taker fee to the exchange"],["20%","discount rate in the valuation"],["5","revenue sources per report"]],
+ rows:[
+  ["The brief","Value creators like stocks, based on everything they earn, including sponsors, and let fans trade them."],
+  ["What I built",[
+   "A limit-order book with price-time priority, matched under a per-stock lease so two traders can’t fill the same order.",
+   "A valuation model: a share is a fixed-term slice of revenue, priced as discounted payouts at 20% a year, which also sets the IPO price.",
+   "A house market maker that bids 5% under model value.",
+   "Quarterly reports split by source (sponsors, ads, merch, subscriptions, other) that pay holders.",
+   "A shared database so invited friends trade against each other, with six fictional example creators."]],
+  ["Market check","GigaStar already runs a real-money version for YouTube ad revenue (about 37 offerings, $6.9M raised) but doesn’t cover sponsors. Fantex tried athlete stocks in 2013–16 and closed to retail after lawsuits. Real money would need a registered funding portal."],
+  ["Links",{links:[["Open the exchange","https://claude.ai/artifact/8fUmEedDAcb7EFDzj9UoZo"]]}]]},
+
+/* ---------------- brand & web ---------------- */
+{id:"redline",g:"brand",no:"07",name:"Redline",dis:"Car club identity + website",st:"Live",live:true,img:"img/redline-about.jpg",hero:"img/redline-lowpoly.jpg",
+ tx:"UC Berkeley’s car club. As VP I built its identity, its art-directed website with membership sign-up, its 3D car films and its recruiting poster.",
+ tk:"HTML · CSS · JavaScript · Blender",
+ lede:"Redline is UC Berkeley’s car club: cruises, meets, automotive media and clothes. As vice president I built its identity, its website and its recruiting material.",
+ meta:[["Role","Vice president, design and web"],["Period","Sep – Oct 2026"],["Built with","HTML, CSS, JavaScript, Blender"],["Live at","redlineatberkeley.com"]],
+ kpis:[["3","colours: red, cream, ink"],["5","roles in the open call"],["4","pages, one motion language"]],
+ rows:[
+  ["The brief","Make a student car club look like an art-directed automotive and image-making collective, without inventing projects it hasn’t done."],
+  ["Identity",[
+   "A wordmark set in Akira Expanded, in red #d40a0a, cream #f4ead2 and ink #0b0a09, with IBM Plex Sans for text.",
+   "Written rules: no grain, glitch or CRT effects, and no made-up projects or prices on public material."]],
+  ["Website",[
+   "Home, About, Connect and Apply pages with a scroll-driven photo sequence, curtain reveals and page transitions.",
+   "A reduced-motion version where everything stays visible and navigation works without animation.",
+   "A membership application with the full waiver, connected to the club’s membership backend.",
+   "Dark, faceted 3D car renders and two intro films made for the site."]],
+  ["Gallery",{figs:[{type:"gallery",items:[
+   ["img/redline-about.jpg","About page · live",1],
+   ["img/redline-connect.jpg","Connect page · live"],
+   ["img/redline-poster.jpg","Open call poster · 2160 × 2700"],
+   ["img/redline-lowpoly.jpg","Low-poly render for the home page"],
+   ["img/redline-city.jpg","People and city render"],
+   ["img/redline-coastal.jpg","Club photography"],
+   ["img/redline-drive.jpg","Club drive"],
+   ["img/redline-merch.jpg","’24 Berkeley varsity hoodie",1]]}]}],
+  ["Recruiting","The Open call poster went out at Instagram’s 4:5 size and lists five roles: creators, models, designers, film and photo."],
+  ["Links",{links:[["redlineatberkeley.com","https://redlineatberkeley.com/"],["Instagram","https://www.instagram.com/redlineatberkeley/",1],["SVJ film","#v-redline-svj",1],["Supra film","#v-redline-supra",1]]}]]},
+
+{id:"jsent",g:"brand",no:"08",name:"JS Entertainment",dis:"Company website · live",st:"Live",live:true,img:"img/jsent-site.jpg",hero:"img/jsent-site.jpg",
+ tx:"The public site for a group-development company: paper, hairline grid and chrome objects drawn by a 3D renderer I wrote from scratch. This portfolio uses the same system.",
+ tk:"HTML · CSS · JavaScript, no libraries",
+ lede:"The public site for JS Entertainment, a company that builds and operates groups, and the design system this portfolio is built on.",
+ meta:[["Status","Live"],["Period","Jul – Sep 2026"],["Built with","HTML, CSS, JavaScript, no libraries"],["Live at","jsentertainment.org"]],
+ rows:[
+  ["The brief","A company that builds groups needed a site that reads like a studio, not a startup."],
+  ["What I made",[
+   "The paper edition: white majority, black accents, a hairline construction grid, crop marks and grain.",
+   "A software 3D renderer written from scratch for the chrome objects, shaded against a bright environment so they read on paper.",
+   "Roster cards, line diagrams of how the company operates, and an auditions form.",
+   "A dark sister site for its first group, A Loud Peace, and a 28-page operating manual on how HYBE and JYP run, adapted for a small company."]],
+  ["Interface",{figs:[{type:"shot",src:"img/jsent-site.jpg",cap:"jsentertainment.org · live"}]}],
+  ["Links",{links:[["jsentertainment.org","https://jsentertainment.org/"],["The desk behind it","#v-desk",1]]}]]},
+
+{id:"uhnother",g:"brand",no:"09",name:"uhnother",dis:"Fashion e-commerce concept · Figma",st:"Prototype",img:"img/uhnother.jpg",hero:"img/uhnother.jpg",
+ tx:"A concept storefront for a fashion label: editorial photography, a red wordmark and quiet navigation.",
+ tk:"Figma · clickable prototype",
+ lede:"A concept storefront for a fashion label, designed in Figma with a clickable prototype.",
+ meta:[["Type","E-commerce concept"],["Tool","Figma"],["Format","Desktop website"],["Deliverable","Clickable prototype"]],
+ rows:[
+  ["The project","An e-commerce concept where the photography carries the brand: a product on a hanger against a tiled wall, a model in the frame, and navigation kept small so nothing competes with the clothes."],
+  ["Design",{figs:[{type:"gallery",items:[["img/uhnother.jpg","Landing page",1]]}]}],
+  ["Links",{links:[["Open the prototype",FIGMA_UHNOTHER]]}]]},
+
+/* ---------------- film ---------------- */
+{id:"redline-svj",g:"film",no:"10",name:"Redline SVJ",dis:"3D car film · Blender",st:"3D",img:"img/redline-svj.jpg",hero:"img/redline-svj.jpg",play:"0:17",
+ tx:"A low-poly Lamborghini SVJ showcase rendered in Blender for the Redline website.",
+ tk:"Blender · 720p · 17 s · silent",
+ lede:"A low-poly Lamborghini SVJ, modeled, lit and rendered in Blender as motion for the Redline website.",
+ meta:[["Type","3D showcase film"],["Tools","Blender"],["Length","17 seconds, silent"],["Used on","redlineatberkeley.com"]],
+ rows:[
+  ["Watch",{figs:[{type:"video",src:"media/redline-svj.mp4",poster:"img/redline-svj.jpg",cap:"Redline SVJ showcase"}]}],
+  ["Context","Part of the Redline identity: the site uses dark, faceted car renders instead of stock photos so the motion feels like the brand. See the Redline case for the rest."],
+  ["Links",{links:[["Redline case","#v-redline",1],["redlineatberkeley.com","https://redlineatberkeley.com/"]]}]]},
+
+{id:"redline-supra",g:"film",no:"11",name:"Redline Supra",dis:"Home-page intro film · Blender",st:"3D",img:"img/redline-supra.jpg",hero:"img/redline-supra.jpg",play:"0:10",
+ tx:"The intro film for the Redline home page: a Supra driving through the city at night, rendered in Blender.",
+ tk:"Blender · 1080p · 10 s",
+ lede:"The intro film for the Redline home page: a Supra driving through the city at night, rendered in Blender.",
+ meta:[["Type","Site intro film"],["Tools","Blender"],["Length","10 seconds"],["Used on","redlineatberkeley.com"]],
+ rows:[
+  ["Watch",{figs:[{type:"video",src:"media/redline-supra.mp4",poster:"img/redline-supra.jpg",cap:"Redline Supra intro"}]}],
+  ["Links",{links:[["Redline case","#v-redline",1],["redlineatberkeley.com","https://redlineatberkeley.com/"]]}]]}
+];
 </script>
-</body>
-</html>
+<script src="engine.js"></script>
+<script>
+/* the research list, deep-linking into the other portfolio */
+document.getElementById('xlist').innerHTML=[
+ ["formula-lab","01","Formula Lab","Running"],["overnight","02","Overnight Premium","Held up"],["fed","03","Fed Day Study","Finding"],
+ ["arb","04","Arbitrage Scanner","Built"],["polymarket","05","Polymarket Bots","Closed"],["kalshi","06","Kalshi Weather","Closed"],
+ ["course","07","Day-Trading Course Test","Closed"],["soccer","08","Soccer Model","Closed"],["desk","09","JS Entertainment Desk","Live"],
+ ["videotrends","10","VideoTrends","Paused"],["clips","11","Clip Campaign Ranker","Daily"],["exchange","12","Creator Exchange","Prototype"],
+ ["radar","13","Potential Radar","Demo"],["trendtracker","14","TrendTracker","Shelved"]
+].map(function(r){return '<a href="'+RESEARCH+'#v-'+r[0]+'" target="_blank" rel="noopener"><s>'+r[1]+'</s>'+r[2]+'<em>'+r[3]+' ↗</em></a>';}).join('');
+</script>
