@@ -115,7 +115,7 @@ section{position:relative;z-index:2;scroll-margin-top:80px;padding-block:clamp(6
 
 /* ---------- headline numbers (home + case pages) ---------- */
 .stats,.v-kpis{display:grid;border-top:1px solid var(--rule-2);border-left:1px solid var(--rule-2);background:var(--paper)}
-.stats{grid-template-columns:repeat(5,minmax(0,1fr))}
+.stats{grid-template-columns:repeat(var(--n,5),minmax(0,1fr))}
 .v-kpis{grid-template-columns:repeat(var(--n),minmax(0,1fr));border-top:0}
 .stat{border-right:1px solid var(--rule-2);border-bottom:1px solid var(--rule-2);padding:22px 20px 20px;display:flex;flex-direction:column;gap:12px;min-width:0}
 .stat b{font-weight:700;font-size:clamp(28px,3.3vw,46px);letter-spacing:-.045em;line-height:.9;font-variant-numeric:tabular-nums}

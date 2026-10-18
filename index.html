@@ -2,8 +2,8 @@
 <title>Julian Jung</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
-/* Landing: two words, one screen. Pointing at a portfolio turns the whole page
-   its colour: paper for research, ink for products and design. */
+/* Landing: only the choice. Pointing at a portfolio turns the whole page its colour:
+   paper for engineering, ink for design. The hairline grid fades with it. */
 :root{
   --paper:#f5f5f3;
   --ink:#0b0b0c;
@@ -12,7 +12,6 @@
   --pad:clamp(20px,3.4vw,44px);
   --gl:max(var(--pad),env(safe-area-inset-left,0px));
   --gr:max(var(--pad),env(safe-area-inset-right,0px));
-  --mono:"SF Mono",ui-monospace,"Roboto Mono",Menlo,monospace;
   --grot:"Helvetica Neue",Helvetica,Arial,sans-serif;
   --ease:cubic-bezier(.65,0,.35,1);
   color-scheme:light;
@@ -22,36 +21,23 @@
 html,body{height:100%}
 body{background:var(--bg);color:var(--fg);font-family:var(--grot);-webkit-font-smoothing:antialiased;
   transition:background-color 1s var(--ease),color 1s var(--ease)}
+/* drawn in currentColor, so the grid fades with the text instead of jumping */
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.08;
+  background-image:linear-gradient(to right,currentColor 0 1px,transparent 1px);background-size:calc(100% / 9) 100%}
 ::selection{background:var(--fg);color:var(--bg)}
-.top{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;gap:16px;
-  padding:calc(var(--pad) + env(safe-area-inset-top,0px)) var(--gr) 0 var(--gl);
-  font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase}
-.top b{font-family:var(--grot);font-size:14px;letter-spacing:-.01em;text-transform:none;font-weight:700}
-.top span{opacity:.5}
-.pick{min-height:100svh;display:flex;align-items:center;justify-content:center;gap:clamp(48px,9vw,160px);
-  padding-block:calc(var(--pad) * 3);padding-left:var(--gl);padding-right:var(--gr)}
-.opt{display:flex;flex-direction:column;gap:18px;color:inherit;text-decoration:none;transition:opacity .7s var(--ease)}
-.w{font-weight:700;font-size:clamp(64px,11vw,190px);letter-spacing:-.06em;line-height:.85}
-.c{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;display:flex;gap:10px;opacity:.55;
-  transition:gap .5s var(--ease),opacity .5s var(--ease)}
-.opt:hover .c,.opt:focus-visible .c{gap:16px;opacity:1}
-.c i{font-style:normal}
+.pick{position:relative;min-height:100svh;display:flex;align-items:center;justify-content:center;gap:clamp(48px,9vw,160px);
+  padding-block:var(--pad);padding-left:var(--gl);padding-right:var(--gr)}
+.opt{color:inherit;text-decoration:none;font-weight:700;font-size:clamp(48px,7.4vw,150px);letter-spacing:-.06em;line-height:.85;
+  transition:opacity .7s var(--ease)}
 @media(hover:hover){.pick:hover .opt{opacity:.22}.pick .opt:hover{opacity:1}}
 .opt:focus-visible{outline:1.5px solid currentColor;outline-offset:14px}
-@media(max-width:700px){.pick{flex-direction:column;align-items:flex-start;justify-content:center;gap:56px}}
+@media(max-width:700px){.pick{flex-direction:column;align-items:flex-start;gap:48px}.opt{font-size:15vw}}
 @media (prefers-reduced-motion:reduce){*{transition-duration:.001ms!important}}
 </style>
 
-<header class="top"><b>Julian Jung</b><span>UC Berkeley · 2026</span></header>
 <nav class="pick" aria-label="Choose a portfolio">
-  <a class="opt" data-tone="light" href="research/index.html">
-    <span class="w">Tested.</span>
-    <span class="c">01 — Research &amp; engineering <i>→</i></span>
-  </a>
-  <a class="opt" data-tone="dark" href="works/index.html">
-    <span class="w">Made.</span>
-    <span class="c">02 — Products &amp; design <i>→</i></span>
-  </a>
+  <a class="opt" data-tone="light" href="research/index.html" aria-label="Engineered: research and engineering portfolio">Engineered.</a>
+  <a class="opt" data-tone="dark" href="works/index.html" aria-label="Designed: products and design portfolio">Designed.</a>
 </nav>
 
 <script>
