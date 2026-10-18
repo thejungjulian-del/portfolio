@@ -39,7 +39,7 @@
   <div class="logo front" aria-hidden="true"><h1>Julian Jung</h1></div>
   <h1 class="sr">Julian Jung, trading systems and data research</h1>
   <div class="under">I build trading systems, then try to break them</div>
-  <div class="marg bl"><span class="big">14</span><span>Systems<br>built</span></div>
+  <div class="marg bl"><span class="big">12</span><span>Systems<br>built</span></div>
   <div class="marg br">
     Index
     <a href="#trading">Trading</a>
@@ -51,14 +51,14 @@
 <div class="band">
   <div class="word" style="font-size:min(16vw,240px)">Researched.</div>
   <div class="cap">
-    <p>Fourteen systems since May 2026. Each one had to hold up on data it had never seen, priced at the fills it would really get. Most didn't. I kept the ones that did, and I kept the receipts on the ones that didn't.</p>
+    <p>Twelve systems since May 2026. Each one had to hold up on data it had never seen, priced at the fills it would really get. Most didn't. I kept the ones that did, and I kept the receipts on the ones that didn't.</p>
     <div>Fig. 01 — the house rule</div>
   </div>
 </div>
 
 <section class="hr" aria-label="Headline numbers">
   <div class="stats">
-    <div class="stat"><b>14</b><span>Systems built and tested</span></div>
+    <div class="stat"><b>12</b><span>Systems built and tested</span></div>
     <div class="stat"><b>19,191</b><span>Kalshi contracts priced</span></div>
     <div class="stat"><b>38,274</b><span>Football matches modeled</span></div>
     <div class="stat"><b>1 / 260</b><span>Mined trading rules that survived</span></div>
@@ -77,9 +77,9 @@
 <section class="hr" id="data">
   <div class="head">
     <h2>Data products</h2>
-    <div class="sub">6 tools · creators, fashion, music<br>Scrapers, scoring models, dashboards</div>
+    <div class="sub">4 tools · fashion, music, creators<br>Scrapers, scoring models, dashboards</div>
   </div>
-  <div class="rgrid three" id="grid-data"></div>
+  <div class="rgrid" id="grid-data"></div>
 </section>
 
 <section class="hr" id="findings">
@@ -214,7 +214,7 @@
     <div class="f-col"><div class="f-h">Code &amp; data</div><span>Python</span><span>SQLite</span><span>Flask</span><span>JavaScript</span><span>Playwright</span></div>
     <div class="f-col"><div class="f-h">Market APIs</div><span>Alpaca</span><span>Polymarket CLOB</span><span>Kalshi (RSA-PSS)</span><span>Hyperliquid</span><span>Dune</span></div>
     <div class="f-col"><div class="f-h">Infrastructure</div><span>launchd &amp; cron</span><span>systemd on Hetzner</span><span>Caddy + Cloudflare</span><span>Ollama local vision</span><span>Claude API</span></div>
-    <div class="f-col"><div class="f-h">Contact</div><span class="mail">thejungjulian@gmail.com</span><a href="../works/index.html" target="_blank" rel="noopener">All my work ↗</a><a href="https://github.com/thejungjulian-del" target="_blank" rel="noopener">GitHub ↗</a><span>Berkeley, CA</span></div>
+    <div class="f-col"><div class="f-h">Contact</div><span class="mail">thejungjulian@gmail.com</span><a href="https://github.com/thejungjulian-del" target="_blank" rel="noopener">GitHub ↗</a><span>Berkeley, CA</span></div>
   </div>
   <div class="f-base"><span>© 2026 Julian Jung</span><span>All results are paper trading or backtests · not investment advice</span></div>
 </footer>
@@ -222,7 +222,7 @@
 <script>
 var SECTIONS=[["trading","Trading systems"],["data","Data products"],["findings","Findings"],["method","Method"],["ledger","Bug ledger"],["notes","Research notes"]];
 var GROUPS=[{id:"trading",label:"Trading systems",grid:"grid-trading"},{id:"data",label:"Data products",grid:"grid-data"}];
-var ELSEWHERE=[["All my work","../works/index.html"],["GitHub","https://github.com/thejungjulian-del"]];
+var ELSEWHERE=[["GitHub","https://github.com/thejungjulian-del"]];
 var PROJECTS=[
 /* ---------------- trading ---------------- */
 {id:"formula-lab",g:"trading",no:"01",name:"Formula Lab",dis:"US equities · overnight",st:"Running",live:true,shape:"stack",
@@ -447,31 +447,7 @@ var PROJECTS=[
   ["Links",{links:[["football-data.co.uk","https://www.football-data.co.uk/",1]]}]]},
 
 /* ---------------- data ---------------- */
-{id:"desk",g:"data",no:"09",name:"JS Entertainment Desk",dis:"Creator trends · live",st:"Live",live:true,shape:"icosa",
- kpi:["$0.30","per 1,000 posts scraped, vs $2.30 for the official scraper"],
- tx:"A private trend desk for a creator agency. It watches chosen Instagram creators, surfaces their top posts and reels, screens new creators with a vision pass, and suggests when to post and what to caption.",
- tk:"Flask · SQLite · Apify · Claude API · Hetzner + Caddy",
- lede:"A trend desk for a creator agency, live on its own server. It reads each creator’s niche, finds what’s overperforming right now and turns it into shoot-ready briefs, with a brand-deal inbox built in.",
- meta:[["Status","Live, in daily use"],["Period","Jun 2026 – now"],["Built with","Flask, SQLite, Apify, Claude API"],["Runs on","Hetzner, Caddy, Cloudflare, systemd"]],
- kpis:[["$0.30","per 1,000 posts scraped"],["7.7×","cheaper than the official scraper"],["Daily","scan of every watched creator"]],
- rows:[
-  ["The question","Can one screen tell a creator what to film next, based on what’s working in their niche today?"],
-  ["What it does",[
-   "Keeps watch lists of specific creators and scans them daily through Apify.",
-   "Ranks the top posts and reels per niche, with swipeable carousels and an in-site viewer.",
-   "Finds new creators from real collaborations and tags, then screens them with a vision pass so brands, photographers and off-niche accounts drop out.",
-   "Suggests when to post and writes captions and hashtags.",
-   "Runs a brand-deal inbox on its own domain that scores incoming offers and drafts replies."]],
-  ["How it’s built",[
-   "Flask and SQLite behind Caddy on a Hetzner server, with Cloudflare DNS and email routing.",
-   "systemd services plus a timer for database backups.",
-   "Scan cost is driven by distinct watched accounts, so overlapping watch lists are scraped once and shared."]],
-  ["What I learned",[
-   "An LLM-suggested creator list invented usernames for small niches. Mining real collaborations from seed accounts fixed discovery.",
-   "Text-only niche checks let a women’s clothing brand into a menswear watch list. Looking at their actual posts caught it."]],
-  ["Links",{links:[["Creator view, live","https://desk.jsentertainment.org/me/48"],["JS Entertainment","https://jsentertainment.org/",1]]}]]},
-
-{id:"videotrends",g:"data",no:"10",name:"VideoTrends",dis:"Fashion · Instagram",st:"Paused",shape:"frame",
+{id:"videotrends",g:"data",no:"09",name:"VideoTrends",dis:"Fashion · Instagram",st:"Paused",shape:"frame",
  kpi:["100k","likes before a look counts as vetted"],
  tx:"Pulls fashion posts, has a local vision model name the exact garments, weights each by likes and tracks which items are gaining. It also scores its own past forecasts, so you can check whether it’s right.",
  tk:"Python · Playwright · Ollama (Qwen2.5-VL) · launchd",
@@ -495,7 +471,7 @@ var PROJECTS=[
   ["Verdict","Built and working; scheduled scans are paused. It’s the clearest demo I have of a zero-cost vision pipeline."],
   ["Links",{links:[["Open the demo","demos/videotrends.html"]]}]]},
 
-{id:"clips",g:"data",no:"11",name:"Clip Campaign Ranker",dis:"Paid clipping · 292 campaigns",st:"Daily",live:true,shape:"steps",
+{id:"clips",g:"data",no:"10",name:"Clip Campaign Ranker",dis:"Paid clipping · 292 campaigns",st:"Daily",live:true,shape:"steps",
  kpi:["$79","paid out by 34 campaigns showing $106k available"],
  tx:"Ranks public pay-per-view clipping campaigns by money that has actually moved instead of the advertised rate. A high advertised CPM turned out to be a mild warning sign. Snapshots track each campaign’s burn rate.",
  tk:"Python · SQLite · daily cron",
@@ -518,28 +494,7 @@ var PROJECTS=[
    "The free public listing beat a paid Discord information hub by about 3× ($2.50 vs $0.75 CPM)."]],
   ["Verdict","The daily ranking still runs. It answers where to post; posting stays manual."]]},
 
-{id:"exchange",g:"data",no:"12",name:"Creator Exchange",dis:"Fintech · play money",st:"Prototype",live:true,shape:"torus",
- kpi:["0.5%","fee per trade to the exchange"],
- tx:"A stock market for creators. Shares pay out a slice of revenue (sponsors, ads, merch) every quarter, trading on a real limit-order book with price-time priority and a house market maker.",
- tk:"JavaScript · matching engine · shared database",
- lede:"A play-money stock market for creators. Creators IPO, shares pay out a slice of their revenue each quarter, and the exchange earns a fee on every trade.",
- meta:[["Status","Working prototype"],["Period","Oct 2026"],["Built with","JavaScript, shared database"],["Money","Play money only"]],
- kpis:[["0.5%","taker fee to the exchange"],["20%","discount rate in the valuation"],["5","revenue sources per quarterly report"]],
- rows:[
-  ["The question","What would it take to trade creators like stocks, with sponsor income included?"],
-  ["What I built",[
-   "A limit-order book with price-time priority, matched in the page under a per-stock lease so two traders can’t fill the same order.",
-   "A valuation model: a share is a fixed-term slice of revenue, priced as discounted payouts at 20% a year, which also sets the IPO price.",
-   "A house market maker that bids 5% under model value.",
-   "Quarterly reports split by source (sponsors, ads, merch, subscriptions, other) that pay holders.",
-   "A shared database so invited friends trade against each other, with six fictional example creators."]],
-  ["What I found",[
-   "GigaStar already runs a real-money version for YouTube ad revenue: about 37 offerings and $6.9M raised. It doesn’t cover sponsors, which is the gap.",
-   "Fantex tried athlete income stocks in 2013–16 and closed to retail after lawsuits."]],
-  ["Verdict","A working prototype. Real money would need a registered funding portal."],
-  ["Links",{links:[["Open the exchange","https://claude.ai/artifact/8fUmEedDAcb7EFDzj9UoZo"]]}]]},
-
-{id:"radar",g:"data",no:"13",name:"Potential Radar",dis:"Music · Spotify",st:"Demo",shape:"cone",
+{id:"radar",g:"data",no:"11",name:"Potential Radar",dis:"Music · Spotify",st:"Demo",shape:"cone",
  kpi:["0–100","breakout score per emerging artist"],
  tx:"Finds artists under 250k followers and ranks them on momentum, how popular they are for their size, and raw buzz. Each scan adds a snapshot, so growth builds into a history. Runs on sample data until a Spotify key is added.",
  tk:"Flask · Spotify API · SQLite",
@@ -564,7 +519,7 @@ var PROJECTS=[
   ["Verdict","Built and waiting on a Spotify key to leave demo mode."],
   ["Links",{links:[["Open the demo","demos/potential-radar.html"]]}]]},
 
-{id:"trendtracker",g:"data",no:"14",name:"TrendTracker",dis:"Fashion · search trends",st:"Shelved",shape:"octa",
+{id:"trendtracker",g:"data",no:"12",name:"TrendTracker",dis:"Fashion · search trends",st:"Shelved",shape:"octa",
  kpi:["Daily","snapshots, rising vs last capture"],
  tx:"My first trend tool. TikTok’s free endpoint now needs a signed token and Instagram has no public trending feed, so it runs on Google Trends, flags the fashion terms, and takes TikTok and IG finds by hand.",
  tk:"Flask · SQLite · Google Trends RSS",

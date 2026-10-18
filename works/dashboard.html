@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Created Dashboard</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="engine.css">
+<style>
+/* same flipped tokens as the Created portfolio */
+:root{--paper:#0b0b0c;--paper-2:#141416;--ink:#f5f5f3;--ink-2:#b1b3b4;--ink-3:#757674;--ink-4:#464745;
+  --rule:rgba(245,245,243,.08);--rule-2:rgba(245,245,243,.17);--ink-rgb:245,245,243;--lift:1;
+  --bar:rgba(11,11,12,.9);--grain-blend:screen;--grain-op:.12;color-scheme:dark}
+/* Dashboard: product list on the left, one working demo at a time on the right.
+   Every demo runs its real logic in the page on sample data. */
+.dash{position:relative;z-index:2;display:grid;grid-template-columns:220px minmax(0,1fr);
+  padding-top:calc(var(--pad) + 70px + env(safe-area-inset-top,0px));padding-bottom:80px}
+.side{position:sticky;top:calc(var(--pad) + 70px);align-self:start;display:flex;flex-direction:column;border-top:1px solid var(--rule-2);margin-left:var(--gl)}
+.side a{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:13px 12px 13px 0;border-bottom:1px solid var(--rule-2);
+  color:var(--ink-3);text-decoration:none;font-size:14px;transition:color .3s,padding .3s}
+.side a:hover{color:var(--ink);padding-left:6px}
+.side a s{font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;text-decoration:none}
+.side a.on{color:var(--ink);font-weight:700}
+.main{min-width:0;padding-left:clamp(24px,4vw,56px);padding-right:var(--gr)}
+.ph{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding-bottom:22px;border-bottom:1px solid var(--rule-2)}
+.ph h1{font-weight:700;font-size:clamp(34px,5vw,72px);letter-spacing:-.045em;line-height:.9;margin-top:12px}
+.ph p{margin-top:14px;max-width:62ch;font-size:14.5px;line-height:1.6;color:var(--ink-2)}
+.ph a{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule-2);padding-bottom:4px}
+.steps{list-style:none;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));border-left:1px solid var(--rule-2);margin:22px 0}
+.step{border:1px solid var(--rule-2);border-left:0;padding:12px 14px;font-size:12.5px;line-height:1.35;color:var(--ink-4);transition:background .5s,color .5s;min-width:0}
+.step s{display:block;font-family:var(--mono);font-size:8.5px;letter-spacing:.18em;text-decoration:none;margin-bottom:6px}
+.step.done{color:var(--ink-2)}
+.step.on{background:var(--ink);color:var(--paper)}
+.demo{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px;align-items:start}
+.box{border:1px solid var(--rule-2);padding:16px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.lbl{font-family:var(--mono);font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.hint{font-family:var(--mono);font-size:10px;line-height:1.7;letter-spacing:.04em;color:var(--ink-3)}
+.box p{font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+.box video,.box img.pic{display:block;width:100%;height:auto;background:#000;border:1px solid var(--rule-2)}
+canvas.graph{display:block;width:100%;height:90px;border-bottom:1px solid var(--rule-2)}
+.code{font-family:var(--mono);font-size:10.5px;line-height:1.65;background:var(--paper-2);border:1px solid var(--rule-2);padding:12px;
+  overflow:auto;max-height:240px;white-space:pre;color:var(--ink-2);min-height:44px}
+.f{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:10px}
+.f label{display:flex;flex-direction:column;gap:6px;font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+input,select{font-family:var(--grot);font-size:14px;color:var(--ink);background:var(--paper);border:1px solid var(--rule-2);padding:9px 10px;border-radius:0;min-width:0;width:100%}
+input:focus,select:focus{outline:none;border-color:var(--ink-3)}
+input[type=range]{padding:0;border:0;accent-color:var(--ink)}
+input[type=file]{font-size:11px;padding:7px}
+button.btn{border:0;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--rule-2)}
+.btn:disabled{opacity:.4;cursor:default}
+.big{font-weight:700;font-size:56px;letter-spacing:-.05em;line-height:.9}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pair figure{display:flex;flex-direction:column;gap:6px}
+.pair img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;border:1px solid var(--rule-2);background:var(--paper-2)}
+.crop{position:relative;overflow:hidden}
+.crop i{position:absolute;top:0;bottom:0;border:1.5px solid var(--ink);box-shadow:0 0 0 9999px rgba(0,0,0,.45);pointer-events:none}
+#sc-out{display:block;width:100%;max-width:270px;aspect-ratio:9/16;height:auto;background:#000;border:1px solid var(--rule-2);margin:0 auto}
+.hours{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px;align-items:end;height:80px;border-bottom:1px solid var(--rule-2)}
+.hours i{display:block;background:var(--ink-4);min-height:2px}
+.hours i.hi{background:var(--ink)}
+.hl{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px;font-family:var(--mono);font-size:8px;color:var(--ink-3);text-align:center}
+.book td{font-variant-numeric:tabular-nums}
+.book tr.ask td:nth-child(2){color:var(--ink-2)}
+.book tr.mid td{border-bottom:1px solid var(--ink);font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--ink-3)}
+.acct{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--rule-2);border-left:1px solid var(--rule-2)}
+.acct div{border-right:1px solid var(--rule-2);border-bottom:1px solid var(--rule-2);padding:10px 12px}
+.acct b{display:block;font-size:20px;letter-spacing:-.03em;margin-top:6px;font-variant-numeric:tabular-nums}
+@media(max-width:1060px){.demo{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:860px){
+  .dash{grid-template-columns:minmax(0,1fr)}
+  .side{position:static;flex-direction:row;overflow-x:auto;margin:0 var(--gr) 20px var(--gl);border-left:1px solid var(--rule-2)}
+  .side a{flex:none;padding:10px 14px;border-right:1px solid var(--rule-2)}
+  .main{padding-left:var(--gl)}
+  .steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+</style>
+
+<div class="grid" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="bar on">
+  <a href="../index.html" class="lock">
+    <div class="a">Julian Jung</div>
+    <div class="b">Created · dashboard</div>
+  </a>
+  <nav class="nav" aria-label="Pages">
+    <a href="index.html">Portfolio</a>
+    <a href="dashboard.html" class="here">Dashboard</a>
+  </nav>
+  <span></span>
+</header>
+
+<div class="dash">
+  <nav class="side" aria-label="Products">
+    <a href="#d-desk">JS Ent Desk <s>01</s></a>
+    <a href="#d-fitcheck">FitCheck <s>02</s></a>
+    <a href="#d-photomatch">Photo Match <s>03</s></a>
+    <a href="#d-editforge">EditForge <s>04</s></a>
+    <a href="#d-selfclip">SelfClip <s>05</s></a>
+    <a href="#d-exchange">Creator Exchange <s>06</s></a>
+  </nav>
+
+  <main class="main">
+
+    <!-- 01 desk -->
+    <article class="pan" id="d-desk" hidden>
+      <div class="ph"><div><div class="eyebrow">01 · Creator trends</div><h1>JS Entertainment Desk</h1>
+        <p>Scans the creators a niche is watching, ranks posts by how far they beat that creator’s usual likes, and turns the winner into a brief with a time to post.</p></div>
+        <a href="index.html#v-desk">Case study →</a></div>
+      <ol class="steps" style="--n:4"><li class="step"><s>01</s>Watch creators</li><li class="step"><s>02</s>Scan their posts</li><li class="step"><s>03</s>Rank what overperforms</li><li class="step"><s>04</s>Brief + when to post</li></ol>
+      <div class="demo">
+        <div class="box">
+          <div class="f">
+            <label>Niche<select id="dk-niche"><option value="streetwear">Streetwear</option><option value="beauty">Beauty</option><option value="gaming">Gaming</option></select></label>
+            <label>Format<select id="dk-format"><option value="all">All formats</option><option value="reel">Reels</option><option value="carousel">Carousels</option><option value="photo">Photos</option></select></label>
+          </div>
+          <div class="row"><button class="btn" id="dk-run">Scan niche</button><span class="hint" id="dk-stat">Sample data · fictional creators</span></div>
+          <div class="tablewrap"><table class="tbl" id="dk-top"><thead><tr><th>Creator</th><th>Post</th><th class="n">Likes</th><th class="n">vs usual</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="box">
+          <div class="lbl">Brief</div>
+          <p id="dk-brief">Run a scan to get this niche’s brief.</p>
+          <div class="lbl">When to post · how much posts beat usual, by time of day</div>
+          <div class="hours" id="dk-hours"></div>
+          <div class="hl"><span>0–3</span><span>3–6</span><span>6–9</span><span>9–12</span><span>12–15</span><span>15–18</span><span>18–21</span><span>21–24</span></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 02 fitcheck -->
+    <article class="pan" id="d-fitcheck" hidden>
+      <div class="ph"><div><div class="eyebrow">02 · Virtual try-on</div><h1>FitCheck</h1>
+        <p>Takes your measurements and a product’s size chart, picks the size that fits the way you like, and renders the piece on a model built to your fit.</p></div>
+        <a href="index.html#v-fitcheck">Case study →</a></div>
+      <ol class="steps" style="--n:4"><li class="step"><s>01</s>Your measurements</li><li class="step"><s>02</s>Read the product page</li><li class="step"><s>03</s>Reason about fit</li><li class="step"><s>04</s>Render front + back</li></ol>
+      <div class="demo">
+        <div class="box">
+          <div class="f">
+            <label>Chest (cm)<input id="fc-chest" type="number" value="96" min="60" max="160"></label>
+            <label>Height (cm)<input id="fc-height" type="number" value="178" min="130" max="220"></label>
+            <label>Fit you like<select id="fc-fit"><option value="slim">Slim</option><option value="regular" selected>Regular</option><option value="relaxed">Relaxed</option></select></label>
+          </div>
+          <div class="hint">Product: graphic tee · sample size chart</div>
+          <div class="row"><button class="btn" id="fc-run">Find my size</button></div>
+          <div id="fc-out"><p>Your size and fit notes appear here.</p></div>
+        </div>
+        <div class="box">
+          <div class="lbl">Render · real output from the app (live generation is off here)</div>
+          <img class="pic" id="fc-img" src="img/fitcheck-front.jpg" alt="AI-generated model wearing the tee">
+          <div class="row"><button class="btn ghost" id="fc-flip">Show back</button><span class="hint">AI-generated person</span></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 03 photo match -->
+    <article class="pan" id="d-photomatch" hidden>
+      <div class="ph"><div><div class="eyebrow">03 · Photo look matching</div><h1>Photo Match</h1>
+        <p>Measures the colour and tone of a reference and your photo, then writes the Lightroom preset that moves yours toward it. Try your own photos.</p></div>
+        <a href="index.html#v-photomatch">Case study →</a></div>
+      <ol class="steps" style="--n:4"><li class="step"><s>01</s>Reference</li><li class="step"><s>02</s>Your photo</li><li class="step"><s>03</s>Measure colour + tone</li><li class="step"><s>04</s>Write the preset</li></ol>
+      <div class="demo">
+        <div class="box">
+          <div class="pair">
+            <figure><img id="pm-a" src="img/uhnother.jpg" alt="Reference photo"><label class="lbl">Reference<input id="pm-fa" type="file" accept="image/*"></label></figure>
+            <figure><img id="pm-b" src="img/fitcheck-model.jpg" alt="Your photo"><label class="lbl">Your photo<input id="pm-fb" type="file" accept="image/*"></label></figure>
+          </div>
+          <div class="row"><button class="btn" id="pm-run">Match my photo</button></div>
+          <div class="tablewrap"><table class="tbl" id="pm-meas"><thead><tr><th>Measured</th><th class="n">Reference</th><th class="n">Yours</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="box">
+          <div class="lbl">Preset</div>
+          <div class="bars" id="pm-bars"></div>
+          <p class="hint" id="pm-note"></p>
+          <div class="lbl">Lightroom Classic .xmp</div>
+          <pre class="code" id="pm-xmp"></pre>
+          <button class="btn ghost" id="pm-copy">Copy preset</button>
+        </div>
+      </div>
+    </article>
+
+    <!-- 04 editforge -->
+    <article class="pan" id="d-editforge" hidden>
+      <div class="ph"><div><div class="eyebrow">04 · Video tool</div><h1>EditForge</h1>
+        <p>Reads where a reference edit cuts, lays your footage into the same slots by matching the look of each shot, and writes the After Effects script that builds it.</p></div>
+        <a href="index.html#v-editforge">Case study →</a></div>
+      <ol class="steps" style="--n:5"><li class="step"><s>01</s>Load the reference</li><li class="step"><s>02</s>Detect cuts</li><li class="step"><s>03</s>Measure rhythm</li><li class="step"><s>04</s>Match your footage</li><li class="step"><s>05</s>Write the AE script</li></ol>
+      <div class="demo">
+        <div class="box">
+          <div class="lbl">Reference edit · a 10 s sample cut from the Redline SVJ render</div>
+          <video id="ef-ref" src="media/sample-reference-edit.mp4" muted playsinline controls preload="auto"></video>
+          <canvas class="graph" id="ef-graph" aria-label="How different each frame is from the one before; spikes are cuts"></canvas>
+          <div class="row"><button class="btn" id="ef-run">Analyze the edit</button><span class="hint" id="ef-stat">Reads 8 frames a second</span></div>
+          <video id="ef-src" src="media/redline-supra.mp4" muted playsinline preload="auto" aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"></video>
+        </div>
+        <div class="box">
+          <div class="lbl">Edit plan · your footage = the Redline Supra clip</div>
+          <div class="tablewrap"><table class="tbl" id="ef-plan"><thead><tr><th>Slot</th><th class="n">Starts</th><th class="n">Length</th><th class="n">Your clip from</th></tr></thead><tbody></tbody></table></div>
+          <div class="lbl">After Effects script</div>
+          <pre class="code" id="ef-jsx"></pre>
+          <button class="btn ghost" id="ef-copy">Copy script</button>
+        </div>
+      </div>
+    </article>
+
+    <!-- 05 selfclip -->
+    <article class="pan" id="d-selfclip" hidden>
+      <div class="ph"><div><div class="eyebrow">05 · Stream clipping</div><h1>SelfClip</h1>
+        <p>Turns a saved stream moment into a vertical clip: crops to 9:16 where the action is, burns in short-form captions, and drops it in the ready folder.</p></div>
+        <a href="index.html#v-selfclip">Case study →</a></div>
+      <ol class="steps" style="--n:4"><li class="step"><s>01</s>Replay saved</li><li class="step"><s>02</s>Crop to 9:16</li><li class="step"><s>03</s>Caption</li><li class="step"><s>04</s>Clip ready</li></ol>
+      <div class="demo">
+        <div class="box">
+          <div class="lbl">Saved replay · 16:9</div>
+          <div class="crop"><video id="sc-src" src="media/redline-supra.mp4" muted playsinline preload="auto"></video><i id="sc-crop"></i></div>
+          <label class="lbl">Crop position<input id="sc-pos" type="range" min="0" max="100" value="50"></label>
+          <label class="lbl">Caption<input id="sc-text" type="text" value="the supra pulled up and nobody was ready"></label>
+          <div class="row"><button class="btn" id="sc-run">Make the clip</button></div>
+          <pre class="code" id="sc-log"></pre>
+        </div>
+        <div class="box">
+          <div class="lbl">Ready clip · 9:16</div>
+          <canvas id="sc-out" width="270" height="480"></canvas>
+        </div>
+      </div>
+    </article>
+
+    <!-- 06 exchange -->
+    <article class="pan" id="d-exchange" hidden>
+      <div class="ph"><div><div class="eyebrow">06 · Fintech · play money</div><h1>Creator Exchange</h1>
+        <p>Prices a creator’s revenue share, lists it, and matches orders by best price and then by time. The exchange keeps 0.5% of every trade, and holders get paid each quarter.</p></div>
+        <a href="index.html#v-exchange">Case study →</a></div>
+      <ol class="steps" style="--n:4"><li class="step"><s>01</s>IPO at model value</li><li class="step"><s>02</s>Place an order</li><li class="step"><s>03</s>Match: price, then time</li><li class="step"><s>04</s>Pay the quarter</li></ol>
+      <div class="demo">
+        <div class="box">
+          <div class="f">
+            <label>Revenue / quarter ($)<input id="cx-rev" type="number" value="24000" min="0"></label>
+            <label>Share of revenue sold (%)<input id="cx-cut" type="number" value="10" min="1" max="50"></label>
+            <label>Shares issued<input id="cx-shares" type="number" value="1000" min="10"></label>
+          </div>
+          <div class="row"><button class="btn" id="cx-ipo">List at model value</button><span class="hint" id="cx-val">Term: 12 quarters · discounted at 20% a year</span></div>
+          <div class="f">
+            <label>Side<select id="cx-side"><option value="buy">Buy</option><option value="sell">Sell</option></select></label>
+            <label>Limit price ($)<input id="cx-px" type="number" step="0.01"></label>
+            <label>Quantity<input id="cx-qty" type="number" value="10" min="1"></label>
+          </div>
+          <div class="row"><button class="btn" id="cx-order" disabled>Place order</button><button class="btn ghost" id="cx-pay" disabled>Pay a quarter</button></div>
+          <pre class="code" id="cx-log"></pre>
+        </div>
+        <div class="box">
+          <div class="acct"><div><span class="lbl">Your cash</span><b id="cx-cash">$5,000.00</b></div><div><span class="lbl">Your shares</span><b id="cx-held">0</b></div><div><span class="lbl">Exchange fees</span><b id="cx-fees">$0.00</b></div></div>
+          <div class="lbl">Order book · MARA (fictional creator)</div>
+          <div class="tablewrap"><table class="tbl book"><thead><tr><th>Side</th><th class="n">Price</th><th class="n">Qty</th><th>Who</th></tr></thead><tbody id="cx-book"><tr><td colspan="4">List the stock to open the book.</td></tr></tbody></table></div>
+          <div class="lbl">Trades</div>
+          <div class="tablewrap"><table class="tbl"><tbody id="cx-tape"><tr><td>No trades yet.</td></tr></tbody></table></div>
+        </div>
+      </div>
+    </article>
+
+  </main>
+</div>
+
+<script>
+(function(){
+"use strict";
+function $(s){return document.querySelector(s);}
+function stepper(id){var els=document.querySelectorAll('#'+id+' .step');
+  return function(i){els.forEach(function(e,k){e.classList.toggle('done',k<i);e.classList.toggle('on',k===i);});};}
+function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}
+function money(v){return '$'+v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function copyBtn(btn,pre){btn.addEventListener('click',function(){
+  function sel(){var r=document.createRange();r.selectNodeContents(pre);var s=getSelection();s.removeAllRanges();s.addRange(r);}
+  function ok(){var o=btn.textContent;btn.textContent='Copied';setTimeout(function(){btn.textContent=o;},1200);}
+  if(navigator.clipboard)navigator.clipboard.writeText(pre.textContent).then(ok,sel);else sel();});}
+function ready(v){return v.readyState>=2?Promise.resolve():new Promise(function(r){v.addEventListener('loadeddata',r,{once:true});v.load();});}
+/* play a video at `rate` and call back every `every` seconds of footage; works on any host, no seeking needed */
+function play(v,rate,every,cb){return new Promise(function(done){
+  var last=-1,over=false;function end(){if(over)return;over=true;v.pause();done();}
+  function tick(){if(over)return;if(last<0||v.currentTime-last>=every){last=v.currentTime;cb(v.currentTime);}
+    if(v.ended)end();else requestAnimationFrame(tick);}
+  v.addEventListener('ended',end,{once:true});v.pause();v.currentTime=0;v.playbackRate=rate;
+  v.play().then(function(){requestAnimationFrame(tick);},end);});}
+var INK=getComputedStyle(document.documentElement).getPropertyValue('--ink-rgb').trim();
+
+/* ---------- routing between products ---------- */
+var pans=document.querySelectorAll('.pan'),tabs=document.querySelectorAll('.side a');
+function route(){var id=location.hash.slice(1),p=id.indexOf('d-')===0&&document.getElementById(id);if(!p)id=pans[0].id;
+  pans.forEach(function(el){el.hidden=el.id!==id;});tabs.forEach(function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+id);});}
+addEventListener('hashchange',function(){route();window.scrollTo({top:0,behavior:'instant'});});
+route();
+
+/* seeded random, so the sample data is the same for everyone */
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+/* ================= 01 DESK ================= */
+(function(){
+  var S=stepper('d-desk'),r=rng(7),FORMATS=['reel','carousel','photo'];
+  var CREATORS=[['Creator A','streetwear',4200],['Creator B','streetwear',12800],['Creator C','beauty',8600],['Creator D','beauty',3100],['Creator E','gaming',15400],['Creator F','gaming',5200]];
+  var IDEAS={streetwear:['fit check in the rain','thrift flip: oversized denim','3 ways to wear cargos','styling one jacket 5 ways','layering for spring','sneaker rotation'],
+    beauty:['5-minute glass skin','grwm for a night out','drugstore vs luxury dupe','no-makeup makeup','fixing cakey concealer','skin routine on a budget'],
+    gaming:['clutch 1v4 breakdown','ranked tips nobody tells you','setup tour 2026','reacting to my worst games','settings that fixed my aim','speedrun attempt']};
+  var POSTS=[];CREATORS.forEach(function(c){for(var i=0;i<6;i++){var f=FORMATS[Math.floor(r()*3)],boost=f==='reel'?1.35:f==='carousel'?1.1:.8,
+    mult=Math.exp((r()+r()+r()-1.5)*1.1)*boost;POSTS.push({who:c[0],niche:c[1],usual:c[2],format:f,idea:IDEAS[c[1]][i],likes:Math.round(c[2]*mult),hour:Math.floor(r()*24)});}});
+  var top=$('#dk-top tbody'),stat=$('#dk-stat'),brief=$('#dk-brief'),hours=$('#dk-hours'),btn=$('#dk-run');
+  btn.addEventListener('click',async function(){
+    var niche=$('#dk-niche').value,fmt=$('#dk-format').value,watch=CREATORS.filter(function(c){return c[1]===niche;});
+    btn.disabled=true;S(0);stat.textContent='Watching '+watch.length+' creators';await sleep(450);
+    var posts=POSTS.filter(function(p){return p.niche===niche&&(fmt==='all'||p.format===fmt);});
+    S(1);stat.textContent='Scanned '+posts.length+' posts';await sleep(450);
+    S(2);posts.forEach(function(p){p.x=p.likes/p.usual;});posts.sort(function(a,b){return b.x-a.x;});
+    top.innerHTML=posts.slice(0,5).map(function(p){return '<tr><td>'+p.who+'</td><td>'+p.idea+' · '+p.format+'</td><td class="n">'+p.likes.toLocaleString()+'</td><td class="n">'+p.x.toFixed(1)+'×</td></tr>';}).join('')||'<tr><td colspan="4">No posts in this format.</td></tr>';
+    await sleep(450);S(3);
+    var all=POSTS.filter(function(p){return p.niche===niche;}),blocks=[0,0,0,0,0,0,0,0],n=[0,0,0,0,0,0,0,0];
+    all.forEach(function(p){var b=Math.floor(p.hour/3);blocks[b]+=p.likes/p.usual;n[b]++;});
+    var avg=blocks.map(function(s,i){return n[i]?s/n[i]:0;}),best=avg.indexOf(Math.max.apply(null,avg)),mx=Math.max.apply(null,avg)||1;
+    hours.innerHTML=avg.map(function(a,i){return '<i'+(i===best?' class="hi"':'')+' style="height:'+(a/mx*100)+'%" title="'+a.toFixed(1)+'×"></i>';}).join('');
+    var w=posts[0];
+    brief.textContent=w?'Shoot a '+w.format+' like “'+w.idea+'”. It did '+w.x.toFixed(1)+'× '+w.who+'’s usual likes. Post between '+(best*3)+':00 and '+(best*3+3)+':00, when this niche beats its usual by the most ('+avg[best].toFixed(1)+'×).':'Nothing to brief in this format yet.';
+    btn.disabled=false;btn.textContent='Scan again';
+  });
+})();
+
+/* ================= 02 FITCHECK ================= */
+(function(){
+  var S=stepper('d-fitcheck'),CHART=[['S',96,69],['M',102,71],['L',108,74],['XL',114,76]],EASE={slim:4,regular:10,relaxed:16},out=$('#fc-out'),face='front';
+  $('#fc-run').addEventListener('click',async function(){
+    var c=+$('#fc-chest').value,h=+$('#fc-height').value;
+    if(!(c>=60&&c<=160&&h>=130&&h<=220)){out.innerHTML='<p>Enter a chest between 60 and 160 cm and a height between 130 and 220 cm.</p>';return;}
+    S(0);await sleep(300);S(1);await sleep(300);S(2);
+    var target=c+EASE[$('#fc-fit').value],pick=CHART.filter(function(s){return s[1]>=target;})[0]||CHART[CHART.length-1],room=pick[1]-c,len=pick[2]-h*.4;
+    var fit=room<0?'is tight even in the largest size':room<6?'sits close to the body':room<12?'skims the body with a little room':'hangs loose and relaxed';
+    var ln=Math.abs(len)<2.5?'ends right at the hip':len<0?'runs about '+Math.round(-len)+' cm short':'runs about '+Math.round(len)+' cm long';
+    out.innerHTML='<div class="big">'+pick[0]+'</div><p>The '+pick[0]+' measures '+pick[1]+' cm across the chest. On your '+c+' cm it '+fit+' ('+room+' cm of room) and '+ln+'.</p>'+
+      '<div class="tablewrap"><table class="tbl"><thead><tr><th>Size</th><th class="n">Chest</th><th class="n">Length</th></tr></thead><tbody>'+
+      CHART.map(function(s){return '<tr'+(s===pick?' class="hi"':'')+'><td>'+s[0]+'</td><td class="n">'+s[1]+' cm</td><td class="n">'+s[2]+' cm</td></tr>';}).join('')+'</tbody></table></div>'+
+      '<p class="hint">Rule-based stand-in for the model’s fit reasoning.</p>';
+    await sleep(300);S(3);
+  });
+  $('#fc-flip').addEventListener('click',function(){face=face==='front'?'back':'front';$('#fc-img').src='img/fitcheck-'+face+'.jpg';this.textContent=face==='front'?'Show back':'Show front';});
+})();
+
+/* ================= 03 PHOTO MATCH ================= */
+(function(){
+  var S=stepper('d-photomatch'),A=$('#pm-a'),B=$('#pm-b'),xmp=$('#pm-xmp');
+  [['#pm-fa',A],['#pm-fb',B]].forEach(function(p){$(p[0]).addEventListener('change',function(){var f=this.files[0];if(f)p[1].src=URL.createObjectURL(f);});});
+  function measure(img){
+    var w=160,h=Math.max(1,Math.round(img.naturalHeight/img.naturalWidth*w)),c=document.createElement('canvas');c.width=w;c.height=h;
+    var x=c.getContext('2d',{willReadFrequently:true});x.drawImage(img,0,0,w,h);
+    var d=x.getImageData(0,0,w,h).data,n=w*h,L=new Float32Array(n),sum=0,warm=0,sat=0,i;
+    for(i=0;i<n;i++){var r=d[i*4],g=d[i*4+1],b=d[i*4+2],mx=Math.max(r,g,b),mn=Math.min(r,g,b);L[i]=.2126*r+.7152*g+.0722*b;sum+=L[i];warm+=r-b;sat+=mx?(mx-mn)/mx:0;}
+    var mean=sum/n,v=0;for(i=0;i<n;i++)v+=(L[i]-mean)*(L[i]-mean);L.sort();
+    return {mean:mean,sd:Math.sqrt(v/n),p2:L[Math.floor(n*.02)],p98:L[Math.floor(n*.98)],warm:warm/n,sat:sat/n};}
+  function cl(v,a){return Math.max(-a,Math.min(a,v));}
+  function sg(v,d){return (v>0?'+':'')+(d?v.toFixed(d):v);}
+  $('#pm-run').addEventListener('click',async function(){
+    if(!A.naturalWidth||!B.naturalWidth)return;
+    S(0);var r=measure(A);await sleep(250);S(1);var y=measure(B);await sleep(250);S(2);
+    var rows=[['Brightness','mean',1],['Contrast','sd',1],['Black point','p2',1],['White point','p98',1],['Warmth (red − blue)','warm',2],['Saturation','sat',3]];
+    $('#pm-meas tbody').innerHTML=rows.map(function(k){function f(v){return k[2]===3?Math.round(v*100)+'%':k[2]===2?sg(+v.toFixed(1),1):v.toFixed(1);}
+      return '<tr><td>'+k[0]+'</td><td class="n">'+f(r[k[1]])+'</td><td class="n">'+f(y[k[1]])+'</td></tr>';}).join('');
+    var P={Exposure:cl(Math.round(Math.log2((r.mean+1)/(y.mean+1))*20)/20,2),Contrast:cl(Math.round((r.sd/(y.sd||1)-1)*100),60),
+           Highlights:cl(Math.round((r.p98-y.p98)/2.55*1.5),100),Shadows:cl(Math.round((r.p2-y.p2)/2.55*1.5),100),Vibrance:cl(Math.round((r.sat-y.sat)*150),100)};
+    await sleep(250);S(3);
+    $('#pm-bars').innerHTML=Object.keys(P).map(function(k){var v=P[k],lim=k==='Exposure'?2:100,w=Math.abs(v)/lim*50;
+      return '<div class="brw"><span class="bl">'+k+'</span><span class="bt"><i class="z" style="left:50%"></i><i class="b hi" style="left:'+(v<0?50-w:50)+'%;width:'+w+'%"></i></span><span class="bv">'+sg(v,k==='Exposure'?2:0)+'</span></div>';}).join('');
+    var dw=r.warm-y.warm;
+    $('#pm-note').textContent=Math.abs(dw)<3?'White balance already matches.':'White balance: make your photo '+(dw>0?'warmer':'cooler')+' by eye (the reference reads '+Math.abs(dw).toFixed(0)+' points '+(dw>0?'warmer':'cooler')+'). It stays out of the preset, because RAW and JPEG files differ.';
+    xmp.textContent=['<x:xmpmeta xmlns:x="adobe:ns:meta/">',' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">','  <rdf:Description rdf:about=""',
+      '   xmlns:crs="http://ns.adobe.com/camera-raw-settings/1.0/"','   crs:PresetType="Normal" crs:Version="15.0" crs:ProcessVersion="11.0"',
+      '   crs:Exposure2012="'+sg(P.Exposure,2)+'" crs:Contrast2012="'+sg(P.Contrast)+'"','   crs:Highlights2012="'+sg(P.Highlights)+'" crs:Shadows2012="'+sg(P.Shadows)+'"',
+      '   crs:Vibrance="'+sg(P.Vibrance)+'">','   <crs:Name><rdf:Alt><rdf:li xml:lang="x-default">Photo Match</rdf:li></rdf:Alt></crs:Name>','  </rdf:Description>',' </rdf:RDF>','</x:xmpmeta>'].join('\n');
+  });
+  copyBtn($('#pm-copy'),xmp);
+})();
+
+/* ================= 04 EDITFORGE ================= */
+(function(){
+  var S=stepper('d-editforge'),v=$('#ef-ref'),src=$('#ef-src'),btn=$('#ef-run'),stat=$('#ef-stat'),g=$('#ef-graph'),jsx=$('#ef-jsx');
+  var cv=document.createElement('canvas');cv.width=48;cv.height=27;var cx=cv.getContext('2d',{willReadFrequently:true});
+  /* a frame as normalised brightness: comparing layout this way catches cuts even in dark footage */
+  function frame(vid){cx.drawImage(vid,0,0,48,27);var d=cx.getImageData(0,0,48,27).data,n=48*27,a=new Float32Array(n),m=0,s=0,i;
+    for(i=0;i<n;i++){a[i]=.299*d[i*4]+.587*d[i*4+1]+.114*d[i*4+2];m+=a[i];}m/=n;for(i=0;i<n;i++)s+=(a[i]-m)*(a[i]-m);s=Math.sqrt(s/n)||1;
+    for(i=0;i<n;i++)a[i]=(a[i]-m)/s;return {z:a,mean:m};}
+  function diff(a,b){var t=0;for(var i=0;i<a.length;i++)t+=Math.abs(a[i]-b[i]);return t/a.length;}
+  function draw(D,thr,cuts,dur){var d=Math.min(devicePixelRatio||1,2),W=g.clientWidth,H=g.clientHeight,x=g.getContext('2d');g.width=W*d;g.height=H*d;x.setTransform(d,0,0,d,0,0);
+    var mx=Math.max(thr*1.3,Math.max.apply(null,D.map(function(o){return o.d;})));
+    x.strokeStyle='rgba('+INK+',.3)';x.setLineDash([3,4]);x.beginPath();x.moveTo(0,H-thr/mx*(H-8));x.lineTo(W,H-thr/mx*(H-8));x.stroke();x.setLineDash([]);
+    x.strokeStyle='rgba('+INK+',.85)';x.beginPath();D.forEach(function(o,i){var px=o.t/dur*W,py=H-o.d/mx*(H-8);if(i)x.lineTo(px,py);else x.moveTo(px,py);});x.stroke();
+    x.fillStyle='rgba('+INK+',1)';cuts.forEach(function(c){x.fillRect(c/dur*W-1,0,2,7);});}
+  btn.addEventListener('click',async function(){
+    btn.disabled=true;S(0);stat.textContent='Loading';v.pause();await ready(v);await ready(src);
+    S(1);var dur=v.duration,D=[],prev=null;
+    await play(v,2,1/8,function(t){var f=frame(v);D.push({t:t,d:prev?diff(f.z,prev.z):0,mean:f.mean});prev=f;stat.textContent='Watching the edit · frame '+D.length;});
+    var ds=D.slice(1).map(function(o){return o.d;}),m=ds.reduce(function(a,b){return a+b;},0)/ds.length,
+        sd=Math.sqrt(ds.reduce(function(a,b){return a+(b-m)*(b-m);},0)/ds.length),thr=Math.max(.3,m+sd),cuts=[];
+    D.forEach(function(o){if(o.d>thr&&(!cuts.length||o.t-cuts[cuts.length-1]>.3))cuts.push(o.t);});
+    draw(D,thr,cuts,dur);
+    S(2);var b=[0].concat(cuts,[dur]),shots=[];
+    for(var i=0;i<b.length-1;i++){var first=D.filter(function(o){return o.t>=b[i];})[0]||D[0];shots.push({start:b[i],end:b[i+1],len:b[i+1]-b[i],mean:first.mean});}
+    stat.textContent=cuts.length+' cuts · '+shots.length+' shots · average '+(dur/shots.length).toFixed(2)+' s · '+Math.round(cuts.length/dur*60)+' cuts a minute';
+    await sleep(400);S(3);
+    /* sample the footage every half second; each slot takes the unused moment closest in brightness */
+    var pool=[],sd2=src.duration;await play(src,4,.5,function(t){pool.push({t:t,mean:frame(src).mean});});
+    shots.forEach(function(sh){var best=null;pool.forEach(function(p){if(p.used||p.t+sh.len>sd2)return;var e=Math.abs(p.mean-sh.mean);if(!best||e<best.e)best={p:p,e:e};});
+      if(!best){pool.forEach(function(p){p.used=false;});best={p:pool[0]};}best.p.used=true;sh.from=best.p.t;});
+    $('#ef-plan tbody').innerHTML=shots.map(function(sh,i){return '<tr><td>'+(i+1)+'</td><td class="n">'+sh.start.toFixed(2)+' s</td><td class="n">'+sh.len.toFixed(2)+' s</td><td class="n">'+sh.from.toFixed(1)+' s</td></tr>';}).join('');
+    await sleep(400);S(4);
+    var L=['// EditForge: generated After Effects script','var comp = app.project.items.addComp("EditForge", 1920, 1080, 1, '+dur.toFixed(2)+', 30);',
+      'var src = app.project.importFile(new ImportOptions(File("~/footage/your-clip.mov")));'];
+    shots.forEach(function(sh,i){var n='L'+(i+1);L.push('var '+n+' = comp.layers.add(src);  // slot '+(i+1)+', '+sh.len.toFixed(2)+' s');
+      L.push(n+'.startTime = '+(sh.start-sh.from).toFixed(2)+'; '+n+'.inPoint = '+sh.start.toFixed(2)+'; '+n+'.outPoint = '+sh.end.toFixed(2)+';');});
+    L.push('comp.openInViewer();');jsx.textContent=L.join('\n');
+    btn.disabled=false;btn.textContent='Analyze again';
+  });
+  copyBtn($('#ef-copy'),jsx);
+})();
+
+/* ================= 05 SELFCLIP ================= */
+(function(){
+  var S=stepper('d-selfclip'),v=$('#sc-src'),box=$('#sc-crop'),pos=$('#sc-pos'),txt=$('#sc-text'),c=$('#sc-out'),x=c.getContext('2d'),logEl=$('#sc-log'),playing=false;
+  function frac(){return v.videoWidth?(v.videoHeight*9/16)/v.videoWidth:.316;}
+  function place(){var f=frac();box.style.width=(f*100)+'%';box.style.left=(pos.value/100*(1-f)*100)+'%';}
+  function paint(){if(!v.videoWidth)return;var cw=v.videoHeight*9/16,sx=(v.videoWidth-cw)*(pos.value/100);
+    x.drawImage(v,sx,0,cw,v.videoHeight,0,0,c.width,c.height);
+    var w=txt.value.trim().split(/\s+/).filter(Boolean);if(!playing||!w.length)return;
+    var per=.42,k=Math.floor(v.currentTime/per),ph=(v.currentTime%per)/per,i=(k*2)%w.length,chunk=w.slice(i,i+2).join(' ').toUpperCase(),s=1+.18*Math.max(0,1-ph*5);
+    x.save();x.translate(c.width/2,c.height*.66);x.scale(s,s);x.font='700 30px "Helvetica Neue",Arial,sans-serif';x.textAlign='center';x.textBaseline='middle';
+    x.lineJoin='round';x.lineWidth=7;x.strokeStyle='#000';x.strokeText(chunk,0,0);x.fillStyle='#fff';x.fillText(chunk,0,0);x.restore();}
+  function log(m){logEl.textContent+=m+'\n';}
+  pos.addEventListener('input',function(){place();if(!playing)paint();});
+  v.addEventListener('loadedmetadata',place);v.addEventListener('loadeddata',paint);v.addEventListener('seeked',function(){if(!playing)paint();});
+  (function loop(){if(playing)paint();requestAnimationFrame(loop);})();
+  $('#sc-run').addEventListener('click',async function(){
+    if(playing)return;logEl.textContent='';S(0);log('Replay saved · redline-supra.mp4 · '+(v.duration||10).toFixed(1)+' s');await sleep(400);
+    S(1);log('Cropped to 9:16, '+pos.value+'% across the frame');await sleep(400);
+    S(2);log('Captions: '+txt.value.trim().split(/\s+/).length+' words, two at a time');v.currentTime=0;playing=true;v.play();
+  });
+  v.addEventListener('ended',function(){playing=false;S(3);log('CLIP READY · 1080 × 1920 · in ready/');paint();});
+})();
+
+/* ================= 06 CREATOR EXCHANGE ================= */
+(function(){
+  var S=stepper('d-exchange'),book=null,seq=0,cash=5000,held=0,fees=0,tape=[],perShare=0,FEE=.005;
+  function render(){
+    $('#cx-cash').textContent=money(cash);$('#cx-held').textContent=held;$('#cx-fees').textContent=money(fees);
+    if(!book)return;
+    var asks=book.asks.slice(0,4).reverse(),bids=book.bids.slice(0,4);
+    $('#cx-book').innerHTML=asks.map(function(o){return '<tr class="ask"><td>Ask</td><td class="n">'+money(o.px)+'</td><td class="n">'+o.qty+'</td><td>'+o.who+'</td></tr>';}).join('')+
+      '<tr class="mid"><td colspan="4">Spread '+(book.asks[0]&&book.bids[0]?money(book.asks[0].px-book.bids[0].px):'—')+'</td></tr>'+
+      bids.map(function(o){return '<tr><td>Bid</td><td class="n">'+money(o.px)+'</td><td class="n">'+o.qty+'</td><td>'+o.who+'</td></tr>';}).join('');
+    $('#cx-tape').innerHTML=tape.slice(0,6).map(function(t){return '<tr><td>'+t.side+'</td><td class="n">'+t.qty+' @ '+money(t.px)+'</td><td class="n">fee '+money(t.fee)+'</td></tr>';}).join('')||'<tr><td>No trades yet.</td></tr>';}
+  function log(m){var l=$('#cx-log');l.textContent=m+'\n'+l.textContent;}
+  function sortBook(){book.asks.sort(function(a,b){return a.px-b.px||a.seq-b.seq;});book.bids.sort(function(a,b){return b.px-a.px||a.seq-b.seq;});}
+  $('#cx-ipo').addEventListener('click',function(){
+    var rev=+$('#cx-rev').value,cut=+$('#cx-cut').value/100,sh=+$('#cx-shares').value;if(!(rev>0&&cut>0&&sh>0))return;
+    perShare=rev*cut/sh;var val=0;for(var q=1;q<=12;q++)val+=perShare/Math.pow(1.2,q/4);val=Math.round(val*100)/100;
+    book={asks:[{px:val,qty:Math.round(sh*.2),who:'IPO',seq:seq++}],bids:[{px:Math.round(val*.95*100)/100,qty:Math.round(sh*.05),who:'House',seq:seq++}]};
+    tape=[];$('#cx-px').value=val.toFixed(2);$('#cx-val').textContent='Model value '+money(val)+' a share: '+money(perShare)+' a quarter for 12 quarters, discounted at 20% a year';
+    $('#cx-order').disabled=false;$('#cx-pay').disabled=false;S(0);log('Listed MARA at '+money(val)+'. House market maker bids 5% under.');render();});
+  $('#cx-order').addEventListener('click',function(){
+    var side=$('#cx-side').value,px=Math.round(+$('#cx-px').value*100)/100,qty=Math.floor(+$('#cx-qty').value);
+    if(!(px>0&&qty>0)){log('Enter a price and a quantity.');return;}
+    if(side==='sell'&&qty>held){log('You hold '+held+' shares; you can’t sell '+qty+'.');return;}
+    if(side==='buy'&&px*qty*(1+FEE)>cash){log('Not enough cash for '+qty+' at '+money(px)+'.');return;}
+    S(1);var opp=side==='buy'?book.asks:book.bids,filled=0;
+    while(qty>0&&opp.length&&(side==='buy'?opp[0].px<=px:opp[0].px>=px)){
+      var o=opp[0],n=Math.min(qty,o.qty),notional=o.px*n,fee=notional*FEE;
+      if(side==='buy'){cash-=notional+fee;held+=n;}else{cash+=notional-fee;held-=n;}
+      fees+=fee;tape.unshift({side:side==='buy'?'You bought':'You sold',qty:n,px:o.px,fee:fee});
+      o.qty-=n;qty-=n;filled+=n;if(!o.qty)opp.shift();}
+    if(qty>0){(side==='buy'?book.bids:book.asks).push({px:px,qty:qty,who:'You',seq:seq++});sortBook();}
+    if(filled){S(2);log('Matched '+filled+' at the best resting price'+(qty?'; '+qty+' left resting at '+money(px):'')+'.');}
+    else log('No match at '+money(px)+'; your order rests in the book.');
+    render();});
+  $('#cx-pay').addEventListener('click',function(){var pay=held*perShare;cash+=pay;S(3);
+    log('Quarter paid: '+money(perShare)+' a share × '+held+' shares = '+money(pay)+'.');render();});
+})();
+})();
+</script>

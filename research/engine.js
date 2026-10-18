@@ -187,7 +187,8 @@ function emblem(cv){
    ============================================================ */
 function groupOf(p){for(var i=0;i<G.length;i++)if(G[i].id===p.g)return G[i];return {id:'top',label:'Home'};}
 function card(p){
-  var art=p.img?'<img src="'+esc(p.img)+'" alt="" loading="lazy">':'<canvas data-em="'+p.shape+'"></canvas>';
+  var pos=p.pos?' style="object-position:'+esc(p.pos)+'"':'';
+  var art=p.img?'<img src="'+esc(p.img)+'" alt="" loading="lazy"'+pos+'>':'<canvas data-em="'+p.shape+'"></canvas>';
   return '<a class="card" href="#v-'+p.id+'"><div class="art">'+art+'<div class="no">'+p.no+'</div>'+
     '<div class="st'+(p.live?' live':'')+'">'+esc(p.st)+'</div>'+(p.play?'<div class="play">▶ '+esc(p.play)+'</div>':'')+'</div>'+
     '<div class="bd"><div class="nm">'+esc(p.name)+'</div><div class="dis">'+esc(p.dis)+'</div>'+
@@ -248,7 +249,7 @@ function view(p,i){
     '<div class="v-top"><a href="#'+g.id+'">← '+esc(g.label)+'</a><span>'+String(i+1).padStart(2,'0')+' / '+String(P.length).padStart(2,'0')+'</span></div>'+
     '<header class="v-head"><div><div class="eyebrow">'+esc(g.label)+' · '+p.no+'</div><h1>'+esc(p.name)+'</h1>'+
     '<div class="v-dis">'+esc(p.dis)+'</div><p class="v-lede">'+esc(p.lede||p.tx)+'</p></div>'+
-    '<div class="v-art">'+(p.hero?'<img src="'+esc(p.hero)+'" alt="">':'<canvas data-em="'+p.shape+'" data-big="1"></canvas>')+
+    '<div class="v-art">'+(p.hero?'<img src="'+esc(p.hero)+'" alt=""'+(p.pos?' style="object-position:'+esc(p.pos)+'"':'')+'>':'<canvas data-em="'+p.shape+'" data-big="1"></canvas>')+
     '<i class="cm tl"></i><i class="cm tr"></i><i class="cm bl"></i><i class="cm br"></i><div class="st'+(p.live?' live':'')+'">'+esc(p.st)+'</div></div></header>';
   if(p.meta)h+='<dl class="v-meta">'+p.meta.map(function(m){return '<div><dt>'+esc(m[0])+'</dt><dd>'+esc(m[1])+'</dd></div>';}).join('')+'</dl>';
   if(p.kpis)h+='<div class="v-kpis" style="--n:'+p.kpis.length+'">'+p.kpis.map(function(k){
