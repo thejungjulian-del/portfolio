@@ -6,6 +6,9 @@
 var reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
 var MONO='9px "SF Mono", ui-monospace, Menlo, monospace';
 var P=window.PROJECTS||[],G=window.GROUPS||[],SEC=window.SECTIONS||[],ELSE=window.ELSEWHERE||[];
+/* page tone: a dark page sets --ink-rgb to near-white and --lift to 1 */
+var CS=getComputedStyle(document.documentElement),INK=CS.getPropertyValue('--ink-rgb').trim()||'11,11,12',
+    LIFT=parseFloat(CS.getPropertyValue('--lift'))||0;
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 /* ============================================================
@@ -130,8 +133,10 @@ var EM={
 };
 
 var LIGHT=norm([-.42,.74,.52]);
-function shade(n){var c=env(.5+.5*n[1]*0.98+n[2]*.10),spec=Math.pow(Math.max(0,dot(n,LIGHT)),26);
-  return 'rgb('+Math.min(212,c[0]+spec*130|0)+','+Math.min(212,c[1]+spec*130|0)+','+Math.min(212,c[2]+spec*130|0)+')';}
+/* on paper every face stays below the page tone; on black the ramp is lifted so no face sinks into it */
+function shade(n){var c=env(.5+.5*n[1]*0.98+n[2]*.10),spec=Math.pow(Math.max(0,dot(n,LIGHT)),26),cap=LIFT?236:212;
+  function ch(v){v=v+spec*130;return Math.min(cap,(LIFT?v*.8+50:v)|0);}
+  return 'rgb('+ch(c[0])+','+ch(c[1])+','+ch(c[2])+')';}
 function scene(x,W,H,items){
   var faces=[],i,j,k;
   for(i=0;i<items.length;i++){
@@ -149,7 +154,7 @@ function scene(x,W,H,items){
     x.closePath();x.fillStyle=col;x.fill();x.strokeStyle=col;x.lineWidth=1;x.stroke();}}
 function contact(x,cx,cy,w,h,s){
   var g=x.createRadialGradient(cx,cy,1,cx,cy,w);
-  g.addColorStop(0,'rgba(11,11,12,'+s+')');g.addColorStop(.45,'rgba(11,11,12,'+s*.42+')');g.addColorStop(1,'rgba(11,11,12,0)');
+  g.addColorStop(0,'rgba('+INK+','+s+')');g.addColorStop(.45,'rgba('+INK+','+s*.42+')');g.addColorStop(1,'rgba('+INK+',0)');
   x.save();x.translate(cx,cy);x.scale(1,h/w);x.translate(-cx,-cy);x.fillStyle=g;x.beginPath();x.arc(cx,cy,w,0,6.2832);x.fill();x.restore();}
 
 /* one sizing + visibility helper for every canvas */
@@ -305,7 +310,7 @@ addEventListener('hashchange',route);
   },step:function(){st.t+=.004;mx+=(tmx-mx)*.06;my+=(tmy-my)*.06;}});
 })();
 
-function ink(a){return 'rgba(11,11,12,'+a+')';}
+function ink(a){return 'rgba('+INK+','+a+')';}
 function plate(st){
   var x=st.x,W=st.W,H=st.H,b={l:W*.05,r:W*.95,t:H*.10,b:H*.80};
   x.strokeStyle=ink(.13);x.lineWidth=1;x.beginPath();x.moveTo(b.l,b.b+.5);x.lineTo(b.r,b.b+.5);x.stroke();

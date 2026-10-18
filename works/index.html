@@ -1,0 +1,352 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Julian Jung Works</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="engine.css">
+<style>
+/* the flip side of the research portfolio: same system, colours inverted */
+:root{--paper:#0b0b0c;--paper-2:#141416;--ink:#f5f5f3;--ink-2:#b1b3b4;--ink-3:#757674;--ink-4:#464745;
+  --rule:rgba(245,245,243,.08);--rule-2:rgba(245,245,243,.17);--ink-rgb:245,245,243;--lift:1;
+  --bar:rgba(11,11,12,.9);--grain-blend:screen;--grain-op:.12;color-scheme:dark}
+</style>
+
+<div class="grid" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="bar" id="bar">
+  <a href="../index.html" class="lock">
+    <div class="a">Julian Jung</div>
+    <div class="b">Markets, products &amp; design</div>
+  </a>
+  <nav class="nav" aria-label="Sections">
+    <a href="#markets" data-sec="markets">Markets &amp; data</a>
+    <a href="#products" data-sec="products">Products</a>
+    <a href="#brand" data-sec="brand">Brand &amp; web</a>
+    <a href="#film" data-sec="film">Film</a>
+  </nav>
+  <button class="ixbtn" id="ixbtn" aria-expanded="false" aria-controls="menu"><i></i>Index</button>
+</header>
+<div class="menu" id="menu" hidden></div>
+
+<div id="home">
+<main class="hero" id="top">
+  <canvas id="stage" aria-hidden="true"></canvas>
+  <div class="crop" aria-hidden="true">
+    <i class="v" style="left:33.333%"></i><i class="v" style="left:66.666%"></i>
+    <i class="h" style="top:30%"></i><i class="h" style="top:76%"></i>
+  </div>
+  <div class="marg tr">
+    Markets &amp; data<br>Products<br>Brand &amp; web<br>Film &amp; motion
+    <div style="height:15px"></div>
+    UC Berkeley · 2026
+  </div>
+  <div class="logo" aria-hidden="true"><h1>Julian Jung</h1></div>
+  <div class="logo front" aria-hidden="true"><h1>Julian Jung</h1></div>
+  <h1 class="sr">Julian Jung, markets, products and design</h1>
+  <div class="under">Markets, products and brands, built end to end</div>
+  <div class="marg bl"><span class="big">11</span><span>Works<br>shown</span></div>
+  <div class="marg br">
+    Index
+    <a href="#markets">Markets &amp; data</a>
+    <a href="#products">Products</a>
+    <a href="#brand">Brand &amp; web</a>
+  </div>
+</main>
+
+<div class="band">
+  <div class="word">Made.</div>
+  <div class="cap">
+    <p>Trading systems tested on data they had never seen, apps people can use, brands that are live and 3D films made for them. Mostly solo, from the first sketch to the server it runs on. Open any piece for the full story.</p>
+    <div>Fig. 01 — the body of work</div>
+  </div>
+</div>
+
+<section class="hr" aria-label="Headline numbers">
+  <div class="stats">
+    <div class="stat"><b>14</b><span>Trading and data systems</span></div>
+    <div class="stat"><b>6</b><span>Products and tools</span></div>
+    <div class="stat"><b>3</b><span>Brands and sites</span></div>
+    <div class="stat"><b>2</b><span>3D films</span></div>
+    <div class="stat"><b>3</b><span>Live websites</span></div>
+  </div>
+</section>
+
+<section class="hr" id="markets">
+  <div class="head">
+    <h2>Markets &amp; data</h2>
+    <div class="sub">14 systems · its own portfolio<br>Trading research and data products</div>
+  </div>
+  <div class="xlink">
+    <div>
+      <p>I build trading systems and then try to break them: overnight equities, prediction markets, weather contracts, football odds and creator data. Each one had to hold up on data it had never seen, at the prices it would really get. One rule survived 27 years of Nasdaq data; most ideas didn’t, and the bug ledger shows why.</p>
+      <a class="btn" href="../research/index.html" target="_blank" rel="noopener">Open the research portfolio <span>↗</span></a>
+    </div>
+    <div class="xlist" id="xlist"></div>
+  </div>
+</section>
+
+<section class="hr" id="products">
+  <div class="head">
+    <h2>Products</h2>
+    <div class="sub">6 apps and tools · photo, video, creators<br>Open any card for the full case</div>
+  </div>
+  <div class="rgrid three" id="grid-products"></div>
+</section>
+
+<section class="hr" id="brand">
+  <div class="head">
+    <h2>Brand &amp; web</h2>
+    <div class="sub">3 brands and sites<br>Two of them live</div>
+  </div>
+  <div class="rgrid three" id="grid-brand"></div>
+</section>
+
+<section class="hr" id="film">
+  <div class="head">
+    <h2>Film &amp; motion</h2>
+    <div class="sub">2 films · 3D, made in Blender<br>For the Redline website</div>
+  </div>
+  <div class="rgrid two" id="grid-film"></div>
+</section>
+</div>
+
+<div id="views"></div>
+
+<footer>
+  <div class="f-top">
+    <div class="f-mark">Julian Jung</div>
+    <div class="f-line">Markets, products &amp; design<br>UC Berkeley · 2026</div>
+  </div>
+  <div class="f-cols">
+    <div class="f-col"><div class="f-h">Build</div><span>Python &amp; Flask</span><span>Next.js &amp; React</span><span>JavaScript</span><span>ffmpeg</span><span>Claude, Gemini, Ollama</span></div>
+    <div class="f-col"><div class="f-h">Design &amp; film</div><span>Figma</span><span>Blender</span><span>After Effects</span><span>Lightroom</span></div>
+    <div class="f-col"><div class="f-h">Live</div><a href="https://redlineatberkeley.com/" target="_blank" rel="noopener">redlineatberkeley.com ↗</a><a href="https://jsentertainment.org/" target="_blank" rel="noopener">jsentertainment.org ↗</a><a href="https://desk.jsentertainment.org/me/48" target="_blank" rel="noopener">JS Entertainment desk ↗</a></div>
+    <div class="f-col"><div class="f-h">Contact</div><span class="mail">thejungjulian@gmail.com</span><a href="../research/index.html" target="_blank" rel="noopener">Research portfolio ↗</a><a href="https://github.com/thejungjulian-del" target="_blank" rel="noopener">GitHub ↗</a><span>Berkeley, CA</span></div>
+  </div>
+  <div class="f-base"><span>© 2026 Julian Jung</span><span>Demo pages use sample data · AI-generated people are labeled</span></div>
+</footer>
+
+<script>
+var RESEARCH="../research/index.html";
+var SECTIONS=[["markets","Markets & data"],["products","Products"],["brand","Brand & web"],["film","Film & motion"]];
+var GROUPS=[{id:"products",label:"Products",grid:"grid-products"},{id:"brand",label:"Brand & web",grid:"grid-brand"},
+            {id:"film",label:"Film & motion",grid:"grid-film"}];
+var ELSEWHERE=[["Research portfolio",RESEARCH],["redlineatberkeley.com","https://redlineatberkeley.com/"],["jsentertainment.org","https://jsentertainment.org/"],["GitHub","https://github.com/thejungjulian-del"]];
+var FIGMA_UHNOTHER="https://www.figma.com/proto/FSUlxSOY0CVDNE1fbWoIgJ/uhnother-website?node-id=1-424&scaling=scale-down&content-scaling=fixed&starting-point-node-id=1%3A479&page-id=0%3A1";
+var PROJECTS=[
+/* ---------------- products ---------------- */
+{id:"desk",g:"products",no:"01",name:"JS Entertainment Desk",dis:"Creator trends · live web app",st:"Live",live:true,shape:"icosa",
+ kpi:["Daily","scan of every watched creator"],
+ tx:"A private trend desk for a creator agency. It watches chosen creators, surfaces what’s overperforming in their niche, turns it into shoot-ready briefs and runs a brand-deal inbox.",
+ tk:"Flask · SQLite · Apify · Claude API · Hetzner",
+ lede:"A trend desk for a creator agency, live on its own server. It reads each creator’s niche, finds what’s overperforming right now and turns it into shoot-ready briefs, with a brand-deal inbox built in.",
+ meta:[["Status","Live, in daily use"],["Period","Jun 2026 – now"],["Built with","Flask, SQLite, Apify, Claude API"],["Runs on","Hetzner, Caddy, Cloudflare"]],
+ kpis:[["$0.30","per 1,000 posts scraped"],["7.7×","cheaper than the official scraper"],["Daily","scan of every watched creator"]],
+ rows:[
+  ["The brief","Tell a creator what to film next, based on what’s working in their niche today, and handle the brand deals that come in."],
+  ["What it does",[
+   "Keeps watch lists of specific creators and scans them every day.",
+   "Ranks the top posts and reels per niche, with swipeable carousels and an in-site viewer.",
+   "Finds new creators from real collaborations and tags, then screens them with a vision pass so brands, photographers and off-niche accounts drop out.",
+   "Suggests when to post and writes captions and hashtags.",
+   "Runs a brand-deal inbox on its own domain that scores incoming offers and drafts replies."]],
+  ["How it’s built",[
+   "Flask and SQLite behind Caddy on a Hetzner server, with Cloudflare DNS and email routing.",
+   "systemd services plus a timer for database backups.",
+   "Overlapping watch lists are scraped once and shared, which keeps scraping at about $0.30 per 1,000 posts."]],
+  ["Access","The live link opens a creator’s view. The admin side stays private because it manages real creators’ accounts; I’m happy to walk through it."],
+  ["Links",{links:[["Creator view, live","https://desk.jsentertainment.org/me/48"],["Data case study",RESEARCH+"#v-desk",1]]}]]},
+
+{id:"fitcheck",g:"products",no:"02",name:"FitCheck",dis:"Virtual try-on · web app",st:"Demo",shape:"form",
+ kpi:["2","angles per look, front and back"],
+ tx:"Paste a product link and see the piece on a model generated to your measurements, front and back. Swappable AI engines, with caching so each look is only paid for once.",
+ tk:"Next.js · React · Gemini · ComfyUI · Ollama",
+ lede:"Virtual try-on for your wardrobe. Enter your measurements, paste a link to any piece of clothing, and see it on a model built to your fit, from the front and the back.",
+ meta:[["Status","Working, demo online"],["Period","Jun 2026"],["Built with","Next.js 15, React 19, Gemini"],["Runs on","Local, cloud or on-device engines"]],
+ kpis:[["2","angles per look"],["3.4×","cheaper per image after a model switch"],["1 link","product page in, try-on out"]],
+ rows:[
+  ["The brief","See a piece of clothing on a body like yours before you buy it, from nothing more than the product link."],
+  ["How it works",[
+   "Enter body measurements and optional reference photos; it generates a model to your fit on an off-white studio backdrop.",
+   "Paste a product link. The app reads the page, reasons about size and fit, and renders the model wearing the piece.",
+   "Flip shows a back view, so every look comes as a front and back pair.",
+   "Results are cached by product link, body and prompt version, so repeating a look costs nothing."]],
+  ["How it’s built",[
+   "Next.js 15 and React 19, with image generation behind one provider interface.",
+   "Switched the image model from Gemini 3 Pro Image (about $0.134 an image) to Gemini 2.5 Flash Image (about $0.039).",
+   "An on-device path: Ollama for the text reasoning, and a ComfyUI provider running Flux.1 Kontext for images."]],
+  ["Gallery",{figs:[{type:"gallery",items:[
+   ["img/fitcheck-app.jpg","The app · demo data",1],
+   ["img/fitcheck-model.jpg","Generated base model · AI-generated person"],
+   ["img/fitcheck-front.jpg","A look, front · AI-generated person"],
+   ["img/fitcheck-back.jpg","The same look, back · AI-generated person"]]}]}],
+  ["Links",{links:[["Open the demo","fitcheck/index.html"]]}]]},
+
+{id:"photomatch",g:"products",no:"03",name:"Photo Match",dis:"Photo look matching · web app",st:"Demo",shape:"lens",
+ kpi:["3","AI engines compared side by side"],
+ tx:"Upload a reference photo and your own shot. It reads the reference’s colour and tone and writes a Lightroom preset to match, with Claude, GPT and a free local model side by side.",
+ tk:"Flask · Claude · GPT-4o · Ollama · Lightroom .xmp",
+ lede:"Copy any photo’s look. Upload a reference to learn how it was shot, then upload your own photo and get a Lightroom preset that matches it.",
+ meta:[["Status","Working, demo online"],["Period","May – Jun 2026"],["Built with","Flask, Claude, GPT-4o, Ollama"],["Output","Lightroom Classic .xmp preset"]],
+ kpis:[["3","AI engines side by side"],[".xmp","Lightroom preset out"],["$0","to run on the local model"]],
+ rows:[
+  ["The brief","When I like a photo’s look, I want to know how it was shot and how to get my own photo there, without guessing at sliders."],
+  ["How it works",[
+   "Upload a reference: get detailed shooting instructions for light, lens and composition.",
+   "Upload your shot: get a match analysis and a Lightroom Classic preset (basic panel, HSL, colour grading, vignette).",
+   "Optional AI re-edit of your photo toward the reference with OpenAI’s image model.",
+   "Pick any of three engines (Claude, GPT-4o, or Llama 3.2 Vision running locally) and compare their reads side by side."]],
+  ["How it’s built",[
+   "A Flask backend with analyze, match and edit endpoints, each engine wrapped so the app runs with whichever ones are set up.",
+   "preset.py writes the .xmp file from slider values.",
+   "The local model takes one image per message, so the app stitches the reference and your photo side by side for it.",
+   "White balance is left out of the preset on purpose, because RAW and JPEG files differ; it comes as written notes instead."]],
+  ["Interface",{figs:[{type:"shot",src:"img/photomatch.jpg",cap:"Match your photo · demo data"}]}],
+  ["Links",{links:[["Open the demo","photomatch.html"]]}]]},
+
+{id:"editforge",g:"products",no:"04",name:"EditForge",dis:"Edit copying · video tool",st:"Built",shape:"reel",
+ kpi:["9","test suites passing"],
+ tx:"Paste a TikTok edit and drop in your clips. It reads the edit’s cut rhythm, beat grid, energy and grade, then rebuilds it with your footage as an After Effects project.",
+ tk:"Python · Flask · ffmpeg · After Effects scripting",
+ lede:"Paste a TikTok edit and drop in your clips. EditForge reads the edit’s cut rhythm, beat grid, energy and colour, then rebuilds it with your footage as an After Effects project.",
+ meta:[["Status","Working locally"],["Period","Jul 2026"],["Built with","Python, Flask, ffmpeg"],["Output","After Effects .jsx project"]],
+ kpis:[["9","test suites passing"],[".jsx","After Effects project out"],["ProRes 422","the fix that made AE read every clip"]],
+ rows:[
+  ["The brief","Recreating an edit you like by hand means counting cuts, matching beats and regrading every clip. I wanted that in one step."],
+  ["How it works",[
+   "Analyzes the reference for cuts, beat grid, energy and grade.",
+   "Finds which of your clips look most like each reference shot.",
+   "Refines every cut point, including face angle, and makes the end loop back seamlessly.",
+   "Spots when the reference splices one source shot several times, and does the same with one of your clips.",
+   "Writes an After Effects script that builds the whole comp with your footage, transitions, flashes, speed ramps and slow motion."]],
+  ["How it’s built",[
+   "Python and Flask for the app, ffmpeg for analysis and transcoding.",
+   "After Effects showed every clip as Media Offline: it can’t reliably decode ffmpeg’s H.264. Transcoding to ProRes 422 fixed it, confirmed in AE.",
+   "The script de-duplicates imports, timestamps each comp and reports any footage AE can’t read.",
+   "Nine test suites cover cut points, source grouping, face angle, colour, flashes and content matching."]],
+  ["Interface",{figs:[{type:"shot",src:"img/editforge.jpg",cap:"Paste a link, drop your clips"}]}],
+  ["Next","CapCut draft output and a chat front end, so you can describe an edit and get a finished video back."]]},
+
+{id:"selfclip",g:"products",no:"05",name:"SelfClip",dis:"Stream clipping · automation",st:"Running",live:true,shape:"phone",
+ kpi:["9:16","vertical, captioned, automatic"],
+ tx:"Every time I save a moment on stream, it becomes a captioned vertical clip on its own. A watcher picks up each save, crops it, captions it and pings me.",
+ tk:"Python · ffmpeg · OBS · launchd",
+ lede:"Every time I save a moment on stream, it turns into a captioned vertical clip on its own, ready to post.",
+ meta:[["Status","Running"],["Period","Aug 2026"],["Built with","Python, ffmpeg, OBS"],["Runs on","My Mac, launchd"]],
+ kpis:[["9:16","vertical, captioned"],["< 5 min","from save to ready clip"],["0","clicks after setup"]],
+ rows:[
+  ["The brief","Clipping your own stream by hand means scrubbing, cropping and captioning every highlight. OBS already keeps the last few minutes in memory, so the rest could be automatic."],
+  ["How it works",[
+   "OBS’s replay buffer saves the last moments when I press a key.",
+   "A watcher picks up each save and crops it to 9:16 with a layout tuned to my stream.",
+   "Short-form captions go on in a bold one-to-three-word style.",
+   "The finished clip lands in a ready folder and I get a notification.",
+   "A separate VOD tool ranks the best moments of a long stream before downloading anything; on a 3.9-hour VOD it made five captioned 36-second clips."]],
+  ["How it’s built",[
+   "Python and ffmpeg; launchd keeps the watcher alive across restarts.",
+   "A caption writer adds a hook line and hashtags.",
+   "Posting stays manual on purpose, because automated posting gets accounts banned."]]]},
+
+{id:"exchange",g:"products",no:"06",name:"Creator Exchange",dis:"Fintech · play money",st:"Prototype",live:true,shape:"torus",
+ kpi:["0.5%","fee per trade to the exchange"],
+ tx:"A stock market for creators. Shares pay out a slice of revenue (sponsors, ads, merch) every quarter, trading on a real limit-order book with a house market maker.",
+ tk:"JavaScript · matching engine · shared database",
+ lede:"A play-money stock market for creators. Creators IPO, shares pay out a slice of their revenue each quarter, and the exchange earns a fee on every trade.",
+ meta:[["Status","Working prototype"],["Period","Oct 2026"],["Built with","JavaScript, shared database"],["Money","Play money only"]],
+ kpis:[["0.5%","taker fee to the exchange"],["20%","discount rate in the valuation"],["5","revenue sources per report"]],
+ rows:[
+  ["The brief","Value creators like stocks, based on everything they earn, including sponsors, and let fans trade them."],
+  ["What I built",[
+   "A limit-order book with price-time priority, matched under a per-stock lease so two traders can’t fill the same order.",
+   "A valuation model: a share is a fixed-term slice of revenue, priced as discounted payouts at 20% a year, which also sets the IPO price.",
+   "A house market maker that bids 5% under model value.",
+   "Quarterly reports split by source (sponsors, ads, merch, subscriptions, other) that pay holders.",
+   "A shared database so invited friends trade against each other, with six fictional example creators."]],
+  ["Market check","GigaStar already runs a real-money version for YouTube ad revenue (about 37 offerings, $6.9M raised) but doesn’t cover sponsors. Fantex tried athlete stocks in 2013–16 and closed to retail after lawsuits. Real money would need a registered funding portal."],
+  ["Links",{links:[["Open the exchange","https://claude.ai/artifact/8fUmEedDAcb7EFDzj9UoZo"]]}]]},
+
+/* ---------------- brand & web ---------------- */
+{id:"redline",g:"brand",no:"07",name:"Redline",dis:"Car club identity + website",st:"Live",live:true,img:"img/redline-about.jpg",hero:"img/redline-lowpoly.jpg",
+ tx:"UC Berkeley’s car club. As VP I built its identity, its art-directed website with membership sign-up, its 3D car films and its recruiting poster.",
+ tk:"HTML · CSS · JavaScript · Blender",
+ lede:"Redline is UC Berkeley’s car club: cruises, meets, automotive media and clothes. As vice president I built its identity, its website and its recruiting material.",
+ meta:[["Role","Vice president, design and web"],["Period","Sep – Oct 2026"],["Built with","HTML, CSS, JavaScript, Blender"],["Live at","redlineatberkeley.com"]],
+ kpis:[["3","colours: red, cream, ink"],["5","roles in the open call"],["4","pages, one motion language"]],
+ rows:[
+  ["The brief","Make a student car club look like an art-directed automotive and image-making collective, without inventing projects it hasn’t done."],
+  ["Identity",[
+   "A wordmark set in Akira Expanded, in red #d40a0a, cream #f4ead2 and ink #0b0a09, with IBM Plex Sans for text.",
+   "Written rules: no grain, glitch or CRT effects, and no made-up projects or prices on public material."]],
+  ["Website",[
+   "Home, About, Connect and Apply pages with a scroll-driven photo sequence, curtain reveals and page transitions.",
+   "A reduced-motion version where everything stays visible and navigation works without animation.",
+   "A membership application with the full waiver, connected to the club’s membership backend.",
+   "Dark, faceted 3D car renders and two intro films made for the site."]],
+  ["Gallery",{figs:[{type:"gallery",items:[
+   ["img/redline-about.jpg","About page · live",1],
+   ["img/redline-connect.jpg","Connect page · live"],
+   ["img/redline-poster.jpg","Open call poster · 2160 × 2700"],
+   ["img/redline-lowpoly.jpg","Low-poly render for the home page"],
+   ["img/redline-city.jpg","People and city render"],
+   ["img/redline-coastal.jpg","Club photography"],
+   ["img/redline-drive.jpg","Club drive"],
+   ["img/redline-merch.jpg","’24 Berkeley varsity hoodie",1]]}]}],
+  ["Recruiting","The Open call poster went out at Instagram’s 4:5 size and lists five roles: creators, models, designers, film and photo."],
+  ["Links",{links:[["redlineatberkeley.com","https://redlineatberkeley.com/"],["Instagram","https://www.instagram.com/redlineatberkeley/",1],["SVJ film","#v-redline-svj",1],["Supra film","#v-redline-supra",1]]}]]},
+
+{id:"jsent",g:"brand",no:"08",name:"JS Entertainment",dis:"Company website · live",st:"Live",live:true,img:"img/jsent-site.jpg",hero:"img/jsent-site.jpg",
+ tx:"The public site for a group-development company: paper, hairline grid and chrome objects drawn by a 3D renderer I wrote from scratch. This portfolio uses the same system.",
+ tk:"HTML · CSS · JavaScript, no libraries",
+ lede:"The public site for JS Entertainment, a company that builds and operates groups, and the design system this portfolio is built on.",
+ meta:[["Status","Live"],["Period","Jul – Sep 2026"],["Built with","HTML, CSS, JavaScript, no libraries"],["Live at","jsentertainment.org"]],
+ rows:[
+  ["The brief","A company that builds groups needed a site that reads like a studio, not a startup."],
+  ["What I made",[
+   "The paper edition: white majority, black accents, a hairline construction grid, crop marks and grain.",
+   "A software 3D renderer written from scratch for the chrome objects, shaded against a bright environment so they read on paper.",
+   "Roster cards, line diagrams of how the company operates, and an auditions form.",
+   "A dark sister site for its first group, A Loud Peace, and a 28-page operating manual on how HYBE and JYP run, adapted for a small company."]],
+  ["Interface",{figs:[{type:"shot",src:"img/jsent-site.jpg",cap:"jsentertainment.org · live"}]}],
+  ["Links",{links:[["jsentertainment.org","https://jsentertainment.org/"],["The desk behind it","#v-desk",1]]}]]},
+
+{id:"uhnother",g:"brand",no:"09",name:"uhnother",dis:"Fashion e-commerce concept · Figma",st:"Prototype",img:"img/uhnother.jpg",hero:"img/uhnother.jpg",
+ tx:"A concept storefront for a fashion label: editorial photography, a red wordmark and quiet navigation.",
+ tk:"Figma · clickable prototype",
+ lede:"A concept storefront for a fashion label, designed in Figma with a clickable prototype.",
+ meta:[["Type","E-commerce concept"],["Tool","Figma"],["Format","Desktop website"],["Deliverable","Clickable prototype"]],
+ rows:[
+  ["The project","An e-commerce concept where the photography carries the brand: a product on a hanger against a tiled wall, a model in the frame, and navigation kept small so nothing competes with the clothes."],
+  ["Design",{figs:[{type:"gallery",items:[["img/uhnother.jpg","Landing page",1]]}]}],
+  ["Links",{links:[["Open the prototype",FIGMA_UHNOTHER]]}]]},
+
+/* ---------------- film ---------------- */
+{id:"redline-svj",g:"film",no:"10",name:"Redline SVJ",dis:"3D car film · Blender",st:"3D",img:"img/redline-svj.jpg",hero:"img/redline-svj.jpg",play:"0:17",
+ tx:"A low-poly Lamborghini SVJ showcase rendered in Blender for the Redline website.",
+ tk:"Blender · 720p · 17 s · silent",
+ lede:"A low-poly Lamborghini SVJ, modeled, lit and rendered in Blender as motion for the Redline website.",
+ meta:[["Type","3D showcase film"],["Tools","Blender"],["Length","17 seconds, silent"],["Used on","redlineatberkeley.com"]],
+ rows:[
+  ["Watch",{figs:[{type:"video",src:"media/redline-svj.mp4",poster:"img/redline-svj.jpg",cap:"Redline SVJ showcase"}]}],
+  ["Context","Part of the Redline identity: the site uses dark, faceted car renders instead of stock photos so the motion feels like the brand. See the Redline case for the rest."],
+  ["Links",{links:[["Redline case","#v-redline",1],["redlineatberkeley.com","https://redlineatberkeley.com/"]]}]]},
+
+{id:"redline-supra",g:"film",no:"11",name:"Redline Supra",dis:"Home-page intro film · Blender",st:"3D",img:"img/redline-supra.jpg",hero:"img/redline-supra.jpg",play:"0:10",
+ tx:"The intro film for the Redline home page: a Supra driving through the city at night, rendered in Blender.",
+ tk:"Blender · 1080p · 10 s",
+ lede:"The intro film for the Redline home page: a Supra driving through the city at night, rendered in Blender.",
+ meta:[["Type","Site intro film"],["Tools","Blender"],["Length","10 seconds"],["Used on","redlineatberkeley.com"]],
+ rows:[
+  ["Watch",{figs:[{type:"video",src:"media/redline-supra.mp4",poster:"img/redline-supra.jpg",cap:"Redline Supra intro"}]}],
+  ["Links",{links:[["Redline case","#v-redline",1],["redlineatberkeley.com","https://redlineatberkeley.com/"]]}]]}
+];
+</script>
+<script src="engine.js"></script>
+<script>
+/* the research list, deep-linking into the other portfolio */
+document.getElementById('xlist').innerHTML=[
+ ["formula-lab","01","Formula Lab","Running"],["overnight","02","Overnight Premium","Held up"],["fed","03","Fed Day Study","Finding"],
+ ["arb","04","Arbitrage Scanner","Built"],["polymarket","05","Polymarket Bots","Closed"],["kalshi","06","Kalshi Weather","Closed"],
+ ["course","07","Day-Trading Course Test","Closed"],["soccer","08","Soccer Model","Closed"],["desk","09","JS Entertainment Desk","Live"],
+ ["videotrends","10","VideoTrends","Paused"],["clips","11","Clip Campaign Ranker","Daily"],["exchange","12","Creator Exchange","Prototype"],
+ ["radar","13","Potential Radar","Demo"],["trendtracker","14","TrendTracker","Shelved"]
+].map(function(r){return '<a href="'+RESEARCH+'#v-'+r[0]+'" target="_blank" rel="noopener"><s>'+r[1]+'</s>'+r[2]+'<em>'+r[3]+' ↗</em></a>';}).join('');
+</script>
