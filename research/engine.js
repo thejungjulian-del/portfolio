@@ -10,6 +10,8 @@ var P=window.PROJECTS||[],G=window.GROUPS||[],SEC=window.SECTIONS||[],ELSE=windo
 var CS=getComputedStyle(document.documentElement),INK=CS.getPropertyValue('--ink-rgb').trim()||'11,11,12',
     LIFT=parseFloat(CS.getPropertyValue('--lift'))||0;
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+/* big numbers: Helvetica's minus and dash touch the digits, so give them a hair of room */
+function num(s){return esc(s).replace(/^[+−–]/,'<i class="sg">$&</i>').replace(/(\d)–(\d)/g,'$1<i class="rg">–</i>$2');}
 
 /* ============================================================
    SOFTWARE 3D — lifted from the JS Entertainment site, plus a
@@ -192,7 +194,7 @@ function card(p){
   return '<a class="card" href="#v-'+p.id+'"><div class="art">'+art+'<div class="no">'+p.no+'</div>'+
     '<div class="st'+(p.live?' live':'')+'">'+esc(p.st)+'</div>'+(p.play?'<div class="play">▶ '+esc(p.play)+'</div>':'')+'</div>'+
     '<div class="bd"><div class="nm">'+esc(p.name)+'</div><div class="dis">'+esc(p.dis)+'</div>'+
-    (p.kpi?'<div class="kpi"><b>'+esc(p.kpi[0])+'</b><span>'+esc(p.kpi[1])+'</span></div>':'')+
+    (p.kpi?'<div class="kpi"><b>'+num(p.kpi[0])+'</b><span>'+esc(p.kpi[1])+'</span></div>':'')+
     '<p class="tx">'+esc(p.tx)+'</p><div class="tk">'+esc(p.tk)+'</div><div class="go">Open case <span>→</span></div></div></a>';}
 
 function wrap(f,inner){
@@ -253,7 +255,7 @@ function view(p,i){
     '<i class="cm tl"></i><i class="cm tr"></i><i class="cm bl"></i><i class="cm br"></i><div class="st'+(p.live?' live':'')+'">'+esc(p.st)+'</div></div></header>';
   if(p.meta)h+='<dl class="v-meta">'+p.meta.map(function(m){return '<div><dt>'+esc(m[0])+'</dt><dd>'+esc(m[1])+'</dd></div>';}).join('')+'</dl>';
   if(p.kpis)h+='<div class="v-kpis" style="--n:'+p.kpis.length+'">'+p.kpis.map(function(k){
-    return '<div class="stat"><b>'+esc(k[0])+'</b><span>'+esc(k[1])+'</span></div>';}).join('')+'</div>';
+    return '<div class="stat"><b>'+num(k[0])+'</b><span>'+esc(k[1])+'</span></div>';}).join('')+'</div>';
   (p.rows||[]).forEach(function(r){h+='<div class="v-row"><h2>'+esc(r[0])+'</h2><div class="v-body">'+block(r[1])+'</div></div>';});
   h+='<nav class="v-pn" aria-label="More work"><a href="#v-'+prev.id+'"><span>← Previous</span><b>'+esc(prev.name)+'</b></a>'+
     '<a href="#v-'+next.id+'"><span>Next →</span><b>'+esc(next.name)+'</b></a></nav></article>';
@@ -304,10 +306,10 @@ addEventListener('hashchange',route);
   addEventListener('pointermove',function(e){tmx=(e.clientX/innerWidth-.5)*2;tmy=(e.clientY/innerHeight-.5)*2;},{passive:true});
   var st=track(cv,{t:0,draw:function(){
     var x=st.x,W=st.W,H=st.H;if(!W)return;
-    var narrow=W<900,sc=Math.min(W,H)*(narrow?.235:.26),oy=narrow?-H*.10:0,rx=-.20+my*.26,ry=st.t*2+mx*.5;
+    var narrow=W<900,sc=Math.min(W,H)*(narrow?.235:.26),rx=-.20+my*.26,ry=st.t*2+mx*.5;
     x.clearRect(0,0,W,H);
-    contact(x,W/2,H/2+oy+sc*1.28,sc*1.12,sc*.14,.22);
-    scene(x,W,H,[{m:RING,o:{rx:rx+.52,ry:ry*1.5,scale:sc,oy:oy}},{m:SOLID,o:{rx:rx,ry:ry,scale:sc,oy:oy}}]);
+    contact(x,W/2,H/2+sc*1.28,sc*1.12,sc*.14,.22);
+    scene(x,W,H,[{m:RING,o:{rx:rx+.52,ry:ry*1.5,scale:sc}},{m:SOLID,o:{rx:rx,ry:ry,scale:sc}}]);
   },step:function(){st.t+=.004;mx+=(tmx-mx)*.06;my+=(tmy-my)*.06;}});
 })();
 
