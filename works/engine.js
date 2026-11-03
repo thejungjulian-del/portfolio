@@ -191,7 +191,7 @@ function groupOf(p){for(var i=0;i<G.length;i++)if(G[i].id===p.g)return G[i];retu
 function card(p){
   var pos=p.pos?' style="object-position:'+esc(p.pos)+'"':'';
   var art=p.img?'<img src="'+esc(p.img)+'" alt="" loading="lazy"'+pos+'>':'<canvas data-em="'+p.shape+'"></canvas>';
-  return '<a class="card" href="#v-'+p.id+'"><div class="art">'+art+'<div class="no">'+p.no+'</div>'+
+  return '<a class="card'+(p.sz?' sz-'+p.sz:'')+'" href="#v-'+p.id+'"><div class="art">'+art+'<div class="no">'+p.no+'</div>'+
     '<div class="st'+(p.live?' live':'')+'">'+esc(p.st)+'</div>'+(p.play?'<div class="play">▶ '+esc(p.play)+'</div>':'')+'</div>'+
     '<div class="bd"><div class="nm">'+esc(p.name)+'</div><div class="dis">'+esc(p.dis)+'</div>'+
     (p.kpi?'<div class="kpi"><b>'+num(p.kpi[0])+'</b><span>'+esc(p.kpi[1])+'</span></div>':'')+
