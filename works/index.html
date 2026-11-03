@@ -7,6 +7,9 @@
 :root{--paper:#0b0b0c;--paper-2:#141416;--ink:#f5f5f3;--ink-2:#b1b3b4;--ink-3:#757674;--ink-4:#464745;
   --rule:rgba(245,245,243,.08);--rule-2:rgba(245,245,243,.17);--ink-rgb:245,245,243;--lift:1;
   --bar:rgba(11,11,12,.9);--grain-blend:screen;--grain-op:.12;color-scheme:dark}
+/* fills the last slot of the products grid */
+.card.more .bd{border-top:0;justify-content:space-between}
+.card.more .nm{font-size:clamp(26px,2.6vw,40px);line-height:1.02;letter-spacing:-.025em;text-wrap:balance}
 </style>
 
 <div class="grid" aria-hidden="true"></div>
@@ -21,6 +24,7 @@
     <a href="#products" data-sec="products">Products</a>
     <a href="#brand" data-sec="brand">Brand &amp; web</a>
     <a href="#film" data-sec="film">Film</a>
+    <a href="#about" data-sec="about">About</a>
     <a href="dashboard.html">Dashboard</a>
   </nav>
   <button class="ixbtn" id="ixbtn" aria-expanded="false" aria-controls="menu"><i></i>Index</button>
@@ -43,26 +47,27 @@
   <div class="logo front" aria-hidden="true"><h1>Julian Jung</h1></div>
   <h1 class="sr">Julian Jung, products and design</h1>
   <div class="under">Products, brands and film, built end to end</div>
-  <div class="marg bl"><span class="big">11</span><span>Works<br>shown</span></div>
+  <div class="marg bl"><span class="big">10</span><span>Works<br>shown</span></div>
   <div class="marg br">
     Index
     <a href="#products">Products</a>
     <a href="#brand">Brand &amp; web</a>
     <a href="#film">Film</a>
+    <a href="#about">About</a>
   </div>
 </main>
 
 <div class="band">
   <div class="word" style="font-size:min(20vw,300px)">Created.</div>
   <div class="cap">
-    <p>Apps people can use, brands that are live and the 3D films made for them. Mostly solo, from the first sketch to the server it runs on. Open any piece for the full story.</p>
+    <p>Apps people can use, brands and websites, and the 3D films made for them. Mostly solo, from the first sketch to the server it runs on. Open any piece for the full story.</p>
     <div>Fig. 01 — the body of work</div>
   </div>
 </div>
 
 <section class="hr" aria-label="Headline numbers">
   <div class="stats" style="--n:4">
-    <div class="stat"><b>6</b><span>Products and tools</span></div>
+    <div class="stat"><b>5</b><span>Products and tools</span></div>
     <div class="stat"><b>3</b><span>Brands and sites</span></div>
     <div class="stat"><b>2</b><span>3D films</span></div>
     <div class="stat"><b>3</b><span>Live websites</span></div>
@@ -72,7 +77,7 @@
 <section class="hr" id="products">
   <div class="head">
     <h2>Products</h2>
-    <div class="sub">6 apps and tools · photo, video, creators<br><a href="dashboard.html" style="color:inherit">Try them live in the dashboard →</a></div>
+    <div class="sub">5 apps and tools · photo, video, creators<br><a href="dashboard.html" style="color:inherit">Try them live in the dashboard →</a></div>
   </div>
   <div class="rgrid three" id="grid-products"></div>
 </section>
@@ -92,6 +97,32 @@
   </div>
   <div class="rgrid two" id="grid-film"></div>
 </section>
+
+<section class="hr" id="about">
+  <div class="head">
+    <h2>About</h2>
+    <div class="sub">Haas School of Business<br>UC Berkeley</div>
+  </div>
+  <div class="v-row">
+    <h2>Julian Jung</h2>
+    <div class="v-body">
+      <p>I’m a business student at UC Berkeley’s Haas School, in the Global Management Program. I like making the whole thing: the idea, the design, the code, the server it runs on, and the brand and film around it.</p>
+      <p>Right now that’s Creator Exchange, a play-money stock market for creators, and Redline, the campus car club, where I run design and web as vice president.</p>
+    </div>
+  </div>
+  <div class="v-row">
+    <h2>How I work</h2>
+    <div class="v-body"><ul class="v-list">
+      <li>Every product here has a working demo in the dashboard, running on sample data.</li>
+      <li>Numbers on this page are checked against each project’s own data before they go up.</li>
+      <li>AI is part of most builds (Claude, Gemini and local models), and AI-generated people are labeled.</li>
+    </ul></div>
+  </div>
+  <div class="v-row">
+    <h2>Contact</h2>
+    <div class="v-body"><div class="v-links"><a href="mailto:thejungjulian@gmail.com">thejungjulian@gmail.com <span>→</span></a><a href="https://github.com/thejungjulian-del" target="_blank" rel="noopener" class="ghost">GitHub <span>↗</span></a></div></div>
+  </div>
+</section>
 </div>
 
 <div id="views"></div>
@@ -102,7 +133,7 @@
     <div class="f-line">Products &amp; design<br>UC Berkeley · 2026</div>
   </div>
   <div class="f-cols">
-    <div class="f-col"><div class="f-h">Build</div><span>Python &amp; Flask</span><span>Next.js &amp; React</span><span>JavaScript</span><span>ffmpeg</span><span>Claude, Gemini, Ollama</span></div>
+    <div class="f-col"><div class="f-h">Build</div><span>Python &amp; Flask</span><span>Node.js</span><span>Next.js &amp; React</span><span>JavaScript &amp; canvas</span><span>ffmpeg</span><span>Claude, Gemini, Ollama</span></div>
     <div class="f-col"><div class="f-h">Design &amp; film</div><span>Figma</span><span>Blender</span><span>After Effects</span><span>Lightroom</span></div>
     <div class="f-col"><div class="f-h">Live</div><a href="https://redlineatberkeley.com/" target="_blank" rel="noopener">redlineatberkeley.com ↗</a><a href="https://blockchain.studentorg.berkeley.edu/" target="_blank" rel="noopener">Blockchain at Berkeley ↗</a><a href="https://desk.jsentertainment.org/me/48" target="_blank" rel="noopener">JS Entertainment desk ↗</a></div>
     <div class="f-col"><div class="f-h">Contact</div><span class="mail">thejungjulian@gmail.com</span><a href="https://github.com/thejungjulian-del" target="_blank" rel="noopener">GitHub ↗</a><span>Berkeley, CA</span></div>
@@ -111,11 +142,10 @@
 </footer>
 
 <script>
-var SECTIONS=[["products","Products"],["brand","Brand & web"],["film","Film & motion"]];
+var SECTIONS=[["products","Products"],["brand","Brand & web"],["film","Film & motion"],["about","About"]];
 var GROUPS=[{id:"products",label:"Products",grid:"grid-products"},{id:"brand",label:"Brand & web",grid:"grid-brand"},
             {id:"film",label:"Film & motion",grid:"grid-film"}];
 var ELSEWHERE=[["redlineatberkeley.com","https://redlineatberkeley.com/"],["Blockchain at Berkeley","https://blockchain.studentorg.berkeley.edu/"],["GitHub","https://github.com/thejungjulian-del"]];
-var FIGMA_UHNOTHER="https://www.figma.com/proto/FSUlxSOY0CVDNE1fbWoIgJ/uhnother-website?node-id=1-424&scaling=scale-down&content-scaling=fixed&starting-point-node-id=1%3A479&page-id=0%3A1";
 var PROJECTS=[
 /* ---------------- products ---------------- */
 {id:"desk",g:"products",no:"01",name:"JS Entertainment Desk",dis:"Creator trends · live web app",st:"Live",live:true,shape:"icosa",
@@ -232,26 +262,8 @@ var PROJECTS=[
    "Posting stays manual on purpose, because automated posting gets accounts banned."]],
   ["Links",{links:[["Try the live demo","dashboard.html#d-selfclip"]]}]]},
 
-{id:"exchange",g:"products",no:"06",name:"Creator Exchange",dis:"Fintech · play money",st:"Prototype",live:true,shape:"torus",
- kpi:["0.5%","fee per trade to the exchange"],
- tx:"A stock market for creators. Shares pay out a slice of revenue (sponsors, ads, merch) every quarter, trading on a real limit-order book with a house market maker.",
- tk:"JavaScript · matching engine · shared database",
- lede:"A play-money stock market for creators. Creators IPO, shares pay out a slice of their revenue each quarter, and the exchange earns a fee on every trade.",
- meta:[["Status","Working prototype"],["Period","Oct 2026"],["Built with","JavaScript, shared database"],["Money","Play money only"]],
- kpis:[["0.5%","taker fee to the exchange"],["20%","discount rate in the valuation"],["5","revenue sources per report"]],
- rows:[
-  ["The brief","Value creators like stocks, based on everything they earn, including sponsors, and let fans trade them."],
-  ["What I built",[
-   "A limit-order book with price-time priority, matched under a per-stock lease so two traders can’t fill the same order.",
-   "A valuation model: a share is a fixed-term slice of revenue, priced as discounted payouts at 20% a year, which also sets the IPO price.",
-   "A house market maker that bids 5% under model value.",
-   "Quarterly reports split by source (sponsors, ads, merch, subscriptions, other) that pay holders.",
-   "A shared database so invited friends trade against each other, with six fictional example creators."]],
-  ["Market check","GigaStar already runs a real-money version for YouTube ad revenue (about 37 offerings, $6.9M raised) but doesn’t cover sponsors. Fantex tried athlete stocks in 2013–16, closed to retail in 2016, and then faced lawsuits from athletes. Real money would need a registered funding portal."],
-  ["Links",{links:[["Try the live demo","dashboard.html#d-exchange"]]}]]},
-
 /* ---------------- brand & web ---------------- */
-{id:"redline",g:"brand",no:"07",name:"Redline",dis:"Car club identity + website",st:"Live",live:true,img:"img/redline-home.jpg",hero:"img/redline-about.jpg",
+{id:"redline",g:"brand",no:"06",name:"Redline",dis:"Car club identity + website",st:"Live",live:true,img:"img/redline-home.jpg",hero:"img/redline-about.jpg",
  tx:"UC Berkeley’s car club. As VP I built its identity and its art-directed website: a Blender car film on the home page, faceted renders behind every page title, and membership sign-up.",
  tk:"HTML · CSS · JavaScript · Blender",
  lede:"Redline is UC Berkeley’s car club: cruises, meets, automotive media and clothes. As vice president I built its identity and its website.",
@@ -273,11 +285,12 @@ var PROJECTS=[
    ["img/redline-membership.jpg","Membership sign-up · live",1]]}]}],
   ["Links",{links:[["redlineatberkeley.com","https://redlineatberkeley.com/"],["Instagram","https://www.instagram.com/redlineatberkeley/",1],["The SVJ film","#v-redline-svj",1]]}]]},
 
-{id:"bab",g:"brand",no:"08",name:"Blockchain at Berkeley",dis:"Organization website · live",st:"Live",live:true,img:"img/bab-home.jpg",hero:"img/bab-home.jpg",pos:"8% 50%",
+{id:"bab",g:"brand",no:"07",name:"Blockchain at Berkeley",dis:"Organization website · live",st:"Live",live:true,img:"img/bab-home.jpg",hero:"img/bab-home.jpg",pos:"8% 50%",
  tx:"The website for UC Berkeley’s blockchain organization: who they are, what members have shipped, clients, departments and a recruitment page.",
  tk:"Web & brand design",
  lede:"Web and brand design for Blockchain at Berkeley, the student-run blockchain consulting, education, design and research organization at UC Berkeley.",
  meta:[["Type","Web and brand design"],["Status","Live"],["Pages","Home and recruitment"],["Live at","blockchain.studentorg.berkeley.edu"]],
+ kpis:[["4","departments, one application"],["8","recruiting events this fall"],["2","pages: home and recruitment"]],
  rows:[
   ["The brief","A site that explains what the organization does, shows the work behind it, and recruits new members each semester."],
   ["What’s on it",[
@@ -288,18 +301,55 @@ var PROJECTS=[
   ["Gallery",{figs:[{type:"gallery",items:[["img/bab-home.jpg","Home · live",1],["img/bab-apply.jpg","Recruitment · live",1]]}]}],
   ["Links",{links:[["Visit the live site","https://blockchain.studentorg.berkeley.edu/"],["Recruitment page","https://blockchain.studentorg.berkeley.edu/apply",1]]}]]},
 
-{id:"uhnother",g:"brand",no:"09",name:"uhnother",dis:"Fashion e-commerce concept · Figma",st:"Prototype",img:"img/uhnother.jpg",hero:"img/uhnother.jpg",
- tx:"A concept storefront for a fashion label: editorial photography, a red wordmark and quiet navigation.",
- tk:"Figma · clickable prototype",
- lede:"A concept storefront for a fashion label, designed in Figma with a clickable prototype.",
- meta:[["Type","E-commerce concept"],["Tool","Figma"],["Format","Desktop website"],["Deliverable","Clickable prototype"]],
+{id:"exchange",g:"brand",no:"08",name:"Creator Exchange",dis:"Fintech website + brand · play money",st:"Prototype",live:true,img:"img/cx-home.jpg",hero:"img/cx-hero.jpg",
+ tx:"A play-money stock market where each creator is a company: they IPO, fans trade the shares, and part of the profit is paid out every quarter. I built the exchange, the charts, the brand and the site.",
+ tk:"Node.js · HTML canvas · no packages",
+ lede:"A play-money stock market for creators. Each creator is a company: they file their numbers and IPO, fans trade the shares on a TradingView-style market, and every quarter part of the profit is paid out as a dividend. I built all of it, from the matching engine to the logo.",
+ meta:[["Status","Working prototype, play money"],["Period","Oct 2026 – now"],["Built with","Node.js and HTML canvas, no packages"],["Runs on","My Mac; not online yet"]],
+ kpis:[["11","chart types"],["0.5%","trading fee, the taker pays"],["50–100%","of profit paid out, set by each creator"],["148","seeds in the intro, one per share"]],
  rows:[
-  ["The project","An e-commerce concept where the photography carries the brand: a product on a hanger against a tiled wall, a model in the frame, and navigation kept small so nothing competes with the clothes."],
-  ["Design",{figs:[{type:"gallery",items:[["img/uhnother.jpg","Landing page",1]]}]}],
-  ["Links",{links:[["Open the prototype",FIGMA_UHNOTHER]]}]]},
+  ["The brief","Value creators like companies, from everything they earn including sponsors, let fans own a piece and trade it, and write the rules so the fans are protected. Then make it feel calm and trustworthy, closer to a private bank than a trading app."],
+  ["The intro",[
+   "The Float: a backlit dandelion painted dot by dot on a hidden canvas, then dithered into a halftone grid.",
+   "Machine-vision boxes label it as it forms: creator · 148 shares, and each seed that drifts off becomes a holder.",
+   "Brush the seeds and they blow away; each spot regrows a few seconds later. Scroll, click or tap to enter.",
+   "It’s the product in one picture: the seeds are shares in fans’ hands, and the flower stays with the creator. Earlier versions were candles and fire."]],
+  ["Watch",{figs:[{type:"video",src:"media/cx-intro.mp4",poster:"img/cx-intro.jpg",cap:"The Float, recorded from the page · 10 s"}]}],
+  ["How a listing works",[
+   "File: the creator files at least 12 months of revenue and costs, split across seven sources (sponsors, YouTube, TikTok, Instagram, Twitch, merch, other), and picks how much of the company to sell, 10% to 50%.",
+   "Take bids: the price range sits 10% either side of the model value, and for a few days anyone can bid inside it, privately.",
+   "Price it: the IPO price is the highest price that sells every share, and everyone pays the same price. If less than half the shares get bids, the IPO is withdrawn and no one pays.",
+   "Trade and get paid: shares trade on a limit-order book, and each quarter the creator files earnings and pays out the share of profit their charter promises."]],
+  ["The market",[
+   "A chart engine I wrote on HTML canvas: 11 chart types, 24 drawing tools in TradingView’s groups, 8 indicators (moving averages, Bollinger Bands, VWAP, volume, RSI, MACD, ATR) and TradingView’s keyboard shortcuts.",
+   "Open orders sit on the chart as lines; drag one to move the order. If the new price is refused, the old order stays.",
+   "Watchlist, order book with a depth chart, price alerts, and a trading panel with positions, orders and history.",
+   "Every listing has a market maker funded with 10% of its IPO value, quoting five price levels 0.4% to 2% from the last trade."]],
+  ["The rules",[
+   "Orders match by best price, then by time, and must sit within 25% of the last trade.",
+   "Model value = profit × a P/E of 1 ÷ (risk − 5% growth), kept between 3× and 18×. Risk starts at 15% and rises with the share of revenue from sponsors or that can’t be checked against platform statements.",
+   "Each creator’s charter is fixed when they file: the payout (50% to 100% of profit) and caps on creator pay and production costs, so costs can’t quietly eat the profit.",
+   "A creator who misses a quarterly filing is halted automatically until they file.",
+   "Opening an account works like a real broker: email code, identity and finances, a risk quiz and four agreements, and trading stays locked until it’s approved. The ID check is simulated and collects no ID numbers.",
+   "Every trade is written to a crash-safe log, so a restart never loses or doubles a fill."]],
+  ["Interface",{figs:[{type:"shot",src:"img/cx-markets.jpg",cap:"CX Markets · example creators, play money"}]}],
+  ["Brand",[
+   "Logo, Bloom: 55 dots placed on the golden angle (about 137.5°), small at the centre and larger at the edge, drawn as one SVG shape. It came after four hand-drawn rounds, 36 AI-generated concepts and a candle mark.",
+   "Wordmark: CX in Libre Caslon Bold over CREATOR EXCHANGE in widely spaced capitals.",
+   "Pure black with off-white type; panels are told apart only by 1px hairlines. Libre Caslon for headlines, Inter for numbers and text.",
+   "Green and red appear only for prices going up or down, and every page says it’s play money and not an offer of securities."]],
+  ["Website",{figs:[{type:"gallery",items:[
+   ["img/cx-home.jpg","Home",1],
+   ["img/cx-how.jpg","How a listing works"],
+   ["img/cx-value.jpg","What’s your channel worth?"],
+   ["img/cx-deck.jpg","Investor deck, cover",1]]}]}],
+  ["Research","CX Research values 84 real creators from public stats with the same model, refreshed daily. Being in it doesn’t mean a creator is on CX or agrees with the estimate."],
+  ["Market check","GigaStar already runs a real-money version for YouTube ad revenue (about 37 offerings, $6.9M raised) but doesn’t cover sponsors. Fantex tried athlete stocks in 2013–16, closed to retail in 2016, and then faced lawsuits from athletes. CX’s fees are a 5% listing fee and 0.5% per trade, against roughly 7–10% at crowdfunding portals. Real money would go through a registered funding portal."],
+  ["Tested","Five automated checks: the exchange rules, the chart engine, a full-server smoke test, a click-through of the interface, and an overlap check that screenshots every view at several sizes."],
+  ["Links",{links:[["Try the order-book demo","dashboard.html#d-exchange"]]}]]},
 
 /* ---------------- film ---------------- */
-{id:"redline-svj",g:"film",no:"10",name:"Redline SVJ",dis:"3D car film · Blender",st:"3D",img:"img/redline-svj.jpg",hero:"img/redline-svj.jpg",play:"0:17",
+{id:"redline-svj",g:"film",no:"09",name:"Redline SVJ",dis:"3D car film · Blender",st:"3D",img:"img/redline-svj.jpg",hero:"img/redline-svj.jpg",play:"0:17",
  tx:"A low-poly Lamborghini SVJ showcase rendered in Blender for the Redline website.",
  tk:"Blender · 720p · 17 s · silent",
  lede:"A low-poly Lamborghini SVJ, modeled, lit and rendered in Blender as motion for the Redline website.",
@@ -309,7 +359,7 @@ var PROJECTS=[
   ["Context","Part of the Redline identity: the site uses dark, faceted car renders instead of stock photos so the motion feels like the brand. See the Redline case for the rest."],
   ["Links",{links:[["Redline case","#v-redline",1],["redlineatberkeley.com","https://redlineatberkeley.com/"]]}]]},
 
-{id:"redline-supra",g:"film",no:"11",name:"Redline Supra",dis:"Earlier intro film · Blender",st:"3D",img:"img/redline-supra.jpg",hero:"img/redline-supra.jpg",play:"0:10",
+{id:"redline-supra",g:"film",no:"10",name:"Redline Supra",dis:"Earlier intro film · Blender",st:"3D",img:"img/redline-supra.jpg",hero:"img/redline-supra.jpg",play:"0:10",
  tx:"An earlier intro film for the Redline home page: a Supra driving through the city at night, rendered in Blender.",
  tk:"Blender · 1080p · 10 s",
  lede:"An earlier intro film for the Redline home page: a Supra driving through the city at night, rendered in Blender. The live site now opens on the SVJ film.",
@@ -320,3 +370,9 @@ var PROJECTS=[
 ];
 </script>
 <script src="engine.js"></script>
+<script>
+document.getElementById("grid-products").insertAdjacentHTML("beforeend",
+  '<a class="card more" href="dashboard.html"><div class="bd"><div class="dis">Dashboard</div>'+
+  '<div class="nm">Try them in your browser</div><p class="tx">Six working demos, Creator Exchange included, running on sample data. Nothing to install.</p>'+
+  '<div class="go">Open the dashboard <span>→</span></div></div></a>');
+</script>
